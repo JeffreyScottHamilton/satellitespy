@@ -259,6 +259,55 @@ export function presentLayerToggle(layer) {
   };
 }
 
+/** The key under which the navigator keeps its collapsed groups. */
+export const LAYER_GROUPS_KEY = 'satellitespy.layerGroups';
+
+function browserLayerGroupStorage() {
+  try {
+    return globalThis.localStorage ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The collapsed groups, as `{ [English group label]: true }`. Groups are
+ * expanded unless listed; a missing, damaged or unreadable store means every
+ * group is expanded.
+ * @param {{ getItem: (key: string) => string | null } | null} storage
+ * @returns {Record<string, true>}
+ */
+export function readLayerGroupState(storage) {
+  let parsed;
+  try {
+    parsed = JSON.parse(storage?.getItem(LAYER_GROUPS_KEY) ?? 'null');
+  } catch {
+    return {};
+  }
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {};
+  const state = {};
+  for (const [label, collapsed] of Object.entries(parsed))
+    if (collapsed === true) state[label] = true;
+  return state;
+}
+
+/**
+ * Fold or unfold one group and persist the result. A store that refuses the
+ * write still folds the group for this session.
+ * @returns {Record<string, true>} the new state
+ */
+export function toggleLayerGroupState(storage, label) {
+  const state = readLayerGroupState(storage);
+  if (state[label]) delete state[label];
+  else state[label] = true;
+  try {
+    storage?.setItem(LAYER_GROUPS_KEY, JSON.stringify(state));
+  } catch {
+    // Unavailable storage: the fold lasts until the panel reloads.
+  }
+  return state;
+}
+
 /** Layer row presentation over supplied state and actions; no layer imports. */
 export class LayerPanel {
   constructor({
@@ -271,8 +320,11 @@ export class LayerPanel {
     subscribeRowControls,
     onHiddenRefresh = () => {},
     weatherClock,
+    storage = browserLayerGroupStorage(),
   }) {
     this.weatherClock = weatherClock;
+    this._groupStorage = storage;
+    this._collapsed = readLayerGroupState(storage);
     this.getAll = getLayers;
     this.isEnabled = isEnabled;
     this.setEnabled = setEnabled;
@@ -371,6 +423,13 @@ export class LayerPanel {
     this._groupContainers = new Map();
     this._toggleContainer = null;
   }
+  /** Fold or unfold a group by its English label, and repaint its rows. */
+  toggleGroup(label) {
+    if (this._destroyed) return;
+    this._collapsed = toggleLayerGroupState(this._groupStorage, label);
+    this._paint();
+  }
+
   /** Rebuild the rows after the layer set changed (a Data Library add/remove). */
   rerender() {
     this._renderToggles();
@@ -414,6 +473,8 @@ export class LayerPanel {
         key: layer.id,
         id: layer.id,
         container,
+        // The heading whose fold hides this row, if any.
+        group: container ? null : group,
         count: !readout,
         controls: controls && !readout,
         info: false,
@@ -441,11 +502,21 @@ export class LayerPanel {
     for (const id of this._groupContainers.keys()) lists.set(id, []);
     for (const row of this._rows) {
       let item;
-      if (row.heading) item = { key: row.key, heading: t(row.heading) };
+      if (row.heading)
+        item = {
+          key: row.key,
+          heading: t(row.heading),
+          group: row.heading,
+          collapsed: this._isCollapsed(row.heading),
+        };
       else {
         const layer = layers.get(row.id);
         if (layer) this._rowViews.set(row.id, this._presentRow(row, layer));
-        item = this._rowViews.get(row.id);
+        const view = this._rowViews.get(row.id);
+        item = view && {
+          ...view,
+          collapsed: row.group ? this._isCollapsed(row.group) : false,
+        };
       }
       if (item) lists.get(row.container ?? null).push(item);
     }
@@ -463,9 +534,14 @@ export class LayerPanel {
             this._moveSlider(layerId, sliderId, value, generation),
           onRange: (layerId, rangeId, end, value) =>
             this._pickRangeEnd(layerId, rangeId, end, value, generation),
+          onGroup: (label) => this.toggleGroup(label),
         }),
         id === null ? this._toggleContainer : this._groupContainers.get(id),
       );
+  }
+
+  _isCollapsed(label) {
+    return Boolean(this._collapsed[label]);
   }
 
   _presentRow(row, layer) {

@@ -22,7 +22,7 @@ const { view, controls } = storeToRefs(useDataLibraryStore());
       :hidden="!view"
       :native-title="false"
       @click="controls?.open()"
-      >{{ t('BROWSE DATA LIBRARY') }}</UiButton
+      >{{ t('Browse data library') }}</UiButton
     >
   </div>
   <Teleport v-if="view" to="body"><DataLibraryDialog :view="view" /></Teleport>

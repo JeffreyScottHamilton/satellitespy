@@ -498,3 +498,121 @@ test('a layer with no feed in view says why instead of "never"', async () => {
     setLocale('en');
   }
 });
+
+// Group folds: the navigator remembers which groups are collapsed, by their
+// English label, under one localStorage key. Every group starts expanded.
+function memoryStorage(seed = {}) {
+  const store = new Map(Object.entries(seed));
+  return {
+    store,
+    getItem: (key) => (store.has(key) ? store.get(key) : null),
+    setItem: (key, value) => store.set(key, String(value)),
+  };
+}
+
+test('group folds persist under satellitespy.layerGroups and default to expanded', async () => {
+  const { LAYER_GROUPS_KEY, readLayerGroupState, toggleLayerGroupState } =
+    await import('./layerPanel.js');
+  assert.equal(LAYER_GROUPS_KEY, 'satellitespy.layerGroups');
+  const storage = memoryStorage();
+  assert.deepEqual(readLayerGroupState(storage), {});
+  assert.deepEqual(toggleLayerGroupState(storage, 'Aviation'), {
+    Aviation: true,
+  });
+  assert.deepEqual(readLayerGroupState(storage), { Aviation: true });
+  assert.deepEqual(JSON.parse(storage.store.get(LAYER_GROUPS_KEY)), {
+    Aviation: true,
+  });
+  // Expanding again removes the entry: only collapsed groups are stored.
+  assert.deepEqual(toggleLayerGroupState(storage, 'Aviation'), {});
+  assert.deepEqual(JSON.parse(storage.store.get(LAYER_GROUPS_KEY)), {});
+});
+
+test('a damaged or unavailable group store reads as every group expanded', async () => {
+  const { readLayerGroupState, toggleLayerGroupState } =
+    await import('./layerPanel.js');
+  const seeded = (value) => memoryStorage({ 'satellitespy.layerGroups': value });
+  assert.deepEqual(readLayerGroupState(seeded('{not json')), {});
+  assert.deepEqual(readLayerGroupState(seeded('["Aviation"]')), {});
+  assert.deepEqual(readLayerGroupState(seeded('null')), {});
+  assert.deepEqual(
+    readLayerGroupState(
+      seeded(JSON.stringify({ Aviation: true, Maritime: 'yes', Space: false })),
+    ),
+    { Aviation: true },
+  );
+  assert.deepEqual(readLayerGroupState(null), {});
+  const denied = {
+    getItem() {
+      throw new Error('storage denied');
+    },
+    setItem() {
+      throw new Error('quota');
+    },
+  };
+  assert.deepEqual(readLayerGroupState(denied), {});
+  // A fold still works for this session when the store refuses the write.
+  assert.deepEqual(toggleLayerGroupState(denied, 'Maritime'), {
+    Maritime: true,
+  });
+});
+
+test('a group heading folds its rows, persists the fold, and restores it on a new panel', async () => {
+  const { LayerPanel, LAYER_GROUPS_KEY } = await import('./layerPanel.js');
+  document.body.replaceChildren();
+  const container = document.body.appendChild(document.createElement('div'));
+  container.id = 'data-toggles';
+  const storage = memoryStorage();
+  const layers = ['flights', 'military', 'radio'].map((id) => ({
+    id,
+    name: id,
+    icon: '*',
+    source: 'S',
+    enabled: false,
+    showInTogglePanel: true,
+    stats: {},
+  }));
+  const options = {
+    getLayers: () => layers,
+    isEnabled: () => false,
+    setEnabled() {},
+    setLayerParams() {},
+    getRowControls: () => null,
+    hasRowControls: () => false,
+    subscribeRowControls: () => () => {},
+    storage,
+  };
+  const heading = (label) =>
+    [...container.querySelectorAll('.data-layer-group-heading')].find(
+      (node) => node.textContent.trim() === label,
+    );
+  const row = (id) => container.querySelector(`[data-layer-id="${id}"]`);
+  let panel = new LayerPanel(options);
+  panel.mount(container);
+  try {
+    const toggle = heading('Aviation').querySelector('button');
+    assert.equal(toggle.getAttribute('aria-expanded'), 'true');
+    assert.equal(row('flights').hidden, false);
+    // Idle rows show no em dash count placeholder.
+    assert.equal(container.querySelector('.data-count'), null);
+
+    toggle.click();
+    assert.equal(heading('Aviation').querySelector('button').getAttribute('aria-expanded'), 'false');
+    assert.equal(row('flights').hidden, true);
+    assert.equal(row('military').hidden, true);
+    assert.equal(row('radio').hidden, false, 'other groups stay open');
+    assert.deepEqual(JSON.parse(storage.store.get(LAYER_GROUPS_KEY)), {
+      Aviation: true,
+    });
+
+    panel.destroy();
+    panel = new LayerPanel(options);
+    panel.mount(container);
+    assert.equal(row('flights').hidden, true, 'the fold survives a reload');
+    heading('Aviation').querySelector('button').click();
+    assert.equal(row('flights').hidden, false);
+  } finally {
+    panel.destroy();
+    document.body.replaceChildren();
+  }
+});

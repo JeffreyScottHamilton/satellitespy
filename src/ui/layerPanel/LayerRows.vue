@@ -17,6 +17,7 @@ defineProps({
   onListItem: { type: Function, default: () => {} },
   onSlider: { type: Function, default: () => {} },
   onRange: { type: Function, default: () => {} },
+  onGroup: { type: Function, default: () => {} },
 });
 </script>
 
@@ -26,13 +27,20 @@ defineProps({
       v-if="item.heading"
       class="data-layer-group-heading"
       :data-group="item.key"
-      >{{ item.heading }}</h3
+      ><button
+        type="button"
+        class="data-layer-group-toggle"
+        :aria-expanded="String(!item.collapsed)"
+        @click="onGroup(item.group)"
+        >{{ item.heading }}</button
+      ></h3
     ><div
       v-else
       class="data-toggle-row"
       v-class-toggle="{
         'data-toggle-row--count-line': item.count?.countLine,
       }"
+      :hidden="item.collapsed"
       :data-layer-id="item.id"
       :data-layer-name="item.englishName"
       :data-library-entry="item.libraryEntry || undefined"
@@ -42,7 +50,7 @@ defineProps({
           ><RowText class="data-name" :text="item.name" /></div
         ><div class="data-toggle-right"
           ><RowText
-            v-if="item.count"
+            v-if="item.count && !item.count.empty"
             :class="['data-count', { 'data-count-empty': item.count.empty }]"
             :text="item.count.text"
           /><button
