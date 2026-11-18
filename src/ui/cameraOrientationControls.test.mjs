@@ -12,7 +12,8 @@ import {
   toggleCameraTilt,
 } from './cameraOrientationControls.js';
 import { NavigationController } from './navigationController.js';
-import { bindRenderer } from '../render/rendererOf.js';
+import { bindRenderer, findCamera } from '../render/rendererOf.js';
+import { zoomOutLimit } from '../render/cesium/applicationViewer.js';
 import {
   createCesiumQuery,
   queryCapabilities,
@@ -727,4 +728,67 @@ test('rapid tilt presses reverse direction and north-up keeps the requested tilt
   assert.ok(Math.abs(frame.heading) < 1e-6);
   controls.destroy();
   assert.equal(viewer.scene.preUpdate.numberOfListeners, 0);
+});
+
+test('zoom in moves a real camera toward its target by two fifths of its height', () => {
+  const { viewer } = createRealViewer(AUSTIN_GROUND, { frames: false });
+  orbit(viewer, AUSTIN_GROUND, 215, Cesium.Math.toRadians(-40), 4000);
+  const controls = bindCameraOrientationControls({
+    viewer,
+    runNavigation: (_noun, navigate) => navigate(),
+  });
+  const before = readCameraTargetFrame(viewer);
+  const height = findCamera(viewer).pose().height;
+  assert.equal(controls.zoomIn(), true);
+  const after = readCameraTargetFrame(viewer);
+  assert.ok(
+    Math.abs(before.range - after.range - 0.4 * height) < 1,
+    `range ${before.range} -> ${after.range}, height ${height}`,
+  );
+  assert.ok(Math.abs(after.pitch - before.pitch) < 1e-6, 'zoom must keep pitch');
+  assert.ok(Math.abs(after.heading - before.heading) < 1e-6, 'zoom must keep heading');
+  controls.destroy();
+  assert.equal(controls.zoomIn(), false, 'a destroyed control zooms nothing');
+});
+
+test('zoom out moves a real camera away by six tenths of its height', () => {
+  const { viewer } = createRealViewer(AUSTIN_GROUND, { frames: false });
+  orbit(viewer, AUSTIN_GROUND, 40, Cesium.Math.toRadians(-60), 4000);
+  const controls = bindCameraOrientationControls({
+    viewer,
+    runNavigation: (_noun, navigate) => navigate(),
+  });
+  const before = readCameraTargetFrame(viewer);
+  const height = findCamera(viewer).pose().height;
+  controls.zoomOut();
+  const after = readCameraTargetFrame(viewer);
+  assert.ok(
+    Math.abs(after.range - before.range - 0.6 * height) < 1,
+    `range ${before.range} -> ${after.range}, height ${height}`,
+  );
+  controls.destroy();
+});
+
+test('zoom out stops at the globe zoom limit instead of flying past it', () => {
+  const { viewer } = createRealViewer(AUSTIN_GROUND, { frames: false });
+  orbit(viewer, AUSTIN_GROUND, 40, Cesium.Math.toRadians(-40), 4000);
+  const controls = bindCameraOrientationControls({
+    viewer,
+    runNavigation: (_noun, navigate) => navigate(),
+  });
+  for (let step = 0; step < 80; step += 1) controls.zoomOut();
+  const pose = findCamera(viewer).pose();
+  const limit = zoomOutLimit(pose.fovy);
+  assert.ok(
+    pose.height <= limit + 500,
+    `height ${pose.height} above the limit ${limit}`,
+  );
+  assert.ok(
+    pose.height >= limit - 500,
+    `stopped at ${pose.height}, short of the limit ${limit}`,
+  );
+  // Already at the limit: another zoom out changes nothing.
+  controls.zoomOut();
+  assert.ok(Math.abs(findCamera(viewer).pose().height - pose.height) < 500);
+  controls.destroy();
 });

@@ -21,6 +21,8 @@ function mount(t) {
     tilt: () => calls.push('tilt'),
     northUp: () => calls.push('northUp'),
     reset: () => calls.push('reset'),
+    zoomIn: () => calls.push('zoomIn'),
+    zoomOut: () => calls.push('zoomOut'),
   });
   const app = createApp(GlobeActions).use(pinia);
   app.mount(document.body.appendChild(document.createElement('div')));
@@ -39,12 +41,30 @@ test('every button calls its owner', (t) => {
   assert.deepEqual(calls, ['clear', 'share', 'tilt', 'northUp', 'reset']);
 });
 
+test('zoom in and zoom out call their owner, in the cluster above the compass', (t) => {
+  const { calls } = mount(t);
+  $('zoom-in-btn').click();
+  $('zoom-out-btn').click();
+  assert.deepEqual(calls, ['zoomIn', 'zoomOut']);
+  assert.equal($('zoom-in-btn').getAttribute('aria-label'), 'Zoom in');
+  assert.equal($('zoom-out-btn').getAttribute('aria-label'), 'Zoom out');
+  const order = [...document.querySelectorAll('#top-center-actions > *')].map(
+    (el) => el.id || el.className,
+  );
+  assert.deepEqual(order.slice(0, 4), [
+    'globe-zoom',
+    'north-up-view',
+    'reset-globe-view',
+    'tilt-map-view',
+  ]);
+});
+
 test('the tilt and compass buttons show the published camera', async (t) => {
   const { store } = mount(t);
   const tilt = $('tilt-map-view');
   const north = $('north-up-view');
   assert.equal(tilt.getAttribute('aria-pressed'), 'false');
-  assert.equal(tilt.getAttribute('aria-label'), 'Tilt map to oblique view');
+  assert.equal(tilt.getAttribute('aria-label'), 'Toggle 3D tilt');
   assert.equal(north.getAttribute('aria-label'), 'Reset map to north up');
   assert.equal(north.hasAttribute('data-north-up'), false);
   assert.equal(north.style.getPropertyValue('--camera-heading'), '');
@@ -52,10 +72,7 @@ test('the tilt and compass buttons show the published camera', async (t) => {
   store.publishCamera({ tilted: true, heading: 0 });
   await nextTick();
   assert.equal(tilt.getAttribute('aria-pressed'), 'true');
-  assert.equal(
-    tilt.getAttribute('aria-label'),
-    'Return map to straight-down view',
-  );
+  assert.equal(tilt.getAttribute('aria-label'), 'Toggle 3D tilt');
   assert.equal(north.getAttribute('data-north-up'), 'true');
   assert.equal(north.style.getPropertyValue('--camera-heading'), '0deg');
 
@@ -137,7 +154,7 @@ test('the same camera state again changes nothing', () => {
 test('a reset under way relabels the reset button for its owner', async (t) => {
   const { store, token } = mount(t);
   const reset = $('reset-globe-view');
-  assert.equal(reset.getAttribute('aria-label'), 'Reset to full globe view');
+  assert.equal(reset.getAttribute('aria-label'), 'Return to global view');
   store.publishResetting(token, true);
   await nextTick();
   assert.equal(
@@ -147,7 +164,7 @@ test('a reset under way relabels the reset button for its owner', async (t) => {
   assert.equal(store.clearBusy, null, 'a reset is not a clear');
   store.detach(token);
   await nextTick();
-  assert.equal(reset.getAttribute('aria-label'), 'Reset to full globe view');
+  assert.equal(reset.getAttribute('aria-label'), 'Return to global view');
 });
 
 test('the cockpit reset asks the reset owner and shows its reset', async (t) => {

@@ -1,1 +1,97 @@
-/* Owner: bottom-left attribution and one-line data status. */
+/* Owner: bottom-left attribution and one-line data status.
+ * The attribution line is #cesium-credits (Cesium's own credit display) or,
+ * for a renderer without one, #gev-credits (creditsView.js). The two never
+ * show together, so each takes the same bottom-left place. Required by the
+ * Google and Cesium terms: it stays visible and on one line.
+ *
+ * The legacy rules (foundation.css, command-dock.css, context-dock.css,
+ * command-dock-trays.css, mobile-shell.css, command-dock-compact.css) place
+ * the line in several spots with !important in places. Two ids here outrank
+ * them. Stories pins the line above its own timeline (stories.css), so that
+ * mode keeps its placement. */
+
+body:not(.stories-mode) #cesium-credits#cesium-credits,
+body:not(.stories-mode) #gev-credits#gev-credits {
+  position: fixed !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: calc(12px + var(--mobile-tab-space, 0px)) !important;
+  left: 16px !important;
+  z-index: 90;
+  width: auto !important;
+  max-width: calc(100vw - 32px) !important;
+  margin: 0;
+  padding: 0;
+  transform: none !important;
+  scale: none !important;
+  white-space: nowrap;
+  text-align: left;
+  text-shadow: none;
+  pointer-events: auto;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  line-height: 16px;
+  color: var(--text-2);
+  opacity: 0.85;
+}
+
+/* Logos on the line: 14px high, width by aspect. */
+body:not(.stories-mode) #cesium-credits#cesium-credits img,
+body:not(.stories-mode) #gev-credits#gev-credits img {
+  height: 14px !important;
+  width: auto !important;
+  max-width: none;
+  vertical-align: middle;
+}
+
+body:not(.stories-mode) #cesium-credits#cesium-credits .cesium-credit-logoContainer,
+body:not(.stories-mode) #cesium-credits#cesium-credits .cesium-credit-textContainer,
+body:not(.stories-mode) #cesium-credits#cesium-credits .cesium-credit-expand-link {
+  display: inline-block;
+  vertical-align: middle;
+  color: var(--text-2);
+  font-size: 11px;
+  font-family: var(--font-sans);
+}
+
+body:not(.stories-mode) #cesium-credits#cesium-credits a,
+body:not(.stories-mode) #cesium-credits#cesium-credits .cesium-credit-expand-link,
+body:not(.stories-mode) #gev-credits#gev-credits a {
+  color: var(--text-2);
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+}
+
+body:not(.stories-mode) #cesium-credits#cesium-credits a:hover,
+body:not(.stories-mode) #cesium-credits#cesium-credits .cesium-credit-expand-link:hover,
+body:not(.stories-mode) #gev-credits#gev-credits a:hover {
+  color: var(--text);
+}
+
+/* The application's own line: "Data attribution" sits inline after the
+ * credits, in the same style. */
+body:not(.stories-mode) #gev-credits#gev-credits .gev-credits-line {
+  display: inline;
+  color: var(--text-2);
+}
+
+body:not(.stories-mode) #gev-credits#gev-credits .gev-credits-expand {
+  display: inline;
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  font: inherit;
+  color: var(--text-2);
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  cursor: pointer;
+}
+
+body:not(.stories-mode) #gev-credits#gev-credits .gev-credits-expand:focus-visible,
+body:not(.stories-mode) #cesium-credits#cesium-credits a:focus-visible,
+body:not(.stories-mode) #cesium-credits#cesium-credits .cesium-credit-expand-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

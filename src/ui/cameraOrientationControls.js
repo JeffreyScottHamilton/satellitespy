@@ -9,10 +9,13 @@ import {
 import {
   clamp,
   eastNorthUp,
+  framePoint,
   inverseFramePoint,
   magnitude,
   negativePiToPi,
+  toCartographicRadians,
   toDegrees,
+  WGS84,
   toRadians,
   TWO_PI,
   zeroToTwoPi,
@@ -35,6 +38,25 @@ export const OBLIQUE_PITCH = toRadians(-35);
 export const STRAIGHT_DOWN_PITCH = toRadians(-89);
 const OBLIQUE_THRESHOLD = toRadians(-60);
 const EPSILON10 = 1e-10;
+/** One zoom step moves the eye this share of its height above the globe. */
+const ZOOM_IN_SHARE = 0.4;
+const ZOOM_OUT_SHARE = 0.6;
+/** The nearest a zoom in takes the eye to its target, metres. */
+const MIN_ZOOM_RANGE = 1;
+/**
+ * The globe's share of the screen's height at the farthest zoom out. The same
+ * as render/cesium/applicationViewer.js, which this module may not import (the
+ * package boundary keeps the UI off the render module); the zoom-out test holds
+ * the two equal.
+ */
+const MIN_GLOBE_SHARE = 0.3;
+
+/** The farthest eye height above the ellipsoid for a vertical field of view. */
+function zoomOutLimit(fovy) {
+  const radius = WGS84.radii.x;
+  const angular = Math.atan(MIN_GLOBE_SHARE * Math.tan(fovy / 2));
+  return radius / Math.sin(angular) - radius;
+}
 
 function normalizedHeading(heading) {
   const wrapped = zeroToTwoPi(Number.isFinite(heading) ? heading : 0);
@@ -158,6 +180,52 @@ function frameIsTilted(frame) {
   return Number.isFinite(pitch) ? pitch > OBLIQUE_THRESHOLD : false;
 }
 
+/**
+ * Height above the ellipsoid of a lookAt eye `range` metres from `target` at
+ * `heading` and `pitch`. The eye sits at range * (-sin h cos p, -cos h cos p,
+ * -sin p) in the target's east-north-up frame, as {@link readCameraTargetFrame}
+ * reads it back.
+ */
+function eyeHeightAt(target, range, heading, pitch) {
+  const offset = {
+    x: -range * Math.sin(heading) * Math.cos(pitch),
+    y: -range * Math.cos(heading) * Math.cos(pitch),
+    z: -range * Math.sin(pitch),
+  };
+  const eye = framePoint(eastNorthUp(target), offset);
+  return toCartographicRadians(eye)?.height ?? Number.NaN;
+}
+
+/**
+ * The orbit range one zoom step reaches. A zoom in takes the eye toward the
+ * target by a share of its height. A zoom out takes it away by a share, but
+ * never past the globe's zoom limit, the same one a hand's zoom out stops at.
+ * Zooming out from beyond the limit keeps the range.
+ * @param {{target: object, range: number, heading: number, pitch: number}} orbit
+ * @param {number} height The eye's height above the ellipsoid, metres.
+ * @param {number} fovy Vertical field of view, radians.
+ * @param {-1|1} direction -1 zooms in, 1 zooms out.
+ */
+export function zoomedRange(orbit, height, fovy, direction) {
+  const { target, range, heading, pitch } = orbit;
+  if (direction < 0)
+    return Math.max(range - ZOOM_IN_SHARE * height, MIN_ZOOM_RANGE);
+  const limit = zoomOutLimit(fovy);
+  const at = (r) => eyeHeightAt(target, r, heading, pitch);
+  if (!(at(range) < limit)) return range;
+  const wanted = range + ZOOM_OUT_SHARE * height;
+  if (at(wanted) <= limit) return wanted;
+  // The height rises with the range, so the limit is found by bisection.
+  let near = range;
+  let far = wanted;
+  for (let step = 0; step < 60; step += 1) {
+    const middle = (near + far) / 2;
+    if (at(middle) <= limit) near = middle;
+    else far = middle;
+  }
+  return near;
+}
+
 /** Toggle between a straight-down map and a useful oblique map angle. */
 export function toggleCameraTilt(viewer) {
   const frame = readCameraTargetFrame(viewer);
@@ -201,6 +269,8 @@ export function createCameraOrientationAnimator(
     pending = destination;
     const start = now();
     const headingDelta = negativePiToPi(destination.heading - frame.heading);
+    const rangeTo = destination.range ?? frame.range;
+    const rangeDelta = rangeTo - frame.range;
     remove = frames.on('preUpdate', () => {
       if (viewer.isDestroyed?.() || followedOf(viewer) !== followed) {
         cancel();
@@ -216,6 +286,7 @@ export function createCameraOrientationAnimator(
           target,
           heading: frame.heading + headingDelta * eased,
           pitch: (1 - eased) * frame.pitch + eased * destination.pitch,
+          range: frame.range + rangeDelta * eased,
         })
       ) {
         cancel();
@@ -305,6 +376,32 @@ export function bindCameraOrientationControls({
     sync();
   }
 
+  /**
+   * Move the eye along its orbit by one zoom step, keeping the heading and
+   * pitch the map is heading to. A zoom out stops at the globe's limit.
+   */
+  function zoom(direction) {
+    if (destroyed) return false;
+    const pending = animator.destination;
+    const result = runNavigation('camera', () => {
+      const frame = readCameraTargetFrame(viewer);
+      const pose = poseOf(findCamera(viewer));
+      if (!frame || !pose || !Number.isFinite(pose.fovy)) return false;
+      const orbit = {
+        target: frame.target,
+        range: frame.range,
+        heading: pending?.heading ?? frame.heading,
+        pitch: pending?.pitch ?? frame.pitch,
+      };
+      const height = toCartographicRadians(pose.position)?.height;
+      if (!Number.isFinite(height)) return false;
+      const range = zoomedRange(orbit, height, pose.fovy, direction);
+      return animator.animate(frame, { ...orbit, range });
+    });
+    sync();
+    return Boolean(result);
+  }
+
   function northUp() {
     if (destroyed) return;
     const pending = animator.destination;
@@ -343,6 +440,8 @@ export function bindCameraOrientationControls({
   return {
     tilt,
     northUp,
+    zoomIn: () => zoom(-1),
+    zoomOut: () => zoom(1),
     sync,
     refreshTilt,
     cancel: animator.cancel,

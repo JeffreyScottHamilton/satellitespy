@@ -1758,6 +1758,8 @@ export class StyleManager extends ShellFacade {
     const token = store.connect({
       tilt: () => controls.tilt(),
       northUp: () => controls.northUp(),
+      zoomIn: () => controls.zoomIn(),
+      zoomOut: () => controls.zoomOut(),
     });
     this._orientationToken = token;
     // A newer shell's controls own what the buttons show.
