@@ -19,16 +19,14 @@
   overflow: hidden;
   color: var(--text-primary);
   background:
-    linear-gradient(145deg, rgba(10, 27, 37, 0.97), rgba(7, 13, 22, 0.95)),
-    rgba(7, 17, 25, 0.96);
-  border: 1px solid rgba(54, 220, 255, 0.42);
+    linear-gradient(145deg, color-mix(in srgb, var(--surface) 97%, transparent), color-mix(in srgb, var(--surface) 95%, transparent)),
+    color-mix(in srgb, var(--surface) 96%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
   border-radius: 0.65rem;
   box-shadow:
-    0 1.4rem 4.5rem rgba(0, 0, 0, 0.72),
-    0 0 2.5rem rgba(0, 212, 255, 0.09),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.025);
-  backdrop-filter: blur(28px) saturate(1.25);
-  -webkit-backdrop-filter: blur(28px) saturate(1.25);
+    inset 0 0 0 1px var(--border);
+  backdrop-filter: blur(12px) saturate(1.25);
+  -webkit-backdrop-filter: blur(12px) saturate(1.25);
   opacity: 0;
   transform: translate(-50%, calc(-50% + 0.8rem)) scale(0.985);
   transition:
@@ -57,13 +55,8 @@
   position: absolute;
   inset: 0 0 auto;
   height: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(54, 220, 255, 0.8),
-    transparent
-  );
-  box-shadow: 0 0 1rem rgba(54, 220, 255, 0.45);
+  background: none;
+  box-shadow: var(--shadow-1);
   pointer-events: none;
 }
 
@@ -73,29 +66,29 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  color: rgba(171, 210, 220, 0.6);
-  font-family: var(--font-mono);
+  color: color-mix(in srgb, var(--accent) 60%, transparent);
+  font-family: inherit;
   font-size: 0.58rem;
-  letter-spacing: 0.1rem;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 .first-run-kicker {
-  color: rgba(54, 220, 255, 0.86);
+  color: color-mix(in srgb, var(--accent) 86%, transparent);
 }
 
 #first-run-launcher h2 {
   margin-top: 0.6rem;
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: clamp(1.25rem, 2.4vw, 1.75rem);
   font-weight: 500;
-  letter-spacing: -0.045rem;
+  letter-spacing: normal;
 }
 
 #first-run-description {
   max-width: 29rem;
   margin-top: 0.3rem;
-  color: rgba(215, 231, 235, 0.66);
+  color: color-mix(in srgb, var(--text) 66%, transparent);
   font-size: 0.78rem;
   line-height: 1.5;
 }
@@ -123,10 +116,10 @@
   width: 100%;
   min-height: 3.55rem;
   padding: 0.6rem 0.7rem;
-  color: rgba(225, 244, 248, 0.92);
+  color: color-mix(in srgb, var(--accent) 92%, transparent);
   text-align: start;
-  background: rgba(29, 69, 81, 0.18);
-  border: 1px solid rgba(100, 200, 220, 0.18);
+  background: color-mix(in srgb, var(--surface) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
   border-radius: 0.42rem;
   cursor: pointer;
   transition:
@@ -137,8 +130,8 @@
 
 .first-run-choices button:hover,
 .first-run-choices button:focus-visible {
-  background: rgba(25, 151, 178, 0.16);
-  border-color: rgba(54, 220, 255, 0.62);
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 62%, transparent);
   outline: none;
   transform: translateX(2px);
 }
@@ -153,7 +146,7 @@
 }
 
 .first-run-choices button > .material-symbols-outlined:first-child {
-  color: #55dff5;
+  color: var(--accent);
   font-size: 1.35rem;
 }
 
@@ -164,19 +157,19 @@
 }
 
 .first-run-choices strong {
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.08rem;
+  letter-spacing: normal;
 }
 
 .first-run-choices small {
-  color: rgba(198, 220, 226, 0.55);
+  color: color-mix(in srgb, var(--accent) 55%, transparent);
   font-size: 0.66rem;
 }
 
 .first-run-arrow {
-  color: rgba(54, 220, 255, 0.4);
+  color: color-mix(in srgb, var(--accent) 40%, transparent);
   font-size: 1rem;
   transition:
     transform var(--transition-fast),
@@ -185,19 +178,19 @@
 
 .first-run-choices button:hover .first-run-arrow,
 .first-run-choices button:focus-visible .first-run-arrow {
-  color: rgba(54, 220, 255, 0.9);
+  color: color-mix(in srgb, var(--accent) 90%, transparent);
   transform: translateX(2px);
 }
 
 /* Ordered after the shared button rule rather than shouting !important at it. */
 .first-run-choices button.first-run-explore {
-  background: rgba(255, 255, 255, 0.025);
+  background: color-mix(in srgb, var(--text) 2%, transparent);
 }
 
 .first-run-footer {
   margin-top: 0.85rem;
   font-size: 0.48rem;
-  letter-spacing: 0.055rem;
+  letter-spacing: normal;
 }
 
 .first-run-dismiss {
@@ -207,7 +200,7 @@
   background: none;
   color: inherit;
   font: inherit;
-  letter-spacing: inherit;
+  letter-spacing: normal;
   text-transform: inherit;
   cursor: pointer;
 }
@@ -226,7 +219,7 @@
 
 .first-run-dismiss:hover,
 .first-run-dismiss:focus-visible {
-  color: rgba(54, 220, 255, 0.86);
+  color: color-mix(in srgb, var(--accent) 86%, transparent);
 }
 
 .first-run-dismiss-touch {
@@ -247,10 +240,10 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  color: rgba(199, 225, 231, 0.66);
+  color: color-mix(in srgb, var(--accent) 66%, transparent);
   text-transform: none;
   font-size: 0.62rem;
-  letter-spacing: 0.02rem;
+  letter-spacing: normal;
   cursor: pointer;
 }
 
@@ -258,12 +251,12 @@
   width: 0.82rem;
   height: 0.82rem;
   margin: 0;
-  accent-color: #36dcff;
+  accent-color: var(--accent);
   cursor: pointer;
 }
 
 .first-run-suppress:hover {
-  color: rgba(225, 244, 248, 0.92);
+  color: color-mix(in srgb, var(--accent) 92%, transparent);
 }
 
 /* The live region carries mission progress and failures, so it owns a full row
@@ -271,14 +264,14 @@
 .first-run-note {
   min-height: 1.1rem;
   margin-top: 0.5rem;
-  color: rgba(199, 225, 231, 0.62);
-  font-family: var(--font-mono);
+  color: color-mix(in srgb, var(--accent) 62%, transparent);
+  font-family: inherit;
   font-size: 0.62rem;
   line-height: 1.35;
 }
 
 #first-run-launcher[data-state='loading'] .first-run-note {
-  color: rgba(54, 220, 255, 0.85);
+  color: color-mix(in srgb, var(--accent) 85%, transparent);
 }
 
 /* Every surface that claims the screen hides the launcher. This list is the CSS

@@ -6,22 +6,22 @@
 .cockpit-orbital {
   --orbital-line: color-mix(
     in srgb,
-    var(--cockpit-accent, #00dcff) 42%,
+    var(--cockpit-accent, var(--accent)) 42%,
     transparent
   );
   --orbital-faint: color-mix(
     in srgb,
-    var(--cockpit-accent, #00dcff) 18%,
+    var(--cockpit-accent, var(--accent)) 18%,
     transparent
   );
   --orbital-reticle-size: min(38vmin, 320px);
   position: absolute;
   inset: 0;
   overflow: hidden;
-  color: rgba(244, 251, 255, 0.86);
+  color: color-mix(in srgb, var(--text) 86%, transparent);
   font-family: var(--font-mono);
   font-size: 10px;
-  letter-spacing: 0.08em;
+  letter-spacing: normal;
   pointer-events: none;
 }
 .cockpit-orbital[hidden] {
@@ -88,14 +88,7 @@
   height: 28px;
   transform: translate(-50%, -50%);
   background:
-    linear-gradient(var(--orbital-line), var(--orbital-line)) left center / 10px
-      1px no-repeat,
-    linear-gradient(var(--orbital-line), var(--orbital-line)) right center /
-      10px 1px no-repeat,
-    linear-gradient(var(--orbital-line), var(--orbital-line)) center top / 1px
-      10px no-repeat,
-    linear-gradient(var(--orbital-line), var(--orbital-line)) center bottom /
-      1px 10px no-repeat;
+    none;
 }
 /* North on the frame: the pointer spans the reticle and turns about its
    centre, carrying the tick (and, track-up, an N) round the rim. */
@@ -107,7 +100,7 @@
   position: absolute;
   top: -26px;
   left: 50%;
-  color: var(--cockpit-accent, #00dcff);
+  color: var(--cockpit-accent, var(--accent));
   font-weight: 700;
   transform: translateX(-50%);
 }
@@ -118,14 +111,14 @@
   left: 50%;
   width: 1px;
   height: 7px;
-  background: var(--cockpit-accent, #00dcff);
+  background: var(--cockpit-accent, var(--accent));
 }
 .cockpit-orbital-reticle-lock .cockpit-orbital-bracket {
-  border-color: var(--cockpit-accent, #00dcff);
+  border-color: var(--cockpit-accent, var(--accent));
   animation: cockpit-orbital-lock 220ms ease-out;
 }
 .cockpit-orbital-reticle-lock .cockpit-orbital-cross {
-  --orbital-line: var(--cockpit-accent, #00dcff);
+  --orbital-line: var(--cockpit-accent, var(--accent));
 }
 @keyframes cockpit-orbital-lock {
   0% {
@@ -153,7 +146,7 @@
   padding: 8px 10px;
   border: 1px solid var(--orbital-faint);
   border-radius: 2px;
-  background: rgba(0, 9, 14, 0.62);
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
 }
 .cockpit-orbital-readout p,
 .cockpit-orbital-data,
@@ -161,23 +154,23 @@
   margin: 0;
 }
 .cockpit-orbital-kicker {
-  color: var(--cockpit-accent, #00dcff);
+  color: var(--cockpit-accent, var(--accent));
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: normal;
 }
 .cockpit-orbital-name {
   margin-top: 4px;
   overflow: hidden;
-  color: #f4fbff;
+  color: var(--text);
   font-size: 15px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: normal;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .cockpit-orbital-class {
   margin-top: 2px;
-  color: rgba(244, 251, 255, 0.66);
+  color: color-mix(in srgb, var(--text) 66%, transparent);
 }
 
 /* The name with its owner's flag (or text badge) in front. */
@@ -211,17 +204,17 @@
   padding: 1px 4px;
   border: 1px solid var(--orbital-line);
   border-radius: 2px;
-  color: var(--cockpit-accent, #00dcff);
+  color: var(--cockpit-accent, var(--accent));
   font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: normal;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .cockpit-orbital-operator {
   margin-top: 2px;
   overflow: hidden;
-  color: #f4fbff;
+  color: var(--text);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -233,7 +226,7 @@
   justify-content: space-between;
   gap: 8px;
   margin-top: 6px;
-  color: rgba(244, 251, 255, 0.66);
+  color: color-mix(in srgb, var(--text) 66%, transparent);
   font-variant-numeric: tabular-nums;
 }
 /* Wraps between its parts rather than truncating, so the epoch and the
@@ -249,19 +242,19 @@
   padding: 1px 6px;
   border: 1px solid var(--orbital-line);
   border-radius: 2px;
-  background: rgba(0, 7, 12, 0.6);
-  color: #f4fbff;
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
+  color: var(--text);
   font: inherit;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: normal;
   cursor: pointer;
   pointer-events: auto;
 }
 .cockpit-orbital-tle-toggle[aria-expanded='true'],
 .cockpit-orbital-tle-toggle:hover,
 .cockpit-orbital-tle-toggle:focus-visible {
-  border-color: var(--cockpit-accent, #00dcff);
-  color: #fff;
+  border-color: var(--cockpit-accent, var(--accent));
+  color: var(--text);
   outline: none;
 }
 /* 69 characters a line: small enough to fit the card, and selectable. */
@@ -271,8 +264,8 @@
   overflow-x: auto;
   border: 1px solid var(--orbital-faint);
   border-radius: 2px;
-  background: rgba(0, 4, 8, 0.7);
-  color: #f4fbff;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  color: var(--text);
   font: 8px/1.5 var(--font-mono);
   letter-spacing: 0;
   white-space: pre;
@@ -295,24 +288,24 @@
   padding: 4px 10px;
   border: 1px solid var(--orbital-faint);
   border-radius: 2px;
-  background: rgba(0, 9, 14, 0.62);
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
   transform: translateX(-50%);
   white-space: nowrap;
 }
 .cockpit-orbital-over span {
   flex: none;
-  color: var(--cockpit-accent, #00dcff);
+  color: var(--cockpit-accent, var(--accent));
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: normal;
 }
 .cockpit-orbital-over strong {
   min-width: 0;
   overflow: hidden;
-  color: #f4fbff;
+  color: var(--text);
   font-size: 12px;
-  letter-spacing: 0.08em;
+  letter-spacing: normal;
   text-overflow: ellipsis;
-  text-transform: uppercase;
+  text-transform: none;
 }
 .cockpit-orbital-data {
   display: grid;
@@ -325,10 +318,10 @@
   gap: 12px;
 }
 .cockpit-orbital-datum dt {
-  color: rgba(244, 251, 255, 0.56);
+  color: color-mix(in srgb, var(--text) 56%, transparent);
 }
 .cockpit-orbital-datum dd {
-  color: #f4fbff;
+  color: var(--text);
   font-variant-numeric: tabular-nums;
   text-align: end;
 }
@@ -338,7 +331,7 @@
   padding: 1px 5px;
   border: 1px solid var(--orbital-line);
   border-radius: 2px;
-  color: var(--cockpit-accent, #00dcff);
+  color: var(--cockpit-accent, var(--accent));
   font-weight: 700;
 }
 
@@ -354,7 +347,7 @@
   padding: 4px;
   border: 1px solid var(--orbital-faint);
   border-radius: 2px;
-  background: rgba(0, 9, 14, 0.62);
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
   transform: translateX(-50%);
   white-space: nowrap;
 }
@@ -373,8 +366,8 @@
   padding: 0;
   border: 1px solid var(--orbital-line);
   border-radius: 2px;
-  background: rgba(0, 7, 12, 0.6);
-  color: #f4fbff;
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
+  color: var(--text);
   font: inherit;
   font-size: 14px;
   font-weight: 700;
@@ -384,8 +377,8 @@
 }
 .cockpit-orbital-zoom-button:hover:not(:disabled),
 .cockpit-orbital-zoom-button:focus-visible {
-  border-color: var(--cockpit-accent, #00dcff);
-  color: #fff;
+  border-color: var(--cockpit-accent, var(--accent));
+  color: var(--text);
   outline: none;
 }
 .cockpit-orbital-zoom-button:disabled {
@@ -394,9 +387,9 @@
 }
 .cockpit-orbital-zoom {
   min-width: 64px;
-  color: var(--cockpit-accent, #00dcff);
+  color: var(--cockpit-accent, var(--accent));
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: normal;
   text-align: center;
 }
 .cockpit-orbital-swath {
@@ -460,7 +453,7 @@
   border-top: 1px solid var(--orbital-faint);
 }
 .cockpit-orbital-look-readout {
-  color: var(--cockpit-accent, #00dcff);
+  color: var(--cockpit-accent, var(--accent));
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
@@ -468,18 +461,18 @@
   padding: 3px 8px;
   border: 1px solid var(--orbital-line);
   border-radius: 2px;
-  background: rgba(0, 7, 12, 0.6);
-  color: #f4fbff;
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
+  color: var(--text);
   font: inherit;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: normal;
   cursor: pointer;
   pointer-events: auto;
 }
 .cockpit-orbital-nadir:hover,
 .cockpit-orbital-nadir:focus-visible {
-  border-color: var(--cockpit-accent, #00dcff);
-  color: #fff;
+  border-color: var(--cockpit-accent, var(--accent));
+  color: var(--text);
   outline: none;
 }
 
@@ -522,29 +515,29 @@ body.cockpit-orbit #view-switcher button {
   border-inline: 1px dashed var(--orbital-line);
   background: color-mix(
     in srgb,
-    var(--cockpit-accent, #00dcff) 6%,
+    var(--cockpit-accent, var(--accent)) 6%,
     transparent
   );
   transform: translateX(-50%);
 }
 .cockpit-orbital-sensor-swath {
-  color: var(--cockpit-accent, #00dcff);
+  color: var(--cockpit-accent, var(--accent));
 }
 .cockpit-orbital-sensor-step {
   padding: 3px 8px;
   border: 1px solid var(--orbital-line);
   border-radius: 2px;
-  background: rgba(0, 7, 12, 0.6);
-  color: #f4fbff;
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
+  color: var(--text);
   font: inherit;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: normal;
   cursor: pointer;
   pointer-events: auto;
 }
 .cockpit-orbital-sensor-step:hover,
 .cockpit-orbital-sensor-step:focus-visible {
-  border-color: var(--cockpit-accent, #00dcff);
-  color: #fff;
+  border-color: var(--cockpit-accent, var(--accent));
+  color: var(--text);
   outline: none;
 }

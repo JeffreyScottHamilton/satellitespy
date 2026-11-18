@@ -11,13 +11,13 @@
   align-items: center;
   gap: 0.3rem 0.65rem;
   padding: 0.6rem 0.7rem;
-  background: linear-gradient(135deg, rgba(54, 220, 255, 0.09), rgba(255, 255, 255, 0.025));
-  border: 1px solid rgba(54, 220, 255, 0.16);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 9%, transparent), color-mix(in srgb, var(--text) 2%, transparent));
+  border: 1px solid color-mix(in srgb, var(--accent) 16%, transparent);
   border-radius: 10px;
 }
 
 .spot-conditions__weather-icon {
-  color: #36dcff;
+  color: var(--accent);
   font-size: 2rem;
 }
 
@@ -27,15 +27,15 @@
 }
 
 .spot-conditions__weather-now strong {
-  color: rgba(240, 247, 250, 0.98);
-  font-family: var(--font-mono);
+  color: color-mix(in srgb, var(--text) 98%, transparent);
+  font-family: inherit;
   font-size: 1.35rem;
   font-weight: 600;
   line-height: 1;
 }
 
 .spot-conditions__weather-now span {
-  color: rgba(199, 214, 222, 0.72);
+  color: color-mix(in srgb, var(--text) 72%, transparent);
   font-size: 0.68rem;
 }
 
@@ -54,17 +54,17 @@
 }
 
 .spot-conditions__weather-facts dt {
-  color: rgba(199, 214, 222, 0.5);
+  color: color-mix(in srgb, var(--text) 50%, transparent);
   font-size: 0.52rem;
-  letter-spacing: 0.06rem;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 .spot-conditions__weather-facts dd {
   overflow: hidden;
   margin: 0;
-  color: rgba(236, 244, 248, 0.92);
-  font-family: var(--font-mono);
+  color: color-mix(in srgb, var(--text) 92%, transparent);
+  font-family: inherit;
   font-size: 0.66rem;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -73,7 +73,7 @@
 .spot-conditions__loading,
 .spot-conditions__none {
   margin: 0;
-  color: rgba(199, 214, 222, 0.55);
+  color: color-mix(in srgb, var(--text) 55%, transparent);
   font-size: 0.66rem;
 }
 
@@ -82,11 +82,11 @@
   align-items: center;
   gap: 0.4rem;
   margin: 0 0 0.25rem;
-  color: rgba(199, 214, 222, 0.6);
+  color: color-mix(in srgb, var(--text) 60%, transparent);
   font-size: 0.58rem;
   font-weight: 500;
-  letter-spacing: 0.06rem;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 .spot-conditions__block h4 .material-symbols-outlined {
@@ -95,19 +95,19 @@
 
 .spot-conditions__count {
   margin-inline-start: auto;
-  color: rgba(199, 214, 222, 0.6);
+  color: color-mix(in srgb, var(--text) 60%, transparent);
   font-family: var(--font-mono);
 }
 
 .spot-conditions__count--hot {
-  color: #ffb547;
+  color: var(--warn);
 }
 
 .spot-conditions__query {
   overflow: hidden;
   margin-inline-start: auto;
   max-width: 50%;
-  color: rgba(199, 214, 222, 0.45);
+  color: color-mix(in srgb, var(--text) 45%, transparent);
   text-overflow: ellipsis;
   text-transform: none;
   white-space: nowrap;
@@ -131,9 +131,9 @@
   color: inherit;
   text-align: start;
   text-decoration: none;
-  background: rgba(255, 255, 255, 0.035);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-left: 2px solid var(--hazard-tone, rgba(54, 220, 255, 0.5));
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 6%, transparent);
+  border-left: 2px solid var(--hazard-tone, color-mix(in srgb, var(--accent) 50%, transparent));
   border-radius: 7px;
   cursor: pointer;
 }
@@ -142,21 +142,21 @@
 .spot-conditions__block a:hover,
 .spot-conditions__block button:focus-visible,
 .spot-conditions__block a:focus-visible {
-  background: rgba(54, 220, 255, 0.08);
-  border-color: rgba(54, 220, 255, 0.25);
-  border-left-color: var(--hazard-tone, #36dcff);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 25%, transparent);
+  border-left-color: var(--hazard-tone, var(--accent));
 }
 
 .spot-conditions__block button > .material-symbols-outlined {
-  color: var(--hazard-tone, #36dcff);
+  color: var(--hazard-tone, var(--accent));
   font-size: 1.05rem;
 }
 
 .spot-conditions__hazard--quake { --hazard-tone: #ffd166; }
-.spot-conditions__hazard--storm { --hazard-tone: #c792ff; }
+.spot-conditions__hazard--storm { --hazard-tone: var(--accent); }
 .spot-conditions__hazard--wildfire,
-.spot-conditions__hazard--hotspots { --hazard-tone: #ff7a45; }
-.spot-conditions__hazard--alert { --hazard-tone: #ff5c6c; }
+.spot-conditions__hazard--hotspots { --hazard-tone: var(--accent); }
+.spot-conditions__hazard--alert { --hazard-tone: var(--danger); }
 
 .spot-conditions__row-main {
   display: grid;
@@ -167,7 +167,7 @@
 
 .spot-conditions__row-title {
   overflow: hidden;
-  color: rgba(236, 244, 248, 0.94);
+  color: color-mix(in srgb, var(--text) 94%, transparent);
   font-size: 0.7rem;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -182,7 +182,7 @@
 
 .spot-conditions__row-detail {
   overflow: hidden;
-  color: rgba(199, 214, 222, 0.55);
+  color: color-mix(in srgb, var(--text) 55%, transparent);
   font-size: 0.6rem;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -193,40 +193,40 @@
   align-items: center;
   gap: 5px;
   margin-top: 2px;
-  color: rgba(199, 214, 222, 0.5);
-  font-family: var(--font-mono);
+  color: color-mix(in srgb, var(--text) 50%, transparent);
+  font-family: inherit;
   font-size: 0.55rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 .spot-conditions__row-dot {
   width: 6px;
   height: 6px;
-  border: 1px solid rgba(199, 214, 222, 0.55);
+  border: 1px solid color-mix(in srgb, var(--text) 55%, transparent);
   border-radius: 50%;
 }
 
 .spot-conditions__row-layer.is-on {
-  color: rgba(0, 212, 255, 0.85);
+  color: color-mix(in srgb, var(--accent) 85%, transparent);
 }
 
 .spot-conditions__row-layer.is-on .spot-conditions__row-dot {
-  background: #00d4ff;
-  border-color: #00d4ff;
-  box-shadow: 0 0 5px rgba(0, 212, 255, 0.7);
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-1);
 }
 
 .spot-conditions__row-meta {
   flex: none;
-  color: rgba(199, 214, 222, 0.7);
-  font-family: var(--font-mono);
+  color: color-mix(in srgb, var(--text) 70%, transparent);
+  font-family: inherit;
   font-size: 0.6rem;
 }
 
 .spot-conditions__source {
   margin: 0;
-  color: rgba(199, 214, 222, 0.4);
+  color: color-mix(in srgb, var(--text) 40%, transparent);
   font-size: 0.55rem;
 }
 
@@ -237,7 +237,7 @@
   position: relative;
   border-radius: 0;
   border-left-width: 1px;
-  border-left-color: rgba(255, 255, 255, 0.06);
+  border-left-color: color-mix(in srgb, var(--text) 6%, transparent);
 }
 
 .spot-conditions__block button::before,
@@ -248,23 +248,22 @@
   width: 9px;
   border-radius: 0;
   pointer-events: none;
-  --tone: var(--hazard-tone, rgba(54, 220, 255, 0.6));
+  --tone: var(--hazard-tone, color-mix(in srgb, var(--accent) 60%, transparent));
   background:
-    linear-gradient(var(--tone), var(--tone)) left bottom / 9px 1.5px no-repeat,
-    linear-gradient(var(--tone), var(--tone)) left bottom / 1.5px 100% no-repeat;
+    none;
 }
 
 .spot-conditions__block button:hover,
 .spot-conditions__block a:hover,
 .spot-conditions__block button:focus-visible,
 .spot-conditions__block a:focus-visible {
-  border-left-color: rgba(54, 220, 255, 0.25);
+  border-left-color: color-mix(in srgb, var(--accent) 25%, transparent);
 }
 
 /* A grey rule under each list: hazards, alerts, news. */
 .spot-conditions__block {
   padding-bottom: 0.65rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
 }
 
 /* Local time beside the weather on a selected item's card. */
@@ -284,7 +283,7 @@
 }
 
 .spot-conditions__time strong {
-  color: rgba(240, 247, 250, 0.98);
+  color: color-mix(in srgb, var(--text) 98%, transparent);
   font-family: var(--font-mono);
   font-size: 1.05rem;
   font-weight: 600;
@@ -292,10 +291,10 @@
 }
 
 .spot-conditions__time span {
-  color: rgba(199, 214, 222, 0.6);
+  color: color-mix(in srgb, var(--text) 60%, transparent);
   font-size: 0.56rem;
-  letter-spacing: 0.05rem;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 /* The one distance every nearby block looks out to. */
@@ -305,17 +304,17 @@
   align-items: center;
   gap: 0.6rem;
   padding: 0.4rem 0.6rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: color-mix(in srgb, var(--text) 3%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 7%, transparent);
   border-radius: 8px;
 }
 
 .spot-conditions__radius-label {
-  color: rgba(199, 214, 222, 0.6);
+  color: color-mix(in srgb, var(--text) 60%, transparent);
   font-size: 0.58rem;
   font-weight: 500;
-  letter-spacing: 0.06rem;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 .spot-conditions__radius-slider {
@@ -325,7 +324,7 @@
 
 .spot-conditions__radius-value {
   min-width: 4.2rem;
-  color: #36dcff;
+  color: var(--accent);
   font-family: var(--font-mono);
   font-size: 0.7rem;
   text-align: end;

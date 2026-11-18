@@ -41,9 +41,9 @@ body.cockpit-mode #world-timeline {
   border: 1px solid var(--glass-border);
   border-radius: 10px;
   background: var(--glass-bg);
-  backdrop-filter: blur(24px) saturate(1.4);
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow: 0 8px 28px color-mix(in srgb, var(--surface) 50%, transparent);
   transform: translateX(-50%);
 }
 
@@ -55,9 +55,9 @@ body.cockpit-mode #world-timeline {
   min-width: 32px;
   height: 32px;
   padding: 0 8px;
-  border: 1px solid rgba(123, 189, 211, 0.28);
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
   border-radius: 8px;
-  background: rgba(0, 212, 255, 0.08);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
   color: var(--text-primary);
   font: inherit;
   cursor: pointer;
@@ -65,20 +65,20 @@ body.cockpit-mode #world-timeline {
 
 #world-timeline .world-timeline-play:hover,
 #world-timeline .world-timeline-live:hover {
-  background: rgba(0, 212, 255, 0.18);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 #world-timeline .world-timeline-live.is-live {
-  border-color: rgba(0, 212, 255, 0.6);
-  background: rgba(0, 212, 255, 0.2);
+  border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
   color: var(--accent);
   cursor: default;
 }
 
 #world-timeline .world-timeline-live {
   font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 #world-timeline .world-timeline-speed {
@@ -94,7 +94,7 @@ body.cockpit-mode #world-timeline {
   bottom: calc(100% + 6px);
   left: calc(var(--inset) + (100% - var(--inset)) * var(--at));
   padding: 2px 8px;
-  border: 1px solid rgba(0, 212, 255, 0.4);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
   border-radius: 6px;
   background: var(--glass-bg);
   color: var(--text-primary);
@@ -116,7 +116,7 @@ body.cockpit-mode #world-timeline {
 #world-timeline .world-timeline-spinner {
   width: 10px;
   height: 10px;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid color-mix(in srgb, var(--text) 20%, transparent);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: world-timeline-spin 0.9s linear infinite;
@@ -149,13 +149,7 @@ body.cockpit-mode #world-timeline {
 
 /* Zoomed, the track's ends fade, as it goes on past them. */
 #world-timeline .world-timeline-track.is-zoomed::before {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(123, 189, 211, 0.22) 12px,
-    rgba(123, 189, 211, 0.22) calc(100% - 12px),
-    transparent
-  );
+  background: none;
 }
 
 #world-timeline .world-timeline-track::before {
@@ -165,7 +159,7 @@ body.cockpit-mode #world-timeline {
   left: 0;
   height: 4px;
   border-radius: 2px;
-  background: rgba(123, 189, 211, 0.22);
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
   content: '';
   transform: translateY(-50%);
 }
@@ -189,7 +183,7 @@ body.cockpit-mode #world-timeline {
   height: 12px;
   margin-left: -1px;
   border-radius: 1px;
-  background: rgba(0, 212, 255, 0.75);
+  background: color-mix(in srgb, var(--accent) 75%, transparent);
   transform: translateY(-50%);
   pointer-events: none;
 }
@@ -208,7 +202,7 @@ body.cockpit-mode #world-timeline {
   left: calc(100% * var(--at));
   z-index: 1;
   padding: 2px 8px;
-  border: 1px solid rgba(0, 212, 255, 0.4);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
   border-radius: 6px;
   background: var(--glass-bg);
   color: var(--text-primary);
@@ -277,8 +271,8 @@ body.cockpit-mode #world-timeline {
   margin-top: 5px;
   border: 2px solid var(--accent);
   border-radius: 50%;
-  background: #031018;
-  box-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
   appearance: none;
 }
 
@@ -287,7 +281,7 @@ body.cockpit-mode #world-timeline {
   height: 12px;
   border: 2px solid var(--accent);
   border-radius: 50%;
-  background: #031018;
+  background: var(--surface);
 }
 
 /* A finger needs a bigger handle. */

@@ -20,7 +20,7 @@
   color: var(--dock-label-color);
   font-size: var(--dock-label-font-size);
   font-weight: var(--dock-label-font-weight);
-  letter-spacing: var(--dock-label-letter-spacing);
+  letter-spacing: normal;
 }
 
 #command-dock .dock-label-icon {
@@ -28,7 +28,7 @@
   flex: 0 0 1rem;
   width: 1rem;
   height: 1rem;
-  background: rgba(232, 234, 237, 0.3);
+  background: color-mix(in srgb, var(--text) 30%, transparent);
   mask-position: center;
   mask-repeat: no-repeat;
   mask-size: contain;
@@ -53,7 +53,7 @@
 #command-dock :is(#location-bar, #control-panel):hover .dock-label-icon,
 #command-dock :is(#location-bar, #control-panel).dock-pinned .dock-label-icon {
   background: var(--accent);
-  filter: drop-shadow(0 0 0.35rem rgba(0, 212, 255, 0.28));
+  filter: none;
 }
 
 #command-dock :is(#location-bar, #control-panel):hover .location-toolbar-label,
@@ -130,11 +130,11 @@
 }
 
 #command-dock .location-toolbar-label::after {
-  background: linear-gradient(to right, rgba(232, 234, 237, 0.3), transparent);
+  background: none;
 }
 
 #command-dock #control-panel .panel-title::after {
-  background: linear-gradient(to left, rgba(232, 234, 237, 0.3), transparent);
+  background: none;
 }
 
 #command-dock .panel-title::after,
@@ -161,8 +161,8 @@
   margin: -1.48rem -0.22rem 0.25rem 0;
   padding: 0;
   border-radius: 50%;
-  background: rgba(8, 24, 34, 0.96);
-  box-shadow: 0 0.35rem 0.9rem rgba(0, 0, 0, 0.5);
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+  box-shadow: 0 0.35rem 0.9rem color-mix(in srgb, var(--surface) 50%, transparent);
   transform: translateY(-0.12rem);
 }
 
@@ -250,7 +250,7 @@
   padding-right: 0;
   font-size: 0.46rem;
   font-weight: 500;
-  letter-spacing: 0.08rem;
+  letter-spacing: normal;
 }
 
 #command-dock #gev-voice-button {
@@ -271,19 +271,18 @@
   height: 2.45rem;
   aspect-ratio: 1;
   box-sizing: border-box;
-  background: rgba(0, 212, 255, 0.06);
-  border: 1px solid rgba(0, 212, 255, 0.48);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 48%, transparent);
   border-radius: 50%;
   box-shadow:
-    0 0 0 0.18rem rgba(0, 212, 255, 0.06),
-    0 0 0.9rem rgba(0, 212, 255, 0.12);
+    var(--shadow-1);
 }
 
 #command-dock .gev-mic-label {
   display: block;
   margin-top: 0.18rem;
   font-size: 0.42rem;
-  letter-spacing: 0.035rem;
+  letter-spacing: normal;
 }
 
 #command-dock .gev-voice-visualizer {
@@ -330,7 +329,7 @@
   overflow: hidden;
   font-size: 0.39rem;
   font-weight: 500;
-  letter-spacing: 0.035rem;
+  letter-spacing: normal;
   text-align: left;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -347,7 +346,7 @@
   display: grid;
   align-items: initial;
   width: var(--dock-voice-width);
-  border-color: rgba(255, 92, 110, 0.58);
+  border-color: color-mix(in srgb, var(--danger) 58%, transparent);
   border-radius: 0.4rem;
 }
 
@@ -358,7 +357,7 @@
 #command-dock #gev-voice-control[data-status='error'] #gev-voice-detail {
   max-width: none;
   overflow: hidden;
-  color: #ffb4bd;
+  color: var(--danger);
   line-height: 1.2;
   text-align: center;
   text-overflow: ellipsis;
@@ -374,15 +373,14 @@
   padding: 0.85rem 0.9rem;
   visibility: hidden;
   opacity: 0;
-  color: rgba(255, 220, 224, 0.92);
-  background: rgba(34, 10, 16, 0.96);
-  border: 1px solid rgba(255, 92, 110, 0.5);
+  color: color-mix(in srgb, var(--danger) 92%, transparent);
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+  border: 1px solid color-mix(in srgb, var(--danger) 50%, transparent);
   border-radius: 0.42rem;
   box-shadow:
-    0 0.9rem 2.2rem rgba(0, 0, 0, 0.62),
-    0 0 1.4rem rgba(255, 92, 110, 0.08);
-  backdrop-filter: blur(28px) saturate(1.25);
-  -webkit-backdrop-filter: blur(28px) saturate(1.25);
+    var(--shadow-1);
+  backdrop-filter: blur(12px) saturate(1.25);
+  -webkit-backdrop-filter: blur(12px) saturate(1.25);
   pointer-events: none;
   transform: translate(-50%, 0.55rem) scale(0.985);
   transform-origin: bottom center;
@@ -412,28 +410,28 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  color: #ff8f9d;
-  font-family: var(--font-mono);
+  color: var(--danger);
+  font-family: inherit;
   font-size: 0.62rem;
   font-weight: 600;
-  letter-spacing: 0.1rem;
+  letter-spacing: normal;
 }
 
 #command-dock .gev-voice-error-dismiss {
   padding: 0.25rem 0.42rem;
-  color: rgba(255, 220, 224, 0.72);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 143, 157, 0.32);
+  color: color-mix(in srgb, var(--danger) 72%, transparent);
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--danger) 32%, transparent);
   border-radius: 0.2rem;
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 0.43rem;
-  letter-spacing: 0.06rem;
+  letter-spacing: normal;
   cursor: pointer;
 }
 
 #command-dock #gev-voice-error-detail {
   margin-top: 0.65rem;
-  color: rgba(255, 232, 235, 0.92);
+  color: color-mix(in srgb, var(--danger) 92%, transparent);
   font-family: var(--font-sans);
   font-size: 0.78rem;
   line-height: 1.45;
@@ -441,11 +439,11 @@
 
 #command-dock .gev-voice-error-hint {
   margin-top: 0.5rem;
-  color: rgba(255, 196, 203, 0.58);
-  font-family: var(--font-mono);
+  color: color-mix(in srgb, var(--danger) 58%, transparent);
+  font-family: inherit;
   font-size: 0.52rem;
   line-height: 1.45;
-  letter-spacing: 0.035rem;
+  letter-spacing: normal;
 }
 
 /* Keep the complete inline attribution row above the command dock. */

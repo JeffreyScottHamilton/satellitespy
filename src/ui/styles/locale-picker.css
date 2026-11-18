@@ -34,23 +34,22 @@
   gap: 0.35rem;
   margin: 0;
   padding: 0.45rem 0.6rem;
-  color: rgba(225, 244, 248, 0.92);
-  font-family: var(--font-mono);
+  color: color-mix(in srgb, var(--accent) 92%, transparent);
+  font-family: inherit;
   font-size: 0.6rem;
-  letter-spacing: 0.09rem;
+  letter-spacing: normal;
   line-height: 1;
   background: linear-gradient(
     145deg,
-    rgba(10, 27, 37, 0.92),
-    rgba(7, 13, 22, 0.9)
+    color-mix(in srgb, var(--surface) 92%, transparent),
+    color-mix(in srgb, var(--surface) 90%, transparent)
   );
-  border: 1px solid rgba(54, 220, 255, 0.38);
+  border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent);
   border-radius: 0.42rem;
   box-shadow:
-    0 0.4rem 1.6rem rgba(0, 0, 0, 0.5),
-    0 0 1.2rem rgba(0, 212, 255, 0.07);
-  backdrop-filter: blur(18px) saturate(1.2);
-  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+    var(--shadow-1);
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
   cursor: pointer;
   transition:
     border-color var(--transition-fast),
@@ -63,10 +62,10 @@
 .locale-picker.is-open .locale-picker-button {
   background: linear-gradient(
     145deg,
-    rgba(14, 38, 51, 0.95),
-    rgba(9, 18, 28, 0.93)
+    color-mix(in srgb, var(--surface) 95%, transparent),
+    color-mix(in srgb, var(--surface) 93%, transparent)
   );
-  border-color: rgba(54, 220, 255, 0.7);
+  border-color: color-mix(in srgb, var(--accent) 70%, transparent);
   outline: none;
 }
 
@@ -79,7 +78,7 @@
   flex: none;
   width: 0.95rem;
   height: 0.95rem;
-  color: #55dff5;
+  color: var(--accent);
 }
 
 .locale-picker-caret {
@@ -111,16 +110,14 @@
   padding: 0.45rem;
   color: var(--text-primary);
   background:
-    linear-gradient(145deg, rgba(10, 27, 37, 0.97), rgba(7, 13, 22, 0.95)),
-    rgba(7, 17, 25, 0.96);
-  border: 1px solid rgba(54, 220, 255, 0.42);
+    linear-gradient(145deg, color-mix(in srgb, var(--surface) 97%, transparent), color-mix(in srgb, var(--surface) 95%, transparent)),
+    color-mix(in srgb, var(--surface) 96%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
   border-radius: 0.55rem;
   box-shadow:
-    0 1rem 3rem rgba(0, 0, 0, 0.65),
-    0 0 2rem rgba(0, 212, 255, 0.08),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.025);
-  backdrop-filter: blur(24px) saturate(1.25);
-  -webkit-backdrop-filter: blur(24px) saturate(1.25);
+    inset 0 0 0 1px var(--border);
+  backdrop-filter: blur(12px) saturate(1.25);
+  -webkit-backdrop-filter: blur(12px) saturate(1.25);
 }
 
 .locale-picker-popup[hidden] {
@@ -129,11 +126,11 @@
 
 .locale-picker-heading {
   padding: 0.2rem 0.4rem 0.45rem;
-  color: rgba(85, 223, 245, 0.85);
-  font-family: var(--font-mono);
+  color: color-mix(in srgb, var(--accent) 85%, transparent);
+  font-family: inherit;
   font-size: 0.55rem;
-  letter-spacing: 0.14rem;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 .locale-picker-search {
@@ -142,16 +139,16 @@
   margin: 0 0 0.4rem;
   padding: 0.45rem 0.55rem;
   color: var(--text-primary);
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 0.7rem;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(54, 220, 255, 0.28);
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
   border-radius: 0.35rem;
   outline: none;
 }
 
 .locale-picker-search:focus {
-  border-color: rgba(54, 220, 255, 0.7);
+  border-color: color-mix(in srgb, var(--accent) 70%, transparent);
 }
 
 .locale-picker-list {
@@ -174,8 +171,8 @@
 }
 
 .locale-picker-option.is-active {
-  background: rgba(54, 220, 255, 0.09);
-  border-color: rgba(54, 220, 255, 0.28);
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 28%, transparent);
 }
 
 /* Keyboard focus lives on the list (aria-activedescendant): show it. */
@@ -183,7 +180,7 @@
 .locale-picker-search:focus
   ~ .locale-picker-list
   .locale-picker-option.is-active {
-  border-color: rgba(54, 220, 255, 0.75);
+  border-color: color-mix(in srgb, var(--accent) 75%, transparent);
 }
 
 .locale-picker-text {
@@ -201,17 +198,17 @@
 }
 
 .locale-picker-option[aria-selected='true'] .locale-picker-native {
-  color: #55dff5;
+  color: var(--accent);
 }
 
 .locale-picker-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
-  color: rgba(199, 225, 231, 0.6);
-  font-family: var(--font-mono);
+  color: color-mix(in srgb, var(--accent) 60%, transparent);
+  font-family: inherit;
   font-size: 0.55rem;
-  letter-spacing: 0.05rem;
+  letter-spacing: normal;
 }
 
 .locale-picker-check {
@@ -219,14 +216,14 @@
   width: 0.95rem;
   height: 0.95rem;
   margin-inline-start: auto;
-  color: #55dff5;
+  color: var(--accent);
 }
 
 .locale-picker-empty {
   margin: 0;
   padding: 0.5rem;
-  color: rgba(199, 225, 231, 0.62);
-  font-family: var(--font-mono);
+  color: color-mix(in srgb, var(--accent) 62%, transparent);
+  font-family: inherit;
   font-size: 0.6rem;
 }
 

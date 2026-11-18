@@ -3,20 +3,20 @@
    styles (stories.css) load with Stories itself. */
 /* Ported from the GEV Stories prototype (gev-stories-real-globe.html), scoped to #gev-stories. */
 #gev-stories {
-  --bg-dark: #0a0a0f;
-  --glass-bg: rgba(12, 12, 20, 0.72);
-  --glass-strong: rgba(14, 14, 24, 0.9);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-border-hover: rgba(255, 255, 255, 0.15);
-  --accent: #00d4ff;
-  --accent-dim: rgba(0, 212, 255, 0.15);
-  --accent-glow: rgba(0, 212, 255, 0.4);
-  --text-primary: #e8eaed;
-  --text-secondary: rgba(232, 234, 237, 0.64);
-  --text-dim: rgba(232, 234, 237, 0.42);
-  --menu-bg: #12121c;
-  --warn: #ffb45a;
-  --cable: #a9b8ff;
+  --bg-dark: var(--surface);
+  --glass-bg: color-mix(in srgb, var(--surface) 72%, transparent);
+  --glass-strong: color-mix(in srgb, var(--surface) 90%, transparent);
+  --glass-border: color-mix(in srgb, var(--text) 8%, transparent);
+  --glass-border-hover: color-mix(in srgb, var(--text) 15%, transparent);
+  --accent: var(--accent);
+  --accent-dim: color-mix(in srgb, var(--accent) 15%, transparent);
+  --accent-glow: color-mix(in srgb, var(--accent) 40%, transparent);
+  --text-primary: var(--text);
+  --text-secondary: color-mix(in srgb, var(--text) 64%, transparent);
+  --text-dim: color-mix(in srgb, var(--text) 42%, transparent);
+  --menu-bg: var(--surface);
+  --warn: var(--warn);
+  --cable: var(--accent);
   --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --panel-radius: 16px;
@@ -27,7 +27,7 @@
   color-scheme: dark;
 }
 #gev-stories {
-  background: #050508;
+  background: var(--surface);
   color: var(--text-primary);
   font-family: var(--font-sans);
   font-size: 14px;
@@ -37,8 +37,8 @@
 #gev-stories .glass {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 #gev-stories .tbtn {
   height: 38px;
@@ -49,11 +49,11 @@
   gap: 8px;
   border: 1px solid var(--glass-border);
   background: var(--glass-bg);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   font: 500 12px var(--font-mono);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
   color: var(--text-primary);
   white-space: nowrap;
   transition:
@@ -69,17 +69,17 @@
   flex: none;
 }
 #gev-stories .tbtn.accent {
-  border-color: rgba(0, 212, 255, 0.55);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
   color: var(--accent);
-  background: rgba(0, 212, 255, 0.08);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
   box-shadow: 0 0 18px -6px var(--accent-glow);
 }
 #gev-stories .tbtn.accent:hover {
-  background: rgba(0, 212, 255, 0.14);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
 }
 #gev-stories .tbtn.solid {
   background: var(--accent);
-  color: #001820;
+  color: var(--accent-ink);
   border-color: transparent;
   font-weight: 600;
 }
@@ -91,7 +91,7 @@
   width: 300px;
   padding: 16px;
   border-radius: var(--panel-radius);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 20px 50px color-mix(in srgb, var(--surface) 55%, transparent);
   animation: gsx-popIn 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 #gev-stories .h-pop::before {
@@ -111,7 +111,7 @@
 }
 #gev-stories .h-pop .k {
   font: 600 11px var(--font-mono);
-  letter-spacing: 0.16em;
+  letter-spacing: normal;
   color: var(--accent);
 }
 #gev-stories .h-pop h2 {
@@ -138,9 +138,9 @@
   gap: 12px;
   padding: 10px 10px 10px 16px;
   border-radius: 14px;
-  background: rgba(12, 12, 20, 0.92);
-  border: 1px solid rgba(0, 212, 255, 0.35);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  box-shadow: 0 16px 40px color-mix(in srgb, var(--surface) 50%, transparent);
   animation: gsx-popIn 0.25s ease;
   max-width: calc(100% - 28px);
 }
@@ -149,8 +149,8 @@
 }
 #gev-stories .h-toast b {
   font: 600 11px var(--font-mono);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
   color: var(--accent);
   white-space: nowrap;
 }
@@ -181,8 +181,8 @@
   z-index: 1200;
   height: 36px;
   font: 600 11px var(--font-mono);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
 }
 #gev-stories .gs-entry svg {
   width: 17px;
@@ -234,11 +234,11 @@ body.ui-clean-view #gev-stories .gs-pop {
   backdrop-filter: none;
 }
 #gev-stories .gs-entry {
-  background: rgba(6, 24, 34, 0.92);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
 }
 #gev-stories .gs-pop,
 #gev-stories .gs-opened-toast {
-  background: rgba(12, 12, 20, 0.95);
+  background: color-mix(in srgb, var(--surface) 95%, transparent);
 }
 
 /* GEV's phone layout: icon-only, the size of the icon buttons beside it. */

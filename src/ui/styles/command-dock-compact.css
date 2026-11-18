@@ -52,11 +52,11 @@
 }
 
 #command-dock > #location-bar {
-  border-right: 1px solid rgba(123, 189, 211, 0.18);
+  border-right: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 #command-dock > #control-panel {
-  border-left: 1px solid rgba(123, 189, 211, 0.18);
+  border-left: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 #command-dock .panel-inner,
@@ -83,7 +83,7 @@
 #command-dock .location-toolbar-label {
   width: max-content;
   font-size: 0.45rem;
-  letter-spacing: 0.12rem;
+  letter-spacing: normal;
   white-space: nowrap;
 }
 
@@ -91,7 +91,7 @@
 #command-dock .location-toolbar-label::after {
   content: '›';
   margin-left: 0.45rem;
-  color: rgba(54, 220, 255, 0.68);
+  color: color-mix(in srgb, var(--accent) 68%, transparent);
   font-size: 0.7rem;
 }
 
@@ -211,7 +211,7 @@
 
 #command-dock .btn-label {
   font-size: 0.43rem;
-  letter-spacing: 0.02rem;
+  letter-spacing: normal;
 }
 
 #command-dock .btn-key {
@@ -242,9 +242,9 @@
   grid-column: 2 / 4;
   grid-row: 1;
   align-self: center;
-  color: rgba(190, 221, 230, 0.58);
+  color: color-mix(in srgb, var(--accent) 58%, transparent);
   font-size: 0.39rem;
-  letter-spacing: 0.07rem;
+  letter-spacing: normal;
   text-align: center;
 }
 
@@ -262,8 +262,7 @@
   padding: 0;
   border-radius: 50%;
   box-shadow:
-    0 0 0 0.2rem rgba(0, 212, 255, 0.06),
-    0 0 1rem rgba(0, 212, 255, 0.12);
+    var(--shadow-1);
 }
 
 #command-dock .gev-mic-orbit {
@@ -280,8 +279,8 @@
 
 #command-dock .gev-mic-label {
   font-size: 0.35rem;
-  color: rgba(190, 221, 230, 0.72);
-  letter-spacing: 0.02rem;
+  color: color-mix(in srgb, var(--accent) 72%, transparent);
+  letter-spacing: normal;
 }
 
 #command-dock .gev-voice-visualizer {
@@ -293,14 +292,14 @@
   gap: 0.12rem;
   height: 2.2rem;
   padding: 0.2rem 0.1rem;
-  border-bottom: 1px solid rgba(54, 220, 255, 0.34);
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
 }
 
 #command-dock .gev-voice-visualizer span {
   width: 0.18rem;
   height: 0.55rem;
-  background: linear-gradient(to top, #28b9db, #71eaff);
-  box-shadow: 0 0 0.35rem rgba(54, 220, 255, 0.28);
+  background: linear-gradient(to top, var(--accent), var(--accent));
+  box-shadow: var(--shadow-1);
   transform-origin: bottom;
 }
 
@@ -349,7 +348,7 @@
   max-width: none;
   margin: 0;
   font-size: 0.39rem;
-  letter-spacing: 0.08rem;
+  letter-spacing: normal;
   text-align: center;
 }
 

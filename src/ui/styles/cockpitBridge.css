@@ -45,10 +45,7 @@
   border-radius: 0;
   color: transparent;
   background:
-    linear-gradient(var(--cockpit-accent), var(--cockpit-accent)) 50% 0 / 1px
-      100% no-repeat,
-    linear-gradient(90deg, var(--cockpit-accent), var(--cockpit-accent)) 0 50% /
-      100% 1px no-repeat;
+    none;
   font-size: 0;
   box-shadow: none;
 }
@@ -87,7 +84,7 @@
 #cockpit-hud[data-subject='vessel']
   .cockpit-speed-rim
   .cockpit-altitude-rim-rail {
-  background: linear-gradient(90deg, rgba(0, 7, 12, 0.3), transparent 70%);
+  background: none;
 }
 #cockpit-hud[data-subject='vessel']
   .cockpit-speed-rim
@@ -125,7 +122,7 @@
   padding: 2px 5px;
   border: 1px solid var(--cockpit-accent);
   border-radius: 2px;
-  background: rgba(0, 7, 12, 0.78);
+  background: color-mix(in srgb, var(--surface) 78%, transparent);
 }
 
 /* Heading: a straight horizontal tape under flat readouts. */
@@ -160,15 +157,7 @@
   border-radius: 0;
   /* Minor ticks every 10 degrees, centred on the 30-degree divisions. */
   background:
-    linear-gradient(
-        90deg,
-        transparent calc(50% - 0.5px),
-        color-mix(in srgb, var(--cockpit-accent) 46%, transparent)
-          calc(50% - 0.5px) calc(50% + 0.5px),
-        transparent calc(50% + 0.5px)
-      )
-      50% 0 / calc(14% / 3) 6px repeat-x,
-    rgba(0, 7, 12, 0.34);
+    color-mix(in srgb, var(--surface) 34%, transparent);
   /* Scrolled with the divisions (--tape-shift slots of 14% each). */
   background-position:
     calc(50% + var(--tape-shift, 0) * 14cqw) 0,
@@ -284,10 +273,10 @@ body.cockpit-bridge #view-switcher button {
   border: 1px solid color-mix(in srgb, var(--cockpit-accent) 30%, transparent);
   border-top-color: color-mix(in srgb, var(--cockpit-accent) 64%, transparent);
   border-radius: 2px;
-  background: rgba(0, 7, 12, 0.68);
+  background: color-mix(in srgb, var(--surface) 68%, transparent);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    0 0 28px rgba(0, 0, 0, 0.26);
+    inset 0 1px 0 color-mix(in srgb, var(--text) 4%, transparent),
+    0 0 28px color-mix(in srgb, var(--surface) 26%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   pointer-events: auto;
@@ -299,11 +288,10 @@ body.cockpit-bridge #view-switcher button {
 :root[data-ui-theme='cyber']
   #cockpit-hud[data-subject='vessel']
   .cockpit-radar-console {
-  border-color: rgba(105, 203, 209, 0.34);
-  border-top-color: rgba(196, 84, 84, 0.82);
+  border-color: color-mix(in srgb, var(--accent) 34%, transparent);
+  border-top-color: color-mix(in srgb, var(--danger) 82%, transparent);
   background:
-    linear-gradient(135deg, rgba(105, 203, 209, 0.07), transparent 38%),
-    rgba(8, 23, 27, 0.78);
+    color-mix(in srgb, var(--surface) 78%, transparent);
 }
 
 @media (min-width: 761px) {
@@ -389,11 +377,11 @@ body.cockpit-bridge #view-switcher button {
   padding: 2px 6px;
   border: 1px solid color-mix(in srgb, var(--cockpit-accent) 46%, transparent);
   border-radius: 2px;
-  background: rgba(0, 7, 12, 0.62);
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
   color: var(--cockpit-accent);
   font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 0.12em;
+  letter-spacing: normal;
   white-space: nowrap;
 }
 #cockpit-hud[data-subject='vessel'] .cockpit-look-ahead {
@@ -403,11 +391,11 @@ body.cockpit-bridge #view-switcher button {
   padding: 3px 8px;
   border: 1px solid color-mix(in srgb, var(--cockpit-accent) 64%, transparent);
   border-radius: 2px;
-  background: rgba(0, 7, 12, 0.78);
-  color: #f4fbff;
+  background: color-mix(in srgb, var(--surface) 78%, transparent);
+  color: var(--text);
   font: inherit;
   font-size: 10px;
-  letter-spacing: 0.14em;
+  letter-spacing: normal;
   cursor: pointer;
   pointer-events: auto;
 }
@@ -424,11 +412,7 @@ body.cockpit-bridge #view-switcher button {
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: conic-gradient(
-    from -6deg,
-    color-mix(in srgb, var(--cockpit-accent) 18%, transparent) 0deg 12deg,
-    transparent 12deg
-  );
+  background: none;
   pointer-events: none;
   transition: transform 180ms ease-out;
 }

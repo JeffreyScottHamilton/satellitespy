@@ -14,21 +14,17 @@
   border: 1px solid var(--glass-border);
   border-radius: var(--panel-radius);
   background: var(--glass-bg);
-  backdrop-filter: blur(24px) saturate(1.4);
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
-    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+    0 8px 32px color-mix(in srgb, var(--surface) 50%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--text) 3%, transparent) inset,
+    0 1px 0 color-mix(in srgb, var(--text) 6%, transparent) inset;
 }
 #news-panel .panel-glow {
   position: absolute;
   inset: -18px;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(0, 212, 255, 0.16) 0%,
-    transparent 65%
-  );
+  background: none;
   filter: blur(16px);
   opacity: 0.25;
   pointer-events: none;
@@ -113,8 +109,8 @@
   margin: 0;
   color: var(--text-secondary);
   font: 600 9px var(--font-mono);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
 }
 /* What Local reads, in the primary colour so it reads before the list. */
 .news-readout__area {
@@ -188,15 +184,15 @@
 .news-card {
   border: 1px solid var(--glass-border);
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.02);
+  background: color-mix(in srgb, var(--text) 2%, transparent);
 }
 .news-card:hover,
 .news-card.is-open {
   border-color: var(--glass-border-hover);
-  background: rgba(0, 212, 255, 0.06);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
 }
 .news-card.is-open {
-  border-color: rgba(0, 212, 255, 0.45);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
 }
 .news-card.is-unmapped .news-card__title {
   color: var(--text-secondary);
@@ -243,7 +239,7 @@
   place-items: center;
   color: var(--text-primary);
   font-size: 14px;
-  text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+  text-shadow: none;
   pointer-events: none;
 }
 .news-card__clip {
@@ -252,7 +248,7 @@
   max-height: 220px;
   margin-bottom: 6px;
   border-radius: 4px;
-  background: #000;
+  background: var(--surface);
 }
 .news-card__credit {
   position: absolute;
@@ -261,7 +257,7 @@
   max-width: 100%;
   overflow: hidden;
   padding: 0 4px;
-  background: rgba(0, 0, 0, 0.6);
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
   color: var(--text-primary);
   font-size: 8px;
   text-overflow: ellipsis;
@@ -324,8 +320,8 @@
   flex: none;
   color: var(--news-color);
   font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
 }
 .news-card__chips {
   display: flex;
@@ -339,14 +335,14 @@
   border-radius: 999px;
   color: var(--text-secondary);
   font: 8px var(--font-mono);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
 }
 .news-chip--official,
 .news-chip--confirmed {
-  border-color: rgba(0, 212, 255, 0.32);
-  background: rgba(0, 212, 255, 0.09);
-  color: #9defff;
+  border-color: color-mix(in srgb, var(--accent) 32%, transparent);
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+  color: var(--accent);
 }
 .news-chip--claimed {
   border-style: dashed;

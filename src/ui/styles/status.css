@@ -20,8 +20,8 @@
   border: 1px solid var(--glass-border);
   border-radius: 50%;
   color: var(--text-secondary);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   cursor: pointer;
   transition:
     background-color var(--transition-fast),
@@ -35,7 +35,7 @@
 #top-center-actions button:hover,
 #top-center-actions button:focus-visible {
   border-color: var(--glass-border-hover);
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--text) 6%, transparent);
   transform: scale(1.1);
 }
 
@@ -56,7 +56,7 @@
 #tilt-map-view[aria-pressed='true'] {
   border-color: var(--accent);
   color: var(--accent);
-  box-shadow: 0 0 14px rgba(0, 212, 255, 0.18);
+  box-shadow: var(--shadow-1);
 }
 
 #north-up-view {
@@ -68,7 +68,7 @@
   position: absolute;
   top: 2px;
   color: var(--accent);
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 8px;
   font-weight: 700;
   line-height: 1;
@@ -91,34 +91,33 @@
   max-width: calc(100vw - 32px);
   padding: 6px 10px;
   border-radius: 7px;
-  border: 1px solid rgba(0, 212, 255, 0.24);
-  background: rgba(3, 10, 18, 0.78);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  color: rgba(170, 252, 255, 0.92);
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent);
+  background: color-mix(in srgb, var(--surface) 78%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: color-mix(in srgb, var(--accent) 92%, transparent);
   font-family: var(--font-mono);
   font-size: 8px;
-  letter-spacing: 1.35px;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
   transform: translateX(-50%);
   box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.34),
-    0 0 14px rgba(0, 212, 255, 0.08);
+    var(--shadow-1);
   pointer-events: none;
 }
 #global-loading-status[hidden] {
   display: none;
 }
 #global-loading-label {
-  color: rgba(184, 244, 255, 0.92);
+  color: color-mix(in srgb, var(--accent) 92%, transparent);
 }
 #global-loading-detail {
   min-width: 34px;
   max-width: min(220px, 38vw);
   overflow: hidden;
-  color: #00e1ff;
+  color: var(--accent);
   font-weight: 600;
-  letter-spacing: 1.6px;
+  letter-spacing: normal;
   text-align: right;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -147,52 +146,51 @@ html:not([lang='en']) #global-loading-detail {
   display: none;
 }
 #global-loading-status[data-state='error'] {
-  border-color: rgba(255, 98, 82, 0.55);
-  color: #ff9b8e;
+  border-color: color-mix(in srgb, var(--danger) 55%, transparent);
+  color: var(--danger);
 }
 #global-loading-status[data-state='error'] #global-loading-label,
 #global-loading-status[data-state='error'] #global-loading-detail {
-  color: #ff9b8e;
+  color: var(--danger);
 }
 #global-loading-status[data-state='cancelled'] {
-  color: #ffd488;
+  color: var(--warn);
 }
 #global-loading-status:is([data-state='retry'], [data-state='key-required']) {
-  border-color: rgba(255, 212, 136, 0.55);
+  border-color: color-mix(in srgb, var(--warn) 55%, transparent);
 }
 #global-loading-status:is([data-state='retry'], [data-state='key-required'])
   #global-loading-label,
 #global-loading-status:is([data-state='retry'], [data-state='key-required'])
   #global-loading-detail {
-  color: #ffd488;
+  color: var(--warn);
 }
 #global-loading-status[data-state='cancelled'] #global-loading-label,
 #global-loading-status[data-state='cancelled'] #global-loading-detail {
-  color: #ffd488;
+  color: var(--warn);
 }
 /* A last-known notice is a sentence with the entity's id on a second line;
    the id is shown whole (a vessel UUID is 36 characters). */
 #global-loading-status[data-state='last-known'] {
   flex-direction: column;
   gap: 3px;
-  border-color: rgba(255, 212, 136, 0.55);
+  border-color: color-mix(in srgb, var(--warn) 55%, transparent);
   text-align: center;
 }
 #global-loading-status[data-state='last-known'] #global-loading-label {
-  color: #ffd488;
+  color: var(--warn);
 }
 #global-loading-status[data-state='last-known'] #global-loading-detail {
   max-width: none;
-  color: rgba(255, 228, 176, 0.82);
-  letter-spacing: 1.2px;
+  color: color-mix(in srgb, var(--warn) 82%, transparent);
+  letter-spacing: normal;
   text-align: center;
   text-transform: none;
 }
 #global-loading-status[data-state='acquiring'] {
-  border-color: rgba(0, 212, 255, 0.42);
+  border-color: color-mix(in srgb, var(--accent) 42%, transparent);
   box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.34),
-    0 0 18px rgba(0, 212, 255, 0.12);
+    var(--shadow-1);
 }
 
 .share-icon {
@@ -212,23 +210,22 @@ html:not([lang='en']) #global-loading-detail {
   gap: 10px;
   padding: 6px 10px;
   border-radius: 7px;
-  border: 1px solid rgba(0, 212, 255, 0.24);
-  background: rgba(3, 10, 18, 0.78);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  color: rgba(170, 252, 255, 0.92);
-  font-family: var(--font-mono);
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent);
+  background: color-mix(in srgb, var(--surface) 78%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: color-mix(in srgb, var(--accent) 92%, transparent);
+  font-family: inherit;
   font-size: 8px;
-  letter-spacing: 1.35px;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
   opacity: 0;
   pointer-events: none;
   transition:
     opacity 0.22s ease,
     transform 0.22s ease;
   box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.34),
-    0 0 14px rgba(0, 212, 255, 0.08);
+    var(--shadow-1);
 }
 
 /* Stacked below the traffic chip so both can show at once */
@@ -244,14 +241,14 @@ html:not([lang='en']) #global-loading-detail {
 
 #traffic-sync-label,
 #cctv-sync-label {
-  color: rgba(184, 244, 255, 0.92);
+  color: color-mix(in srgb, var(--accent) 92%, transparent);
 }
 
 #traffic-sync-progress,
 #cctv-sync-progress {
-  color: #00e1ff;
+  color: var(--accent);
   font-weight: 600;
-  letter-spacing: 1.6px;
+  letter-spacing: normal;
   min-width: 34px;
   text-align: right;
 }
@@ -424,11 +421,11 @@ html:not([lang='en']) #global-loading-detail {
   overflow-y: auto;
   padding: 20px 22px;
   background: var(--glass-bg);
-  border: 1px solid #ff7272;
+  border: 1px solid var(--danger);
   border-radius: 12px;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 0 24px rgba(255, 88, 88, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-1);
   color: var(--text-primary);
   font-family: var(--font-sans);
   font-size: 13px;
@@ -437,12 +434,12 @@ html:not([lang='en']) #global-loading-detail {
 
 #render-failure-title {
   margin: 0 0 8px;
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: #ff7272;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--danger);
 }
 
 #render-failure p {
@@ -450,7 +447,7 @@ html:not([lang='en']) #global-loading-detail {
 }
 
 #render-failure .render-failure-detail {
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 11px;
   color: var(--text-secondary);
   overflow-wrap: anywhere;
@@ -490,13 +487,13 @@ html:not([lang='en']) #global-loading-detail {
   background: var(--glass-bg);
   border: 1px solid var(--accent);
   border-radius: 8px;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  font-family: var(--font-mono);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-family: inherit;
   font-size: 11px;
-  letter-spacing: 2px;
+  letter-spacing: normal;
   color: var(--accent);
-  text-transform: uppercase;
+  text-transform: none;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -504,7 +501,7 @@ html:not([lang='en']) #global-loading-detail {
     opacity 0.3s ease,
     visibility 0.3s ease,
     transform 0.3s ease;
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.15);
+  box-shadow: var(--shadow-1);
 }
 
 #toast.visible {

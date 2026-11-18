@@ -16,15 +16,13 @@
   width: min(94vw, 1240px);
   padding: 6px;
   overflow: visible;
-  background: rgba(9, 18, 27, 0.84);
-  border: 1px solid rgba(123, 189, 211, 0.28);
+  background: color-mix(in srgb, var(--surface) 84%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
   border-radius: 12px;
   box-shadow:
-    0 12px 36px rgba(0, 0, 0, 0.58),
-    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
-    0 0 28px rgba(0, 212, 255, 0.06);
-  backdrop-filter: blur(28px) saturate(1.35);
-  -webkit-backdrop-filter: blur(28px) saturate(1.35);
+    inset 0 0 0 1px var(--border);
+  backdrop-filter: blur(12px) saturate(1.35);
+  -webkit-backdrop-filter: blur(12px) saturate(1.35);
   transform: translateX(-50%);
   transition:
     opacity var(--transition-smooth),
@@ -44,13 +42,13 @@
 #command-dock > #location-bar {
   grid-area: locations;
   min-width: 0;
-  border-right: 1px solid rgba(123, 189, 211, 0.16);
+  border-right: 1px solid color-mix(in srgb, var(--accent) 16%, transparent);
 }
 
 #command-dock > #control-panel {
   grid-area: presets;
   min-width: 0;
-  border-left: 1px solid rgba(123, 189, 211, 0.16);
+  border-left: 1px solid color-mix(in srgb, var(--accent) 16%, transparent);
 }
 
 #command-dock > #gev-voice-control {
@@ -61,13 +59,11 @@
   min-width: 0;
   margin: -14px 0;
   padding: 19px 14px 12px;
-  border-color: rgba(0, 212, 255, 0.36);
+  border-color: color-mix(in srgb, var(--accent) 36%, transparent);
   border-radius: 12px;
-  background: rgba(8, 31, 42, 0.94);
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
   box-shadow:
-    0 12px 30px rgba(0, 0, 0, 0.56),
-    0 0 26px rgba(0, 212, 255, 0.12),
-    0 0 0 1px rgba(0, 212, 255, 0.08) inset;
+    inset 0 0 0 1px var(--border);
 }
 
 #command-dock .gev-voice-kicker {
@@ -76,10 +72,10 @@
   right: 14px;
   left: 14px;
   overflow: hidden;
-  color: rgba(190, 221, 230, 0.52);
-  font-family: var(--font-mono);
+  color: color-mix(in srgb, var(--accent) 52%, transparent);
+  font-family: inherit;
   font-size: 7px;
-  letter-spacing: 1.5px;
+  letter-spacing: normal;
   text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -128,8 +124,8 @@
 #command-dock .panel-title,
 #command-dock .location-toolbar-label {
   font-size: 8px;
-  letter-spacing: 1.6px;
-  color: rgba(190, 221, 230, 0.58);
+  letter-spacing: normal;
+  color: color-mix(in srgb, var(--accent) 58%, transparent);
 }
 
 #command-dock .panel-collapse-btn,
@@ -159,10 +155,10 @@
 }
 
 #command-dock .btn-label {
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 8px;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 #command-dock .btn-key {
@@ -181,7 +177,7 @@
   flex: 0 1 190px;
   min-width: 132px;
   padding-right: 8px;
-  border-right: 1px solid rgba(123, 189, 211, 0.14);
+  border-right: 1px solid color-mix(in srgb, var(--accent) 14%, transparent);
 }
 
 #command-dock .search-toggle-btn {
@@ -206,9 +202,9 @@
 #command-dock .location-pill {
   padding: 7px 10px;
   border-radius: 6px;
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 9px;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 #command-dock .poi-row-container.expanded {
@@ -283,12 +279,12 @@ body.recording-mode #gev-credits {
   }
 
   #command-dock > #location-bar {
-    border-right: 1px solid rgba(123, 189, 211, 0.16);
-    border-bottom: 1px solid rgba(123, 189, 211, 0.16);
+    border-right: 1px solid color-mix(in srgb, var(--accent) 16%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--accent) 16%, transparent);
   }
 
   #command-dock > #control-panel {
-    border-top: 1px solid rgba(123, 189, 211, 0.16);
+    border-top: 1px solid color-mix(in srgb, var(--accent) 16%, transparent);
     border-left: 0;
   }
 

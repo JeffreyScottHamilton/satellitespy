@@ -12,11 +12,7 @@
 #location-bar .panel-glow {
   position: absolute;
   inset: -20px;
-  background: radial-gradient(
-    ellipse at center,
-    var(--accent-dim) 0%,
-    transparent 60%
-  );
+  background: none;
   filter: blur(20px);
   opacity: 0.25;
   pointer-events: none;
@@ -30,9 +26,9 @@
   border: 1px solid var(--glass-border);
   border-radius: 12px;
   padding: 8px 12px;
-  backdrop-filter: blur(24px) saturate(1.4);
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow: 0 4px 20px color-mix(in srgb, var(--surface) 40%, transparent);
 }
 
 .location-toolbar {
@@ -44,9 +40,9 @@
 }
 
 .location-toolbar-label {
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 8px;
-  letter-spacing: 2px;
+  letter-spacing: normal;
   color: var(--text-dim);
 }
 
@@ -61,16 +57,16 @@
 }
 
 .location-mini-city {
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 9px;
-  letter-spacing: 0.8px;
-  color: #bdefff;
+  letter-spacing: normal;
+  color: var(--accent);
 }
 
 .location-mini-poi {
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 8px;
-  letter-spacing: 1px;
+  letter-spacing: normal;
   color: var(--text-secondary);
   max-width: 190px;
   white-space: nowrap;
@@ -93,8 +89,8 @@
 
 .location-pill {
   padding: 6px 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
   border-radius: 20px;
   cursor: pointer;
   transition:
@@ -109,7 +105,7 @@
   font-size: 11px;
   font-weight: 500;
   color: var(--text-secondary);
-  letter-spacing: 0.3px;
+  letter-spacing: normal;
 }
 
 .location-pill:focus-visible,
@@ -121,7 +117,7 @@
 }
 
 .location-pill:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--text) 8%, transparent);
   border-color: var(--glass-border-hover);
   transform: translateY(-1px);
 }
@@ -130,7 +126,7 @@
   background: var(--accent-dim);
   border-color: var(--accent);
   color: var(--accent);
-  box-shadow: 0 0 12px rgba(0, 212, 255, 0.15);
+  box-shadow: var(--shadow-1);
 }
 
 /* ── Expandable POI Row ──────────────────────── */
@@ -181,8 +177,8 @@
   align-items: center;
   gap: 6px;
   padding: 5px 12px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
   border-radius: 20px;
   cursor: pointer;
   transition:
@@ -197,7 +193,7 @@
 }
 
 .poi-pill:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--text) 8%, transparent);
   border-color: var(--glass-border-hover);
   transform: translateY(-1px);
 }
@@ -205,7 +201,7 @@
 .poi-pill.active {
   background: var(--accent-dim);
   border-color: var(--accent);
-  box-shadow: 0 0 12px rgba(0, 212, 255, 0.15);
+  box-shadow: var(--shadow-1);
 }
 
 .poi-pill-name {
@@ -213,7 +209,7 @@
   font-size: 10px;
   font-weight: 500;
   color: var(--text-secondary);
-  letter-spacing: 0.3px;
+  letter-spacing: normal;
 }
 
 .poi-pill.active .poi-pill-name {
@@ -221,11 +217,11 @@
 }
 
 .poi-pill-key {
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 8px;
-  letter-spacing: 1px;
+  letter-spacing: normal;
   color: var(--text-dim);
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--text) 6%, transparent);
   padding: 2px 5px;
   border-radius: 3px;
   flex-shrink: 0;
@@ -233,7 +229,7 @@
 
 .poi-pill.active .poi-pill-key {
   color: var(--accent);
-  background: rgba(0, 212, 255, 0.12);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 /* ── Location Search ─────────────────────────── */
@@ -250,8 +246,8 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
   border-radius: 50%;
   cursor: pointer;
   transition:
@@ -265,7 +261,7 @@
 }
 
 .search-toggle-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--text) 8%, transparent);
   border-color: var(--glass-border-hover);
 }
 
@@ -278,7 +274,7 @@
   color: var(--text-primary);
   font-family: var(--font-sans);
   font-size: 13px;
-  letter-spacing: 0.3px;
+  letter-spacing: normal;
   transition:
     width var(--transition-smooth),
     padding var(--transition-smooth);
@@ -303,10 +299,10 @@
   /* Its own line under the search row, which clips overflow in the dock. */
   margin: 6px 0 0;
   padding: 6px 10px;
-  border: 1px solid rgba(255, 99, 99, 0.45);
+  border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
   border-radius: 6px;
-  background: rgba(30, 8, 10, 0.92);
-  color: #ffb3b3;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  color: var(--danger);
   font-family: var(--font-sans);
   font-size: 12px;
   line-height: 1.35;

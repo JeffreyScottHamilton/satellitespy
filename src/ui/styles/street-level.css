@@ -1,24 +1,20 @@
 /* ── Street Level panel ─────────────────────────────────────────
    The rail owns position and width (layers.css). */
 #street-level-panel {
-  --sl-green: #05cb63;
+  --sl-green: var(--ok);
   /* KartaView's purple for lines; a lighter one where it is text (WCAG AA). */
-  --sl-kartaview: #635bff;
-  --sl-kartaview-text: #8f8aff;
+  --sl-kartaview: var(--accent);
+  --sl-kartaview-text: var(--accent);
   /* Panoramax's orange; the darker one sits behind white text. */
-  --sl-panoramax: #ff6f00;
-  --sl-panoramax-fill: #b84e00;
+  --sl-panoramax: var(--warn);
+  --sl-panoramax-fill: var(--warn);
   --sl-text: 0.6rem;
 }
 
 #street-level-panel .panel-glow {
   position: absolute;
   inset: -18px;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(5, 203, 99, 0.16) 0%,
-    transparent 65%
-  );
+  background: none;
   filter: blur(16px);
   opacity: 0.25;
   pointer-events: none;
@@ -33,12 +29,12 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  backdrop-filter: blur(24px) saturate(1.4);
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
-    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+    0 8px 32px color-mix(in srgb, var(--surface) 50%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--text) 3%, transparent) inset,
+    0 1px 0 color-mix(in srgb, var(--text) 6%, transparent) inset;
 }
 
 /* Class-qualified, not id-qualified, so a theme's header rule still wins. */
@@ -51,7 +47,7 @@
   font: inherit;
   font-family: var(--font-mono);
   font-size: var(--sl-text);
-  letter-spacing: 0.1em;
+  letter-spacing: normal;
   padding: 2px 7px;
   border-radius: 999px;
   border: 1px solid var(--glass-border-hover);
@@ -72,17 +68,17 @@
 
 .sl-status.is-on {
   color: var(--sl-green);
-  border-color: rgba(5, 203, 99, 0.55);
+  border-color: color-mix(in srgb, var(--ok) 55%, transparent);
 }
 
 .sl-status.is-busy {
   color: var(--accent);
-  border-color: rgba(0, 212, 255, 0.55);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
 }
 
 .sl-status.is-warn {
-  color: #ffb300;
-  border-color: rgba(255, 179, 0, 0.55);
+  color: var(--warn);
+  border-color: color-mix(in srgb, var(--warn) 55%, transparent);
 }
 
 /* Collapsed strips hide the body entirely: nothing to paint or tab into. */
@@ -165,8 +161,8 @@
 }
 
 .sl-chips .data-toggle-chip.chip-error {
-  color: #ffb300;
-  border-color: rgba(255, 179, 0, 0.55);
+  color: var(--warn);
+  border-color: color-mix(in srgb, var(--warn) 55%, transparent);
 }
 
 /* The coverage hint and OPEN STREET VIEW share a line; the hint wraps. */
@@ -209,7 +205,7 @@ html:not([lang='en']) .sl-meta-row .sl-nearest-btn {
   font-family: var(--font-sans);
   font-size: 0.72rem;
   line-height: 1.4;
-  color: #ff8a80;
+  color: var(--danger);
 }
 
 /* ── Filters ──────────────────────────────────────────────────── */
@@ -251,9 +247,9 @@ html:not([lang='en']) .sl-meta-row .sl-nearest-btn {
 }
 
 .sl-since-note {
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 0.5rem;
-  letter-spacing: 0.08em;
+  letter-spacing: normal;
   color: var(--text-secondary);
 }
 
@@ -262,9 +258,9 @@ html:not([lang='en']) .sl-meta-row .sl-nearest-btn {
 }
 
 .sl-since-label {
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: var(--sl-text);
-  letter-spacing: 0.08em;
+  letter-spacing: normal;
   color: var(--text-primary);
 }
 
@@ -278,7 +274,7 @@ html:not([lang='en']) .sl-meta-row .sl-nearest-btn {
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid var(--glass-border-hover);
-  background: #000;
+  background: var(--surface);
 }
 
 .sl-viewer-wrap[hidden] {
@@ -305,7 +301,7 @@ html:not([lang='en']) .sl-meta-row .sl-nearest-btn {
   display: grid;
   place-items: center;
   z-index: 3;
-  background: rgba(0, 0, 0, 0.35);
+  background: color-mix(in srgb, var(--surface) 35%, transparent);
 }
 
 .sl-viewer-placeholder[hidden] {
@@ -317,7 +313,7 @@ html:not([lang='en']) .sl-meta-row .sl-nearest-btn {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid color-mix(in srgb, var(--text) 20%, transparent);
   border-top-color: var(--sl-green);
   animation: sl-spin 0.9s linear infinite;
 }
@@ -334,7 +330,7 @@ html:not([lang='en']) .sl-meta-row .sl-nearest-btn {
   justify-content: space-between;
   gap: 6px;
   padding: 5px 6px;
-  background: rgba(10, 10, 15, 0.85);
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
   border-bottom: 1px solid var(--glass-border);
 }
 
@@ -349,7 +345,7 @@ html:not([lang='en']) .sl-meta-row .sl-nearest-btn {
 .sl-viewer-tools .scene-btn {
   padding: 4px 8px;
   font-size: var(--sl-text);
-  background: rgba(10, 10, 15, 0.75);
+  background: color-mix(in srgb, var(--surface) 75%, transparent);
   flex: none;
   min-width: 0;
   display: inline-flex;
@@ -362,7 +358,7 @@ html:not([lang='en']) .sl-meta-row .sl-nearest-btn {
 }
 
 .sl-viewer-tools .sl-seg {
-  background: rgba(10, 10, 15, 0.75);
+  background: color-mix(in srgb, var(--surface) 75%, transparent);
 }
 
 @container (max-width: 380px) {
@@ -376,10 +372,10 @@ html:not([lang='en']) .sl-meta-row .sl-nearest-btn {
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  background: rgba(10, 10, 15, 0.8);
+  border: 1px solid color-mix(in srgb, var(--text) 25%, transparent);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
   color: var(--text-primary);
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 1.1rem;
   line-height: 1;
   cursor: pointer;
@@ -389,19 +385,19 @@ html:not([lang='en']) .sl-meta-row .sl-nearest-btn {
 }
 
 .sl-viewer-x:hover {
-  color: #0a0a0f;
-  background: #fff;
-  border-color: #fff;
+  color: var(--accent-ink);
+  background: var(--text);
+  border-color: var(--border);
 }
 
 .sl-image-meta {
   flex: 0 0 auto;
   padding: 6px 10px;
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: var(--sl-text);
-  letter-spacing: 0.06em;
+  letter-spacing: normal;
   color: var(--text-secondary);
-  background: rgba(0, 0, 0, 0.7);
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -431,7 +427,7 @@ html:not([lang='en']) .sl-meta-row .sl-nearest-btn {
 .sl-image-link {
   color: var(--sl-green);
   text-decoration: none;
-  letter-spacing: 0.1em;
+  letter-spacing: normal;
 }
 
 .sl-image-link[hidden] {
@@ -443,9 +439,9 @@ html:not([lang='en']) .sl-meta-row .sl-nearest-btn {
 }
 
 .sl-meta {
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: var(--sl-text);
-  letter-spacing: 0.06em;
+  letter-spacing: normal;
   color: var(--text-secondary);
 }
 
@@ -490,7 +486,7 @@ html:not([lang='en']) .sl-meta-row .sl-nearest-btn {
   --sl-photo-fill: color-mix(in srgb, var(--sl-kartaview) 85%, transparent);
   position: absolute;
   inset: 0;
-  background: #000;
+  background: var(--surface);
   outline: none;
   overflow: hidden;
 }
@@ -550,10 +546,10 @@ html:not([lang='en']) .sl-meta-row .sl-nearest-btn {
   width: 34px;
   height: 44px;
   margin-top: -22px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid color-mix(in srgb, var(--text) 18%, transparent);
   border-radius: 8px;
-  background: rgba(10, 10, 15, 0.62);
-  color: #fff;
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  color: var(--text);
   font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
