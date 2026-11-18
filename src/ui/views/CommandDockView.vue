@@ -150,10 +150,10 @@ function selectMapSource(chip) {
         <div class="location-city-row">
           <div id="location-pills" class="location-pills"><UiButton v-for="city in loc?.cities" :key="city.id" class="location-pill" :pressed="Boolean(city.active)" pressed-class="active" :data-location-id="city.id" @click="locationControls?.chooseCity(city.id)">{{ city.label }}</UiButton></div>
           <div class="location-search-wrap">
-            <button id="search-toggle" class="search-toggle-btn" :title="t('Search any location')" @click="locationControls?.toggleSearch()">
-              <span>&#x1F50E;</span>
+            <button id="search-toggle" class="search-toggle-btn" type="button" :title="t('Search any location')" :aria-label="t('Search any location')" @click="locationControls?.toggleSearch()">
+              <span class="material-symbols-outlined" aria-hidden="true">search</span>
             </button>
-            <input type="text" id="location-search" v-class-toggle="{ expanded: !!loc?.searchExpanded, searching: !!loc?.searching }" :placeholder="t('Search any location...')" autocomplete="off" spellcheck="false" :aria-label="t('Search location by name or coordinates')" :aria-invalid="loc?.searchError ? 'true' : null" :aria-describedby="loc?.searchError ? 'location-search-error' : null" />
+            <input type="text" id="location-search" v-class-toggle="{ expanded: !!loc?.searchExpanded, searching: !!loc?.searching }" :placeholder="t('Search places or coordinates')" autocomplete="off" spellcheck="false" :aria-label="t('Search location by name or coordinates')" :aria-invalid="loc?.searchError ? 'true' : null" :aria-describedby="loc?.searchError ? 'location-search-error' : null" />
           </div>
         </div>
         <p id="location-search-error" class="location-search-error" role="alert">{{ loc?.searchError }}</p>

@@ -1,1 +1,348 @@
 /* Owner: top bar (wordmark, location search, map style, settings, theme toggle). */
+
+/* ── Wordmark, top-left ─────────────────────────
+   The product name only: no logo, tagline, FPS readout or style corner. */
+#title-bar {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  right: auto;
+  bottom: auto;
+  z-index: 160;
+  display: flex;
+  align-items: center;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  transform: none;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  pointer-events: none;
+  user-select: none;
+}
+
+#title-bar .title-glow,
+#title-bar .title-logo,
+#title-bar .subtitle,
+#title-bar .frame-rate-readout {
+  display: none !important;
+}
+
+#title-bar h1 {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: 0;
+  text-transform: none;
+  text-shadow: none;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+#title-bar h1 > span {
+  color: inherit;
+  letter-spacing: 0;
+  text-shadow: none;
+}
+
+/* ── Style corner: visual presets move into Settings ── */
+#style-indicator {
+  display: none !important;
+}
+
+/* ── Sci-fi HUD: kept in the DOM (src/hud.js writes it), hidden unless
+   a Settings toggle sets body.atlas-show-hud. ── */
+#intel-hud {
+  display: none !important;
+}
+
+body.atlas-show-hud #intel-hud {
+  display: block !important;
+}
+
+/* ── Command dock: no frame, only the location search remains visible ── */
+#command-dock {
+  position: fixed;
+  top: 12px;
+  left: 132px;
+  right: auto;
+  bottom: auto;
+  z-index: 160;
+  display: block;
+  width: 320px;
+  height: auto !important;
+  min-height: 0 !important;
+  min-width: 0;
+  max-width: none;
+  margin: 0;
+  padding: 0 !important;
+  transform: none;
+  overflow: visible;
+  grid-template-areas: none;
+  grid-template-columns: none;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+#command-dock > #control-panel {
+  display: none !important;
+}
+
+#command-dock > #location-bar {
+  position: relative !important;
+  inset: auto;
+  grid-area: auto;
+  display: block !important;
+  width: 100%;
+  height: auto !important;
+  min-width: 0;
+  max-width: none;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: none !important;
+  overflow: visible !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+#command-dock > #location-bar .panel-glow,
+#command-dock > #location-bar .location-toolbar,
+#command-dock > #location-bar .location-mini-status,
+#command-dock > #location-bar .location-bar-divider,
+#command-dock > #location-bar .dock-pin-btn,
+#command-dock > #location-bar #poi-row,
+#command-dock > #location-bar #location-pills,
+#command-dock > #location-bar .location-city-row::before,
+#command-dock > #location-bar .location-city-row::after {
+  display: none !important;
+}
+
+/* The search field is the only row: the tray's popover stays open. */
+#command-dock > #location-bar .location-inner,
+#command-dock #location-bar #location-bar-popover.dock-popover-content,
+#command-dock #location-bar #location-bar-popover .location-city-row {
+  display: block !important;
+  position: static !important;
+  inset: auto;
+  width: auto;
+  height: auto !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: none !important;
+  overflow: visible !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  pointer-events: auto;
+}
+
+#command-dock #location-bar #location-bar-popover .location-search-wrap {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+}
+
+#command-dock #location-bar .location-search-wrap .search-toggle-btn {
+  position: absolute !important;
+  top: 2px;
+  left: 2px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-md);
+  background: none;
+  color: var(--text-2);
+  cursor: pointer;
+}
+
+#command-dock #location-bar .location-search-wrap .search-toggle-btn .material-symbols-outlined {
+  font-size: 18px;
+  line-height: 1;
+}
+
+#command-dock #location-bar #location-search,
+#command-dock #location-bar #location-search.expanded {
+  display: block !important;
+  box-sizing: border-box;
+  width: 100%;
+  height: 36px;
+  min-width: 0;
+  max-width: none;
+  margin: 0;
+  padding: 0 12px 0 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: none;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0;
+  text-transform: none;
+  text-shadow: none;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none;
+  outline: none;
+}
+
+#command-dock #location-bar #location-search::placeholder {
+  color: var(--text-2);
+  opacity: 1;
+}
+
+#command-dock #location-bar #location-search:focus-visible,
+#command-dock #location-bar .search-toggle-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+#command-dock > #location-bar #location-search-error:empty {
+  display: none !important;
+}
+
+#command-dock > #location-bar #location-search-error {
+  margin: 4px 0 0;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--danger);
+}
+
+/* ── Status pills: sync, loading and toast ── */
+#global-loading-status,
+#traffic-sync-chip,
+#cctv-sync-chip,
+#toast {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100vw - 32px);
+  min-height: 28px;
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  color: var(--text-2);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  text-shadow: none;
+}
+
+#global-loading-status[hidden] {
+  display: none !important;
+}
+
+#global-loading-status,
+#traffic-sync-chip,
+#cctv-sync-chip {
+  top: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#traffic-sync-chip {
+  top: 96px;
+}
+
+#cctv-sync-chip {
+  top: 128px;
+}
+
+#global-loading-status .gev-flap-cell,
+#traffic-sync-chip .gev-flap-cell,
+#cctv-sync-chip .gev-flap-cell {
+  background: none;
+  border: 0;
+  box-shadow: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: 0;
+  text-transform: none;
+  text-shadow: none;
+}
+
+#global-loading-status span,
+#traffic-sync-chip span,
+#cctv-sync-chip span {
+  color: inherit;
+  letter-spacing: 0;
+}
+
+#toast {
+  top: auto;
+  bottom: calc(24px + var(--world-timeline-lift, 0px));
+  left: 50%;
+  z-index: 200;
+  transform: translateX(-50%) translateY(8px);
+  color: var(--text);
+  white-space: normal;
+}
+
+#toast.visible {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ── Phones: search takes the row under the wordmark ── */
+@media (max-width: 639px) {
+  #command-dock {
+    top: 52px;
+    left: 16px;
+    width: auto;
+    right: 16px;
+  }
+
+  #global-loading-status,
+  #traffic-sync-chip,
+  #cctv-sync-chip {
+    max-width: calc(100vw - 32px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #global-loading-status,
+  #traffic-sync-chip,
+  #cctv-sync-chip,
+  #toast {
+    transition-duration: 0.01ms !important;
+  }
+}
