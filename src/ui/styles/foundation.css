@@ -757,8 +757,7 @@ body.cockpit-mode #cockpit-cloud-effects.active {
   height: 100%;
 }
 
-#title-bar .title-accent,
-.loader-content .title-accent {
+#title-bar .title-accent {
   color: var(--accent);
   font-weight: 300;
 }

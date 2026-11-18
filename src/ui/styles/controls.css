@@ -385,37 +385,52 @@ html:not([lang='en']):not(:lang(zh)):not(:lang(ja))
 }
 
 .loader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
   text-align: center;
 }
 
-.loader-logo {
+/* The mark is the favicon: a tilted orbit with a satellite dot. The dot's
+   path is the same ellipse, traced in keyframes so it stays on the orbit. */
+.loader-mark {
   display: block;
-  width: 128px;
-  height: auto;
-  margin: 0 auto 24px;
-  filter: none;
-  animation: logo-pulse 2s ease-in-out infinite;
+  width: 48px;
+  height: 48px;
+  overflow: visible;
 }
 
-@keyframes logo-pulse {
-  0%,
-  100% {
-    opacity: 0.72;
-    transform: scale(0.98);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.02);
-  }
+.loader-mark .loader-satellite {
+  animation: loader-orbit 3.6s linear infinite;
 }
 
-.loader-content h2 {
-  font-family: inherit;
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: normal;
-  color: var(--text-primary);
-  margin-bottom: 12px;
+@keyframes loader-orbit {
+  0% { transform: translate(0.00px, 0.00px); }
+  4.17% { transform: translate(0.15px, 1.36px); }
+  8.33% { transform: translate(-0.52px, 3.00px); }
+  12.5% { transform: translate(-1.96px, 4.81px); }
+  16.67% { transform: translate(-4.06px, 6.67px); }
+  20.83% { transform: translate(-6.69px, 8.45px); }
+  25% { transform: translate(-9.67px, 10.03px); }
+  29.17% { transform: translate(-12.79px, 11.29px); }
+  33.33% { transform: translate(-15.84px, 12.17px); }
+  37.5% { transform: translate(-18.62px, 12.58px); }
+  41.67% { transform: translate(-20.93px, 12.52px); }
+  45.83% { transform: translate(-22.62px, 11.97px); }
+  50% { transform: translate(-23.56px, 10.99px); }
+  54.17% { transform: translate(-23.71px, 9.63px); }
+  58.33% { transform: translate(-23.04px, 7.99px); }
+  62.5% { transform: translate(-21.61px, 6.17px); }
+  66.67% { transform: translate(-19.50px, 4.32px); }
+  70.83% { transform: translate(-16.87px, 2.54px); }
+  75% { transform: translate(-13.90px, 0.96px); }
+  79.17% { transform: translate(-10.77px, -0.31px); }
+  83.33% { transform: translate(-7.72px, -1.18px); }
+  87.5% { transform: translate(-4.95px, -1.60px); }
+  91.67% { transform: translate(-2.64px, -1.53px); }
+  95.83% { transform: translate(-0.95px, -0.99px); }
+  100% { transform: translate(0.00px, -0.00px); }
 }
 
 .loader-status {
@@ -423,16 +438,12 @@ html:not([lang='en']):not(:lang(zh)):not(:lang(ja))
   font-size: 11px;
   letter-spacing: normal;
   color: var(--text-dim);
-  animation: pulse 2s ease-in-out infinite;
+  margin: 0;
 }
 
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 0.4;
-  }
-  50% {
-    opacity: 1;
+@media (prefers-reduced-motion: reduce) {
+  .loader-mark .loader-satellite {
+    animation: none;
   }
 }
 
