@@ -5,7 +5,7 @@ import { vPanelState } from '../rail/panelState.js';
 import UiButton from '../kit/UiButton.vue';
 import { vClassToggle } from '../rail/classToggle.js';
 import { useDisplayStore } from '../stores/display.js';
-import { computed } from 'vue';
+import { computed, onBeforeUnmount, ref } from 'vue';
 import { useLocationStore } from '../stores/location.js';
 import { usePanelChromeStore } from '../stores/panelChrome.js';
 import { usePointerReticleStore } from '../stores/pointerReticle.js';
@@ -57,6 +57,29 @@ const dockOrder = computed(() => {
 
 // Where the user pointed while a voice turn is live (PointerReticle).
 const { reticles } = storeToRefs(usePointerReticleStore());
+
+// The city and landmark shortcuts open under the search field while it is
+// focused and empty; blur (after a click lands), Escape or typing closes them.
+const suggestOpen = ref(false);
+let blurTimer = 0;
+function onSearchFocus(event) {
+  clearTimeout(blurTimer);
+  suggestOpen.value = !event.target.value;
+}
+function onSearchInput(event) {
+  suggestOpen.value = !event.target.value;
+}
+function onSearchBlur() {
+  clearTimeout(blurTimer);
+  blurTimer = setTimeout(() => {
+    suggestOpen.value = false;
+  }, 120);
+}
+function closeSuggest() {
+  clearTimeout(blurTimer);
+  suggestOpen.value = false;
+}
+onBeforeUnmount(() => clearTimeout(blurTimer));
 
 function selectMapSource(chip) {
   if (!chip.available) return;
@@ -145,15 +168,17 @@ function selectMapSource(chip) {
       </div>
       <div id="location-bar-popover" class="dock-popover-content">
         <UiButton variant="icon" class="dock-pin-btn" data-pin-target="location-bar" :label="t('Pin location tray')" :title="t('Keep location tray open')" :pressed="!!panels['location-bar']?.pinned" @click="pin($event, 'location-bar')"><img src="/pin.svg" alt="" /></UiButton>
-        <div id="poi-row" class="poi-row-container" v-class-toggle="{ expanded: !!loc?.poisExpanded }"><UiButton v-for="poi in loc?.pois" :key="`${loc.poiCity}:${poi.index}`" class="poi-pill" :pressed="Boolean(poi.active)" pressed-class="active" :data-poi-index="poi.index" @click="locationControls?.choosePoi(poi.index)"><span class="poi-pill-key">{{ poi.key }}</span><span class="poi-pill-name">{{ poi.name }}</span></UiButton></div>
         <div class="location-bar-divider" id="location-bar-divider" v-class-toggle="{ visible: !!loc?.poisExpanded }"></div>
         <div class="location-city-row">
-          <div id="location-pills" class="location-pills"><UiButton v-for="city in loc?.cities" :key="city.id" class="location-pill" :pressed="Boolean(city.active)" pressed-class="active" :data-location-id="city.id" @click="locationControls?.chooseCity(city.id)">{{ city.label }}</UiButton></div>
           <div class="location-search-wrap">
             <button id="search-toggle" class="search-toggle-btn" type="button" :title="t('Search any location')" :aria-label="t('Search any location')" @click="locationControls?.toggleSearch()">
               <span class="material-symbols-outlined" aria-hidden="true">search</span>
             </button>
-            <input type="text" id="location-search" v-class-toggle="{ expanded: !!loc?.searchExpanded, searching: !!loc?.searching }" :placeholder="t('Search places or coordinates')" autocomplete="off" spellcheck="false" :aria-label="t('Search location by name or coordinates')" :aria-invalid="loc?.searchError ? 'true' : null" :aria-describedby="loc?.searchError ? 'location-search-error' : null" />
+            <input type="text" id="location-search" v-class-toggle="{ expanded: !!loc?.searchExpanded, searching: !!loc?.searching }" :placeholder="t('Search places or coordinates')" autocomplete="off" spellcheck="false" @focus="onSearchFocus" @blur="onSearchBlur" @input="onSearchInput" @keydown.esc="closeSuggest" :aria-label="t('Search location by name or coordinates')" :aria-invalid="loc?.searchError ? 'true' : null" :aria-describedby="loc?.searchError ? 'location-search-error' : null" />
+          </div>
+          <div id="location-suggest" class="location-suggest" :class="{ open: suggestOpen }" @mousedown.prevent>
+            <div id="location-pills" class="location-pills"><UiButton v-for="city in loc?.cities" :key="city.id" class="location-pill" :pressed="Boolean(city.active)" pressed-class="active" :data-location-id="city.id" @click="locationControls?.chooseCity(city.id); closeSuggest()">{{ city.label }}</UiButton></div>
+            <div id="poi-row" class="poi-row-container" v-class-toggle="{ expanded: !!loc?.poisExpanded }"><UiButton v-for="poi in loc?.pois" :key="`${loc.poiCity}:${poi.index}`" class="poi-pill" :pressed="Boolean(poi.active)" pressed-class="active" :data-poi-index="poi.index" @click="locationControls?.choosePoi(poi.index); closeSuggest()"><span class="poi-pill-key">{{ poi.key }}</span><span class="poi-pill-name">{{ poi.name }}</span></UiButton></div>
           </div>
         </div>
         <p id="location-search-error" class="location-search-error" role="alert">{{ loc?.searchError }}</p>

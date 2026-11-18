@@ -27,6 +27,13 @@
     height: 36px !important;
   }
 
+  /* Suggestions open upward, above the bottom search. */
+  body.mobile-shell #command-dock #location-bar #location-suggest {
+    top: auto;
+    bottom: 40px;
+    max-height: 50vh;
+  }
+
   /* Attribution: one 10px line, 8px above the search, never under it. */
   body.mobile-shell #cesium-credits#cesium-credits {
     top: auto !important;

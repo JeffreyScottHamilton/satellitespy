@@ -102,6 +102,13 @@ body.atlas-show-hud #intel-hud {
   -webkit-backdrop-filter: none;
 }
 
+/* An open tray (legacy :has rules) must not slide or shrink the dock. */
+#command-dock#command-dock {
+  transform: none !important;
+  left: 123px;
+  width: 320px;
+}
+
 #command-dock > #control-panel {
   display: none !important;
 }
@@ -111,10 +118,10 @@ body.atlas-show-hud #intel-hud {
   inset: auto;
   grid-area: auto;
   display: block !important;
-  width: 100%;
+  width: 100% !important;
   height: auto !important;
   min-width: 0;
-  max-width: none;
+  max-width: none !important;
   max-height: none !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -135,8 +142,6 @@ body.atlas-show-hud #intel-hud {
 #command-dock > #location-bar .location-mini-status,
 #command-dock > #location-bar .location-bar-divider,
 #command-dock > #location-bar .dock-pin-btn,
-#command-dock > #location-bar #poi-row,
-#command-dock > #location-bar #location-pills,
 #command-dock > #location-bar .location-city-row::before,
 #command-dock > #location-bar .location-city-row::after {
   display: none !important;
@@ -247,6 +252,120 @@ body.atlas-show-hud #intel-hud {
   font-size: 12px;
   line-height: 16px;
   color: var(--danger);
+}
+
+/* ── Suggestions: city and landmark shortcuts under the focused, empty search ── */
+#command-dock #location-bar .location-city-row {
+  position: relative !important;
+}
+
+#command-dock #location-bar #location-suggest {
+  display: none !important;
+  position: absolute;
+  top: 40px;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  box-sizing: border-box;
+  max-height: min(60vh, 360px);
+  overflow-y: auto;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+  font-family: var(--font-sans);
+}
+
+#command-dock #location-bar #location-suggest.open {
+  display: flex !important;
+  flex-direction: column;
+}
+
+#command-dock #location-suggest :is(#location-pills, #poi-row) {
+  display: flex !important;
+  flex-direction: column;
+  gap: 0;
+  position: static !important;
+  width: auto;
+  max-width: none;
+  height: auto !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+
+#command-dock #location-suggest #poi-row:not(:empty) {
+  margin-top: 4px !important;
+  padding-top: 4px !important;
+  border-top: 1px solid var(--border);
+}
+
+#command-dock #location-suggest :is(.location-pill, .poi-pill) {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 36px;
+  min-height: 36px;
+  margin: 0;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: none;
+  box-shadow: none;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0;
+  text-transform: none;
+  text-shadow: none;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+#command-dock #location-suggest :is(.location-pill, .poi-pill)::before,
+#command-dock #location-suggest :is(.location-pill, .poi-pill)::after {
+  display: none !important;
+}
+
+#command-dock #location-suggest :is(.location-pill, .poi-pill):hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+#command-dock #location-suggest :is(.location-pill, .poi-pill).active {
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+#command-dock #location-suggest :is(.location-pill, .poi-pill):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+#command-dock #location-suggest .poi-pill-key {
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+#command-dock #location-suggest .poi-pill-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: inherit;
+  font-size: 13px;
 }
 
 /* ── Status pills: sync, loading and toast ── */
