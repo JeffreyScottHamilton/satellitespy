@@ -75,8 +75,6 @@
   "src/main.js",
   "docs/APPLICATION.md",
   "scripts/qa-application.mjs",
-  "scripts/qa-voice-auth.mjs",
-  "scripts/qa-voice-auth-focus.mjs",
   "src/codexOauthRealtime.test.mjs",
   "src/voice/cloudVoiceAuth.test.mjs",
   "scripts/qa-terrain-429.mjs",

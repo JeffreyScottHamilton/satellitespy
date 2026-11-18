@@ -3,7 +3,6 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { contextNeedle, contextSearchText, matchesContextSearch } from '../../contextSearch.js';
 import { formatNumber, t, tn } from '../../../i18n/index.js';
-import { PRODUCT_NAME } from '../../brand.js';
 import { citiesAround, countryName, nearestCity } from '../../../data/wikidataCities.js';
 import { useEntityCardStore } from '../../stores/entityCard.js';
 import { useOmnibarStore } from '../../stores/omnibar.js';
@@ -404,10 +403,5 @@ const distance = (km) =>
       </div>
     </div>
 
-    <div class="view-context__actions">
-      <button type="button" class="entity-card__action entity-card__action--ask" @click="store.askAboutView(groups)">
-        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" /></svg>{{ t("Ask {product} what's here", { product: PRODUCT_NAME }) }}
-      </button>
-    </div>
   </section>
 </template>

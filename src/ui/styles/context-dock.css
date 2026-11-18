@@ -190,7 +190,6 @@ body.mobile-shell .context-dock-btn {
     .view-context__facts,
     .view-context__live,
     .view-context__total,
-    .view-context__actions,
     .view-context__towns:has(.view-context__chip--layer),
     .altitude-graph,
     .entity-card__route,

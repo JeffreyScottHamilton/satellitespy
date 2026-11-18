@@ -163,18 +163,6 @@ export const useEntityCardStore = defineStore('gev-entity-card', () => {
     if (!dm || !view.value) return [];
     return viewSummary(dm, view.value.rect, view.value.center, options);
   }
-  /** Ask GEV about the view, with what is in it. */
-  function askAboutView(summary) {
-    const where = view.value;
-    if (!where) return;
-    const counts = summary
-      .map((group) => `${group.count} ${group.layerName}`)
-      .join(', ');
-    shell.value?.askText?.(
-      `What am I looking at? The view is centred on ${where.center.lat.toFixed(4)}, ${where.center.lon.toFixed(4)} from about ${Math.round(where.heightM)} m up${counts ? `, showing ${counts}` : ''}. What is here and what stands out?`,
-    );
-  }
-
   /** What is loaded around a ground point, as the card's nearby lists. */
   /** The layers that are on, as the data manager lists them. */
   function liveLayers() {
@@ -341,6 +329,5 @@ export const useEntityCardStore = defineStore('gev-entity-card', () => {
     canCockpit,
     cockpit,
     inView,
-    askAboutView,
   };
 });

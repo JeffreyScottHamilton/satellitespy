@@ -90,32 +90,32 @@ function selectMapSource(chip) {
       <UiButton variant="icon" class="dock-pin-btn" data-pin-target="control-panel" :label="t('Pin visual presets')" :title="t('Keep visual presets open')" :pressed="!!panels['control-panel']?.pinned" @click="pin($event, 'control-panel')"><img src="/pin.svg" alt="" /></UiButton>
       <div id="style-buttons" class="button-grid">
         <button class="style-btn active" data-style="normal" @click="display.act('setStyle', 'normal')" v-class-toggle="{ ...(style && { active: style.name === 'normal' }) }" :title="t('Show the globe without a visual filter.')">
-          <span class="btn-icon">◯</span>
+          <span class="btn-icon material-symbols-outlined" aria-hidden="true">radio_button_unchecked</span>
           <span class="btn-label">{{ t('Normal') }}</span>
           <span class="btn-key">1</span>
         </button>
         <button class="style-btn" data-style="retro" @click="display.act('setStyle', 'retro')" v-class-toggle="{ ...(style && { active: style.name === 'retro' }) }" :title="t('Emulate a green phosphor CRT with scanlines and screen curvature.')">
-          <span class="btn-icon">▦</span>
+          <span class="btn-icon material-symbols-outlined" aria-hidden="true">grid_view</span>
           <span class="btn-label">{{ t('CRT') }}</span>
           <span class="btn-key">2</span>
         </button>
         <button class="style-btn" data-style="surveillance" @click="display.act('setStyle', 'surveillance')" v-class-toggle="{ ...(style && { active: style.name === 'surveillance' }) }" :title="t('Simulate night-vision goggles with green intensification and a tube vignette.')">
-          <span class="btn-icon">🌙</span>
+          <span class="btn-icon material-symbols-outlined" aria-hidden="true">dark_mode</span>
           <span class="btn-label">{{ t('NVG') }}</span>
           <span class="btn-key">3</span>
         </button>
         <button class="style-btn" data-style="thermal" @click="display.act('setStyle', 'thermal')" v-class-toggle="{ ...(style && { active: style.name === 'thermal' }) }" :title="t('Simulate FLIR-style thermal contrast. Turn up Ironbow for color.')">
-          <span class="btn-icon">🌡️</span>
+          <span class="btn-icon material-symbols-outlined" aria-hidden="true">thermostat</span>
           <span class="btn-label">{{ t('FLIR') }}</span>
           <span class="btn-key">4</span>
         </button>
         <button class="style-btn" data-style="anime" @click="display.act('setStyle', 'anime')" v-class-toggle="{ ...(style && { active: style.name === 'anime' }) }" :title="t('Apply bright cel-shaded color and illustrated outlines.')">
-          <span class="btn-icon">✦</span>
+          <span class="btn-icon material-symbols-outlined" aria-hidden="true">auto_awesome</span>
           <span class="btn-label">{{ t('Anime') }}</span>
           <span class="btn-key">5</span>
         </button>
         <button class="style-btn" data-style="noir" @click="display.act('setStyle', 'noir')" v-class-toggle="{ ...(style && { active: style.name === 'noir' }) }" :title="t('Apply high-contrast monochrome film-noir grading.')">
-          <span class="btn-icon">◐</span>
+          <span class="btn-icon material-symbols-outlined" aria-hidden="true">contrast</span>
           <span class="btn-label">{{ t('Noir') }}</span>
           <span class="btn-key">6</span>
         </button>
@@ -146,7 +146,7 @@ function selectMapSource(chip) {
         <button class="panel-collapse-btn" data-collapse-target="location-bar" :title="t('Collapse panel')" @click="chrome.act('toggle', 'location-bar')">+</button>
       </div>
       <div id="location-mini-status" class="location-mini-status" aria-live="polite">
-        <div id="location-mini-city" class="location-mini-city">{{ loc ? loc.status.city : t('📍 Location: --') }}</div>
+        <div id="location-mini-city" class="location-mini-city"><span class="material-symbols-outlined" aria-hidden="true">my_location</span>{{ loc ? loc.status.city : t('Location: --') }}</div>
         <div id="location-mini-poi" class="location-mini-poi">{{ loc ? loc.status.poi : t('Landmark: --') }}</div>
       </div>
       <div id="location-bar-popover" class="dock-popover-content">

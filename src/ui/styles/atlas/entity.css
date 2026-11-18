@@ -307,13 +307,6 @@
   color: var(--accent);
   border-color: var(--accent);
 }
-#entity-card .entity-card__action--ask {
-  width: 100%;
-  color: var(--text-2);
-}
-#entity-card .entity-card__action--ask:hover {
-  color: var(--text);
-}
 
 /* Footer: source and when it was last read, quiet and small. */
 #entity-card .entity-card__source {

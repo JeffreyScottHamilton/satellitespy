@@ -16,7 +16,9 @@ export function initTheme({
     else root.setAttribute?.('data-theme', THEME);
   }
   const doc = root?.ownerDocument ?? document;
-  doc?.querySelector?.('meta[name="theme-color"]')?.setAttribute('content', THEME_COLOR);
+  doc
+    ?.querySelector?.('meta[name="theme-color"]')
+    ?.setAttribute('content', THEME_COLOR);
   return THEME;
 }
 
