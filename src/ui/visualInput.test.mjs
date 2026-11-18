@@ -152,3 +152,32 @@ test('destroy synchronously removes shortcuts and a replacement binds once', () 
   assert.deepEqual(f.calls, ['new']);
   replacement.destroy();
 });
+
+test('slash focuses the location search from anywhere outside editable fields', () => {
+  const f = shortcuts();
+  let focused = 0;
+  f.searchInput.focus = () => focused++;
+  const prevented = [];
+  f.press('/', new Element(), { preventDefault: () => prevented.push(true) });
+  assert.equal(focused, 1);
+  assert.equal(prevented.length, 1, 'the slash must not be typed into the field');
+  assert.deepEqual(f.calls, []);
+});
+
+test('slash stays native while typing in another field or with a chord', () => {
+  const f = shortcuts();
+  let focused = 0;
+  f.searchInput.focus = () => focused++;
+  f.press('/', new Element('INPUT'));
+  f.press('/', new Element(), { ctrlKey: true });
+  assert.equal(focused, 0);
+});
+
+test('Escape blurs the location search as well as dismissing it', () => {
+  const f = shortcuts();
+  let blurred = 0;
+  f.searchInput.blur = () => blurred++;
+  f.press('Escape', f.searchInput);
+  assert.equal(blurred, 1);
+  assert.deepEqual(f.calls, [['dismissSearch']]);
+});

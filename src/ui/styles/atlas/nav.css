@@ -123,3 +123,19 @@
 #top-center-actions#top-center-actions #north-up-view .camera-compass-needle {
   font-size: 17px;
 }
+
+/* ── Phone: below 640px ──
+ * Compass, global view and share stay. Zoom, tilt and clear are covered by
+ * pinch and the gesture controls. The cluster sits 12px above the search. */
+@media (max-width: 639px) {
+  #top-center-actions#top-center-actions {
+    right: 12px;
+    bottom: calc(var(--mobile-tab-space, 58px) + 36px + 24px);
+  }
+
+  #top-center-actions#top-center-actions .globe-zoom,
+  #top-center-actions#top-center-actions #tilt-map-view,
+  #top-center-actions#top-center-actions #clear-selected-layers {
+    display: none !important;
+  }
+}

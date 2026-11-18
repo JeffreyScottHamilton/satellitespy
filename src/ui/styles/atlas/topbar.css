@@ -4,7 +4,7 @@
    The product name only: no logo, tagline, FPS readout or style corner. */
 #title-bar {
   position: fixed;
-  top: 16px;
+  top: 12px;
   left: 16px;
   right: auto;
   bottom: auto;
@@ -30,9 +30,18 @@
   display: none !important;
 }
 
+/* The wordmark sits in a pill the height of the search field, so it reads
+   on the light theme as well as over the dark star field. */
 #title-bar h1 {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 36px;
   margin: 0;
-  padding: 0;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 600;
@@ -69,7 +78,7 @@ body.atlas-show-hud #intel-hud {
 #command-dock {
   position: fixed;
   top: 12px;
-  left: 132px;
+  left: 123px;
   right: auto;
   bottom: auto;
   z-index: 160;
@@ -320,22 +329,6 @@ body.atlas-show-hud #intel-hud {
 
 #toast.visible {
   transform: translateX(-50%) translateY(0);
-}
-
-/* ── Phones: search takes the row under the wordmark ── */
-@media (max-width: 639px) {
-  #command-dock {
-    top: 52px;
-    left: 16px;
-    width: auto;
-    right: 16px;
-  }
-
-  #global-loading-status,
-  #traffic-sync-chip,
-  #cctv-sync-chip {
-    max-width: calc(100vw - 32px);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

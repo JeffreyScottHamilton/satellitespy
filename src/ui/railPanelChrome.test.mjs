@@ -177,20 +177,15 @@ test('rail titles and dock labels share one set of label tokens', () => {
     /--dock-label-font-size/.test(body),
   );
   assert.match(dock?.body || '', /font-size:\s*var\(--dock-label-font-size\)/);
-  assert.match(
-    dock?.body || '',
-    /letter-spacing:\s*var\(--dock-label-letter-spacing\)/,
-  );
+  // Sentence-case labels: the redesign sets no tracked (letter-spaced) type.
+  assert.match(dock?.body || '', /letter-spacing:\s*normal/);
   // The dock's rem type, capped at its 16px-root size: a collapsed launcher
   // is a fixed 176px, so a larger browser font must not cut titles short.
   assert.match(
     rail?.body || '',
     /font-size:\s*min\(var\(--dock-label-font-size\),\s*9\.28px\)/,
   );
-  assert.match(
-    rail?.body || '',
-    /letter-spacing:\s*min\(var\(--dock-label-letter-spacing\),\s*2\.08px\)/,
-  );
+  assert.match(rail?.body || '', /letter-spacing:\s*normal/);
 });
 
 test('default theme overrides never reach the cyber theme', () => {

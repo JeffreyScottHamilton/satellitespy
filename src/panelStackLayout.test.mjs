@@ -263,7 +263,7 @@ test('expanded left panels integrate their headers with the container shell', ()
   );
   assert.match(
     css,
-    /#left-panel-stack > \[data-panel-id\]:not\(\.collapsed\) \.panel-divider\s*\{[\s\S]*?linear-gradient\(\s*90deg,\s*rgb\(0 212 255 \/ 28%\),\s*rgba\(0, 212, 255, 0\.18\) 58%,\s*transparent\s*\)[\s\S]*?box-shadow:\s*0 0 7px rgba\(0, 212, 255, 0\.22\);/,
+    /#left-panel-stack > \[data-panel-id\]:not\(\.collapsed\) \.panel-divider\s*\{\s*background:\s*color-mix\(in srgb, var\(--accent\) 28%, transparent\);\s*box-shadow:\s*none;/,
   );
 });
 
@@ -290,11 +290,11 @@ test('expanded right panels highlight the title divider without changing collaps
   );
   assert.match(
     css,
-    /#right-context-rail \[data-panel-id\]:not\(\.collapsed\) \.panel-divider\s*\{[\s\S]*?linear-gradient\(\s*90deg,\s*rgb\(0 212 255 \/ 28%\),\s*rgba\(0, 212, 255, 0\.18\) 58%,\s*transparent\s*\)[\s\S]*?box-shadow:\s*0 0 7px rgba\(0, 212, 255, 0\.22\);/,
+    /#right-context-rail \[data-panel-id\]:not\(\.collapsed\) \.panel-divider\s*\{\s*background:\s*color-mix\(in srgb, var\(--accent\) 28%, transparent\);\s*box-shadow:\s*none;/,
   );
   assert.match(
     css,
-    /#param-slider-panel:not\(\.collapsed\) \.param-panel-divider\s*\{[\s\S]*?linear-gradient\(\s*90deg,\s*rgb\(0 212 255 \/ 28%\),\s*rgba\(0, 212, 255, 0\.18\) 58%,\s*transparent\s*\);/,
+    /#param-slider-panel:not\(\.collapsed\) \.param-panel-divider\s*\{[\s\S]*?linear-gradient\([\s\S]*?var\(--accent\) 28%[\s\S]*?var\(--accent\) 18%[\s\S]*?\);/,
   );
 });
 

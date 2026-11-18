@@ -68,5 +68,6 @@
 @import './src/ui/styles/atlas/nav.css';
 @import './src/ui/styles/atlas/entity.css';
 @import './src/ui/styles/atlas/status.css';
+@import './src/ui/styles/atlas/rails.css';
 @import './src/ui/styles/atlas/responsive.css';
 @import './src/ui/styles/atlas/topbar-actions.css';

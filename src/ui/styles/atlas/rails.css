@@ -1,0 +1,112 @@
+/* Owner: right-edge rails (the pinned Context, CCTV and Street level icons and
+ * their labels). One surface: the label panel and the icon column read as a
+ * single box split by a 1px divider. Rows are 36px. Selectors carry the
+ * .gev-panel-rail--right parent so they outrank styles/rail-*.css.
+ */
+
+.gev-panel-rail--right > .ui-rail.ui-rail--right {
+  gap: 2px;
+  padding: 4px;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--r-lg) !important;
+  background: var(--surface) !important;
+  box-shadow: var(--shadow-1) !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Rows: 36px, sentence case, a surface-2 hover. */
+.gev-panel-rail--right > .ui-rail.ui-rail--right .ui-rail__item {
+  width: 100%;
+  height: 36px;
+  min-width: 36px;
+  padding: 0 9px;
+  border-radius: var(--r-md);
+  color: var(--text-2);
+}
+
+.gev-panel-rail--right > .ui-rail.ui-rail--right .ui-rail__item:hover:not(:disabled) {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.gev-panel-rail--right > .ui-rail.ui-rail--right .ui-rail__item:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* The active row: accent-soft under the icon and label, accent text. The
+   rail's shared highlight carries the fill, so the row itself stays clear. */
+.gev-panel-rail--right > .ui-rail.ui-rail--right::before {
+  background: var(--accent-soft) !important;
+  border-color: transparent !important;
+  border-radius: var(--r-md) !important;
+}
+
+.gev-panel-rail--right > .ui-rail.ui-rail--right .ui-rail__item--on {
+  color: var(--accent) !important;
+}
+
+/* Labels: 13px sentence case, no tracking. */
+.gev-panel-rail--right > .ui-rail.ui-rail--right .ui-rail__label {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0;
+  text-transform: none;
+  text-shadow: none;
+  color: var(--text) !important;
+}
+
+/* Expanded: the label panel is joined to the icon column. The column loses
+   its left border and corners, the panel loses its right ones, and the
+   panel's own right border is the divider. */
+.gev-panel-rail--right > .ui-rail.ui-rail--right.ui-rail--expanded {
+  border-left-width: 0 !important;
+  border-radius: 0 var(--r-lg) var(--r-lg) 0 !important;
+}
+
+.gev-panel-rail--right > .ui-rail.ui-rail--right.ui-rail--expanded::after {
+  top: -1px;
+  bottom: -1px;
+  right: 100%;
+  width: 170px;
+  box-sizing: border-box;
+  border: 1px solid var(--border) !important;
+  border-right-width: 1px !important;
+  border-radius: var(--r-lg) 0 0 var(--r-lg) !important;
+  background: var(--surface) !important;
+  box-shadow: var(--shadow-1) !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* The label sits 12px in from the panel's left edge. */
+.gev-panel-rail--right > .ui-rail.ui-rail--right.ui-rail--expanded .ui-rail__label {
+  left: -160px;
+  max-width: 144px;
+  margin: 0;
+}
+
+/* A panel open: the icons fold to one column, which stays one surface. The
+   legacy islands (per-run pieces behind the icons) are cleared, and the open
+   row carries its own accent-soft fill. */
+.gev-panel-rail--right > .ui-rail.ui-rail--right.ui-rail--collapsible:not(.ui-rail--expanded):has(.ui-rail__item--on) {
+  background: var(--surface) !important;
+  border-color: var(--border) !important;
+  box-shadow: var(--shadow-1) !important;
+}
+
+.gev-panel-rail--right > .ui-rail.ui-rail--right.ui-rail--collapsible:not(.ui-rail--expanded) > .ui-tooltip::before {
+  inset: 0 !important;
+  border: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.gev-panel-rail--right > .ui-rail.ui-rail--right .ui-rail__item--on {
+  background: var(--accent-soft) !important;
+}

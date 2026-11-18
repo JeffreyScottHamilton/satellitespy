@@ -1,1 +1,64 @@
-/* Owner: breakpoints (tablet 640-1023 drawer, mobile below 640 bottom sheets). */
+/* Owner: breakpoints. Tablet (640-1023) keeps the layer panel as a collapsible
+ * overlay over the globe. Phone (below 640, body.mobile-shell with the bottom
+ * tab bar): the search sits above the tab bar, the attribution above the
+ * search, and the control cluster above both.
+ */
+
+/* ── Phone: below 640px ── */
+@media (max-width: 639px) {
+  /* The wordmark pill goes; the search row and the tab bar carry the screen. */
+  #title-bar h1 {
+    display: none;
+  }
+
+  /* Search: full width less 12px each side, 8px above the tab bar. The dock
+     is a column flex (mobile-shell.css) whose location bar would take the
+     flex-basis of the desktop tray, so the bar is pinned to the field's 36px. */
+  body.mobile-shell #command-dock {
+    top: auto !important;
+    bottom: calc(var(--mobile-tab-space, 58px) + 8px) !important;
+    left: 12px !important;
+    right: 12px !important;
+    width: auto !important;
+  }
+
+  body.mobile-shell #command-dock > #location-bar {
+    flex: none !important;
+    height: 36px !important;
+  }
+
+  /* Attribution: one 10px line, 8px above the search, never under it. */
+  body.mobile-shell #cesium-credits#cesium-credits {
+    top: auto !important;
+    right: auto !important;
+    bottom: calc(var(--mobile-tab-space, 58px) + 52px) !important;
+    left: 12px !important;
+    font-size: 10px;
+    line-height: 14px;
+    white-space: nowrap;
+  }
+
+  /* Toasts float above the search and the attribution line. */
+  #toast {
+    bottom: calc(var(--mobile-tab-space, 58px) + 92px);
+  }
+
+  #global-loading-status,
+  #traffic-sync-chip,
+  #cctv-sync-chip {
+    max-width: calc(100vw - 24px);
+  }
+}
+
+/* ── Tablet and desktop: 640px and up ──
+ * The layer panel stops above the attribution line (about 100px from the
+ * bottom edge) instead of running over it. */
+@media (min-width: 640px) {
+  body #left-panel-stack > #data-panel:not(.collapsed) {
+    max-height: calc(100vh - 164px) !important;
+  }
+}
+
+/* ── Tablet: 640 to 1023px ──
+ * The layer panel (#data-panel) is already an overlay with its own collapse
+ * control in its header; nothing else moves at this width. */

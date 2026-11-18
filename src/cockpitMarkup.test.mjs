@@ -84,7 +84,7 @@ test('Cockpit has one reset action beside its bottom exit path', () => {
   assert.ok(topCenterActions, 'Top-center globe actions are missing');
   assert.match(
     topCenterActions[0],
-    /id="clear-selected-layers"[\s\S]*?id="share-btn"[\s\S]*?id="tilt-map-view"[\s\S]*?id="north-up-view"[\s\S]*?id="reset-globe-view"/,
+    /id="north-up-view"[\s\S]*?id="reset-globe-view"[\s\S]*?id="tilt-map-view"[\s\S]*?id="clear-selected-layers"[\s\S]*?id="share-btn"/,
   );
   assert.equal(
     (html.match(/id="clear-selected-layers"/g) || []).length,
@@ -373,7 +373,7 @@ test('Cockpit owns a focused shared Display portal and compact Radio controls', 
   );
   assert.match(
     html,
-    /id="reset-globe-view"[^>]*aria-label="Reset to full globe view"/,
+    /id="reset-globe-view"[^>]*aria-label="Return to global view"/,
   );
   assert.match(
     css,
@@ -459,7 +459,7 @@ test('Cockpit owns a focused shared Display portal and compact Radio controls', 
   assert.doesNotMatch(ui, /--cockpit-display-expanded-width|dataPanelWidth/);
   assert.match(
     css,
-    /is-expanded:has\(\[data-cockpit-launcher='display'\]\)[\s\S]*?box-shadow:\s*0 8px 32px rgba\(0, 0, 0, 0\.42\)/,
+    /is-expanded:has\(\[data-cockpit-launcher='display'\]\)[\s\S]*?box-shadow:\s*none;/,
   );
   assert.match(
     css,
@@ -467,7 +467,7 @@ test('Cockpit owns a focused shared Display portal and compact Radio controls', 
   );
   assert.match(
     css,
-    /\.cockpit-utility-control\.is-expanded \.cockpit-utility-divider\s*\{[\s\S]*?linear-gradient\(\s*90deg,\s*rgb\(0 212 255 \/ 28%\),\s*rgba\(0, 212, 255, 0\.18\) 58%,\s*transparent\s*\)[\s\S]*?box-shadow:\s*0 0 7px rgba\(0, 212, 255, 0\.22\);/,
+    /\.cockpit-utility-control\.is-expanded \.cockpit-utility-divider\s*\{[\s\S]*?var\(--accent\) 28%[\s\S]*?var\(--accent\) 18%[\s\S]*?box-shadow:\s*none;/,
   );
   assert.match(
     css,

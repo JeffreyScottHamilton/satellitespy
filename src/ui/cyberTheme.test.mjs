@@ -443,7 +443,9 @@ test('Cyber Voice clips its decoration without clipping descendant help and erro
     cyberStyles,
     /:root\[data-ui-theme='cyber'\] #command-dock > #gev-voice-control::before/,
   );
-  assert.match(decoration, /clip-path:\s*polygon\(/);
+  // The decoration is a flat frame: no notched clip-path, so nothing is cut off.
+  assert.match(decoration, /clip-path:\s*none;/);
+  assert.doesNotMatch(decoration, /polygon\(/);
   assert.match(decoration, /pointer-events:\s*none;/);
   assert.match(decoration, /inset:\s*0;/);
   assert.match(decoration, /z-index:\s*-1;/);
@@ -565,7 +567,7 @@ test('Cyber side panels share one width and one framed surface material', () => 
   assert.match(cyberStyles, /--cyber-panel-control-size: 30px;/);
   assert.match(
     cyberStyles,
-    /--cyber-panel-surface: rgba\(18, 24, 27, 0\.92\);/,
+    /--cyber-panel-surface: color-mix\(in srgb, var\(--surface\) 92%, transparent\);/,
   );
   assert.match(
     cyberStyles,
@@ -573,7 +575,7 @@ test('Cyber side panels share one width and one framed surface material', () => 
   );
   assert.match(
     cyberStyles,
-    /\.cockpit-utility-control\.is-expanded::after \{[\s\S]*?width: 36px;[\s\S]*?border-top: 1px solid rgba\(225, 102, 102, 0\.84\);/,
+    /\.cockpit-utility-control\.is-expanded::after \{[\s\S]*?width: 36px;[\s\S]*?border-top: 1px solid color-mix\(in srgb, var\(--danger\) 84%, transparent\);/,
   );
   assert.match(
     cyberStyles,
@@ -703,7 +705,9 @@ test('the Display selector, voice schema and final stylesheet expose Cyber', () 
   );
   assert.match(display, /id="cyber-sonar-sector"/);
   assert.deepEqual(setHud.parameters.properties.layout.enum, HUD_LAYOUTS);
-  assert.match(stylesheet, /@import '\.\/src\/ui\/styles\/cyber\.css';\s*$/);
+  // Cyber stays in the stylesheet entry; the atlas layer imports follow it.
+  assert.match(stylesheet, /@import '\.\/src\/ui\/styles\/cyber\.css';/);
+  assert.match(stylesheet, /@import '\.\/src\/ui\/styles\/atlas\/topbar-actions\.css';\s*$/);
   assert.match(cyberStyles, /:root\[data-ui-theme='cyber'\]/);
   assert.match(cyberStyles, /\.material-symbols-outlined/);
   assert.match(cyberStyles, /\.pp-label/);
@@ -711,7 +715,8 @@ test('the Display selector, voice schema and final stylesheet expose Cyber', () 
   assert.match(cyberStyles, /#left-panel-stack/);
   assert.match(cyberStyles, /#right-context-rail/);
   assert.match(cyberStyles, /#command-dock/);
-  assert.match(cyberStyles, /--cyber-panel-frame: polygon/);
+  // The notched panel frame is retired: panels are flat, so the token is none.
+  assert.match(cyberStyles, /--cyber-panel-frame: none;/);
   assert.match(cyberStyles, /\.data-panel-inner,/);
   assert.match(cyberStyles, /#pp-toggles\.collapsed > \.pp-header-row/);
   assert.match(
@@ -750,10 +755,12 @@ test('the Display selector, voice schema and final stylesheet expose Cyber', () 
     /#title-bar \.title-logo #globe \{[\s\S]*?fill: var\(--cyber-red\);[\s\S]*?stroke: var\(--cyber-red-bright\);/,
   );
   assert.match(cyberStyles, /#title-bar \.title-logo #globe_cage/);
+  // Action buttons are square and flat: no notched clip-path, only the edge ring.
   assert.match(
     cyberStyles,
-    /#top-center-actions button\s*\{[\s\S]*?border-radius:\s*0;[\s\S]*?clip-path:\s*polygon\(\s*29% 0,\s*71% 0,[\s\S]*?0 29%\s*\);/,
+    /#top-center-actions button\s*\{[\s\S]*?border-radius:\s*0;[\s\S]*?clip-path:\s*none;/,
   );
+  assert.doesNotMatch(cyberStyles, /#top-center-actions button[^{]*\{[^}]*polygon\(/);
   assert.match(cyberStyles, /#top-center-actions button::before/);
   assert.match(cyberStyles, /\.hud-top-left/);
   assert.match(cyberStyles, /transparent 0 min\(40vw, 52vh\)/);
@@ -789,14 +796,12 @@ test('the Display selector, voice schema and final stylesheet expose Cyber', () 
     cyberStyles,
     /--right-display-collapsed-width: var\(--cyber-panel-collapsed-width\);/,
   );
-  assert.match(
-    cyberStyles,
-    /clip-path: polygon\([\s\S]*?12px 0,[\s\S]*?0 12px/,
-  );
+  // Corner brackets are not notched any more: no polygon clip-path.
+  assert.doesNotMatch(cyberStyles, /clip-path: polygon\([\s\S]*?12px 0,/);
   assert.match(cyberStyles, /\.hud-corner::before/);
   assert.match(
     cyberStyles,
-    /--cyber-telemetry-fill: rgba\(13, 20, 23, 0\.985\);/,
+    /--cyber-telemetry-fill: color-mix\(in srgb, var\(--surface\) 98%, transparent\);/,
   );
   assert.match(cyberStyles, /var\(--cyber-telemetry-fill\)/);
   assert.match(cyberStyles, />\s*\.panel-header\s+\.panel-title::before/);

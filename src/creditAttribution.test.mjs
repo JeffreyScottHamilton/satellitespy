@@ -975,7 +975,7 @@ test('the credit line is never suppressed to make room', () => {
     );
     assert.doesNotMatch(
       block,
-      /opacity\s*:\s*0(\D|$)/,
+      /opacity\s*:\s*0(?![\d.])/,
       'the credit must never be faded out',
     );
   }

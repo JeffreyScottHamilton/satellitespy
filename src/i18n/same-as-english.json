@@ -296,7 +296,10 @@
     "{n} mm",
     "Route",
     "3D",
-    "KT"
+    "KT",
+    "Zoom",
+    "Standard",
+    "Retro"
   ],
   "es": [
     "1 min/s",
@@ -490,7 +493,9 @@
     "{n} min",
     "{n} mm",
     "3D",
-    "KT"
+    "KT",
+    "Zoom",
+    "Retro"
   ],
   "fr": [
     "1 min/s",
@@ -748,7 +753,12 @@
     "{n} min",
     "{n} mm",
     "3D",
-    "KT"
+    "KT",
+    "Aviation",
+    "Transport",
+    "Zoom",
+    "Standard",
+    "Monochrome"
   ],
   "it": [
     "1 min/s",
@@ -982,7 +992,9 @@
     "{n} min",
     "{n} mm",
     "3D",
-    "KT"
+    "KT",
+    "Zoom",
+    "Standard"
   ],
   "ja": [
     "1090 MHz",
@@ -1260,7 +1272,8 @@
     "{n} min",
     "{n} mm",
     "3D",
-    "KT"
+    "KT",
+    "Zoom"
   ],
   "ru": [
     "1900–1945",
@@ -1498,7 +1511,12 @@
     "{n} min",
     "{n} mm",
     "3D",
-    "KT"
+    "KT",
+    "Transport",
+    "Zoom",
+    "Standard",
+    "Retro",
+    "Data"
   ],
   "uk": [
     "1900–1945",

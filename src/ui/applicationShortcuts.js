@@ -36,6 +36,14 @@ export function bindApplicationShortcuts({
     )
       return;
 
+    // "/" moves focus to the location search; the slash itself is not typed.
+    if (event.key === '/') {
+      event.preventDefault?.();
+      searchInput?.focus?.();
+      return;
+    }
+    if (event.key === 'Escape' && event.target === searchInput)
+      searchInput.blur?.();
     if (STYLE_KEYS[event.key]) actions.setStyle(STYLE_KEYS[event.key]);
     if (event.key === 'Escape') actions.dismissSearch();
     const key = event.key.toLowerCase();
