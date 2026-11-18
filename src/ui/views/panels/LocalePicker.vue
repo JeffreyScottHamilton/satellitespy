@@ -29,6 +29,8 @@ const props = defineProps({
   locales: { type: Array, default: () => LOCALES },
   nativeNames: { type: Object, default: () => LOCALE_NAMES },
   searchThreshold: { type: Number, default: LOCALE_SEARCH_THRESHOLD },
+  /** The root id and the prefix of the popup's ids; a second picker needs its own. */
+  idBase: { type: String, default: 'locale-picker' },
 });
 
 const model = createLocalePickerModel({
@@ -38,7 +40,7 @@ const model = createLocalePickerModel({
   localName: createLocalNameReader(props.current),
   searchThreshold: props.searchThreshold,
 });
-const id = 'locale-picker';
+const id = props.idBase;
 const ids = {
   popup: `${id}-popup`,
   heading: `${id}-heading`,
@@ -187,7 +189,7 @@ defineExpose({ open, close, isOpen: () => model.open });
 </script>
 
 <template>
-  <div id="locale-picker" ref="root" class="locale-picker" v-class-toggle="{ 'is-open': view.open }" @focusout="onFocusOut">
+  <div :id="id" ref="root" class="locale-picker" v-class-toggle="{ 'is-open': view.open }" @focusout="onFocusOut">
     <button ref="button" class="locale-picker-button" type="button" aria-haspopup="listbox" :aria-expanded="String(view.open)" :aria-controls="ids.popup" :aria-label="buttonLabel" :title="t('Change the interface language')" @click="onButtonClick" @keydown="onButtonKeyDown" @keyup="onButtonKeyUp">
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="locale-picker-globe"><path v-for="d in LOCALE_PICKER_ICONS.globe.stroke" :key="d" :d="d" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></svg>
       <span class="locale-picker-code" translate="no" aria-hidden="true">{{ current.toUpperCase() }}</span>

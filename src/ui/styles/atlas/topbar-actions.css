@@ -1,0 +1,402 @@
+/* Owner: top-right actions (map style, Settings, theme toggle) and the Provider
+   Settings dialog they open. Tokens only; sentence case, no glows. */
+
+/* The POWER UP chip and the English-only corner picker are replaced by Settings.
+   Their markup stays (key setup and the locale tests bind to it). */
+#corner-actions {
+  display: none;
+}
+
+/* ---------- cluster ---------- */
+
+.top-actions {
+  position: fixed;
+  top: 12px;
+  right: 16px;
+  z-index: 160;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--text);
+}
+
+.top-actions-anchor {
+  position: relative;
+  display: flex;
+}
+
+.top-actions-button {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+  min-width: 36px;
+  margin: 0;
+  padding: 0 10px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font: inherit;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.top-actions-icon {
+  width: 36px;
+  padding: 0;
+}
+
+.top-actions-map {
+  max-width: 220px;
+}
+
+.top-actions-map-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.top-actions-button:hover {
+  background: var(--surface-2);
+}
+
+.top-actions-button[aria-expanded='true'] {
+  background: var(--surface-2);
+}
+
+.top-actions button:focus-visible,
+.top-actions a:focus-visible,
+.top-actions input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- popovers ---------- */
+
+.top-actions-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-1);
+  transform-origin: top right;
+  animation: top-actions-pop 150ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+@keyframes top-actions-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .top-actions-popover {
+    animation: none;
+  }
+}
+
+.top-actions-settings {
+  /* Lines up with the theme toggle, one 36px button and an 8px gap right of Settings. */
+  right: -44px;
+  width: 320px;
+  max-width: calc(100vw - 32px);
+  padding: 8px 12px 12px;
+}
+
+.top-actions-map-menu {
+  width: 260px;
+  max-width: calc(100vw - 32px);
+  padding: 8px;
+}
+
+.top-actions-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+}
+
+.top-actions-section:first-child {
+  border-top: 0;
+  padding-top: 6px;
+}
+
+.top-actions-heading {
+  margin: 0 0 2px;
+  padding: 4px 8px 0;
+  color: var(--text-2);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+}
+
+.top-actions-row-label {
+  padding: 0 8px;
+  color: var(--text-2);
+  font-size: 12px;
+}
+
+.top-actions-segmented {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  padding: 2px;
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+}
+
+.top-actions-segment {
+  height: 30px;
+  margin: 0;
+  color: var(--text-2);
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.top-actions-segment[aria-pressed='true'] {
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.top-actions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.top-actions-option {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 32px;
+  margin: 0;
+  padding: 4px 8px;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.top-actions-option:hover {
+  background: var(--surface-2);
+}
+
+.top-actions-option[aria-disabled='true'] {
+  color: var(--text-2);
+  cursor: default;
+}
+
+.top-actions-option[aria-checked='true'] .top-actions-option-name,
+.top-actions-option[aria-pressed='true'] .top-actions-option-name {
+  font-weight: 600;
+}
+
+.top-actions-check {
+  display: inline-flex;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--accent);
+}
+
+.top-actions-check svg {
+  width: 16px;
+  height: 16px;
+}
+
+.top-actions-option-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.top-actions-option-note,
+.top-actions-note {
+  color: var(--text-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.top-actions-note {
+  margin: 0;
+  padding: 4px 8px;
+}
+
+.top-actions-check-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 0 8px;
+  cursor: pointer;
+}
+
+.top-actions-check-row input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.top-actions-action {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  min-height: 36px;
+  margin: 0;
+  padding: 6px 10px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.top-actions-action:hover {
+  background: var(--surface-2);
+}
+
+.top-actions-action-note {
+  color: var(--text-2);
+  font-size: 12px;
+}
+
+.top-actions-link {
+  display: inline-block;
+  padding: 6px 8px;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.top-actions-link:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Provider Settings dialog (#key-setup), on tokens ---------- */
+
+#key-setup {
+  color: var(--text);
+  font-family: var(--font-sans);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-1);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+#key-setup .key-setup-scanline {
+  display: none;
+}
+
+#key-setup .key-setup-kicker {
+  color: var(--text-2);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+#key-setup h2 {
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+#key-setup p,
+#key-setup .key-setup-unlocks {
+  color: var(--text-2);
+  font-size: 13px;
+}
+
+#key-setup .key-setup-row {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+
+#key-setup input {
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+}
+
+#key-setup input:focus-visible,
+#key-setup button:focus-visible,
+#key-setup a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+#key-setup .key-setup-get {
+  color: var(--accent);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+#key-setup .key-setup-close {
+  color: var(--text-2);
+}
+
+#key-setup .key-setup-apply {
+  color: var(--accent-ink);
+  background: var(--accent);
+  border: 0;
+  border-radius: var(--r-md);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+#key-setup .key-setup-hint {
+  color: var(--text-2);
+}
+
+/* ---------- narrow screens ---------- */
+
+@media (max-width: 639px) {
+  .top-actions {
+    top: 8px;
+    right: 12px;
+  }
+
+  .top-actions-map {
+    max-width: 140px;
+  }
+
+  .top-actions-settings {
+    right: -44px;
+  }
+}
