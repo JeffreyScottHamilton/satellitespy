@@ -44,74 +44,62 @@ function lifecycleStateLabel(lifecycleState) {
 // Presentation order is independent of catalog registration and startup order.
 const PANEL_GROUPS = [
   {
-    label: msg('Movement'),
-    ids: [
-      'satellites',
-      'flights',
-      'military',
-      'local-adsb',
-      'ais-live-vessels',
-      'traffic',
-      'transit',
-      'rail',
-      'bikeshare',
-    ],
+    label: msg('Aviation'),
+    ids: ['flights', 'military', 'local-adsb', 'drone-airspace'],
   },
   {
-    label: msg('Cameras'),
-    ids: ['cctv', 'recent-imagery', 'street-level'],
+    label: msg('Maritime'),
+    ids: ['ais-live-vessels', 'shipwrecks', 'sea-marks'],
   },
   {
-    label: msg('Infrastructure'),
-    ids: [
-      'alpr-cameras',
-      'military-installations',
-      'drone-airspace',
-      'local-datacenters',
-      'telegeography-submarine-cables',
-      'local-dams',
-      'sea-marks',
-      'ski-pistes',
-    ],
+    label: msg('Space'),
+    ids: ['satellites', 'rocket-launches', 'gnss-integrity'],
   },
   {
-    label: msg('Events'),
+    label: msg('Earth & Environment'),
     ids: [
-      'rocket-launches',
       'earthquakes',
       'local-firms',
       'fire-perimeters',
-      'gnss-integrity',
-      's2-ghostmaps',
-      'shipwrecks',
-      'news',
-    ],
-  },
-  {
-    label: msg('Wildlife'),
-    ids: ['wildlife-sightings'],
-  },
-  {
-    label: msg('Weather'),
-    ids: [
       'air-quality',
       'wind',
       'weather-radar',
       'weather-satellite',
       'weather-lightning',
       'weather-cyclones',
+      'wildlife-sightings',
+      's2-ghostmaps',
     ],
+  },
+  {
+    label: msg('Infrastructure'),
+    ids: [
+      'telegeography-submarine-cables',
+      'local-datacenters',
+      'local-dams',
+      'military-installations',
+      'alpr-cameras',
+      'ski-pistes',
+    ],
+  },
+  {
+    label: msg('Transport'),
+    ids: ['traffic', 'transit', 'rail', 'bikeshare'],
+  },
+  {
+    label: msg('Cameras & Street level'),
+    ids: ['cctv', 'recent-imagery', 'street-level'],
+  },
+  {
+    label: msg('Public data'),
+    ids: ['news', 'radio'],
   },
   // Directions renders in the Utilities panel, beside Draw and Import, and
   // needs no heading there.
   {
-    label: msg('Utilities'),
+    label: msg('Tools'),
     ids: ['directions', 'osm-places'],
     containerId: 'utilities-toggles',
-  },
-  {
-    label: msg('Audio'),
-    ids: ['radio'],
   },
 ];
 const PANEL_ORDER = PANEL_GROUPS.flatMap(({ label, ids, containerId }) =>

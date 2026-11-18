@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
-test('panel presentation places Transit and Rail between Street Traffic and Bike Share in Movement', () => {
+test('panel presentation places Transit and Rail between Street Traffic and Bike Share in Transport', () => {
   const source = readFileSync(
     new URL('./layerPanel.js', import.meta.url),
     'utf8',
@@ -19,24 +19,14 @@ test('panel presentation places Transit and Rail between Street Traffic and Bike
     ),
   );
   assert.deepEqual(
-    order.filter(({ label }) => label === 'Movement').map(({ id }) => id),
-    [
-      'satellites',
-      'flights',
-      'military',
-      'local-adsb',
-      'ais-live-vessels',
-      'traffic',
-      'transit',
-      'rail',
-      'bikeshare',
-    ],
+    order.filter(({ label }) => label === 'Transport').map(({ id }) => id),
+    ['traffic', 'transit', 'rail', 'bikeshare'],
   );
   assert.equal(order.filter(({ id }) => id === 'transit').length, 1);
   assert.equal(order.filter(({ id }) => id === 'rail').length, 1);
 });
 
-test('Wildlife follows Events and precedes Weather', () => {
+test('Wildlife sightings sits in Earth & Environment between Weather and S2 ghost maps', () => {
   const source = readFileSync(
     new URL('./layerPanel.js', import.meta.url),
     'utf8',
@@ -51,10 +41,9 @@ test('Wildlife follows Events and precedes Weather', () => {
     ),
   );
   const wildlife = order.findIndex(({ id }) => id === 'wildlife-sightings');
-  assert.equal(order[wildlife].label, 'Wildlife');
-  // News is the last of Events.
-  assert.equal(order[wildlife - 1].id, 'news');
-  assert.equal(order[wildlife + 1].id, 'air-quality');
+  assert.equal(order[wildlife].label, 'Earth & Environment');
+  assert.equal(order[wildlife - 1].id, 'weather-cyclones');
+  assert.equal(order[wildlife + 1].id, 's2-ghostmaps');
   assert.equal(order.filter(({ id }) => id === 'wildlife-sightings').length, 1);
 });
 
@@ -415,7 +404,7 @@ test('Directions renders in the Utilities list without a heading, and Radio unde
     assert.deepEqual(rowIds(utilities), ['directions']);
     assert.deepEqual(headings(utilities), []);
     assert.deepEqual(rowIds(container), ['flights', 'radio']);
-    assert.deepEqual(headings(container), ['Movement', 'Audio']);
+    assert.deepEqual(headings(container), ['Aviation', 'Public data']);
     panel.mount(container);
     assert.deepEqual(
       rowIds(utilities),
@@ -449,8 +438,8 @@ test('without the Utilities list, Directions stays in Data Layers under Utilitie
     withUtilities: false,
   });
   try {
-    assert.deepEqual(rowIds(container), ['flights', 'directions', 'radio']);
-    assert.deepEqual(headings(container), ['Movement', 'Utilities', 'Audio']);
+    assert.deepEqual(rowIds(container), ['flights', 'radio', 'directions']);
+    assert.deepEqual(headings(container), ['Aviation', 'Public data', 'Tools']);
   } finally {
     restore();
   }

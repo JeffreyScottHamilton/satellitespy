@@ -51,7 +51,7 @@ async function importChosen(event) {
 <template>
   <div id="left-panel-stack" class="ui-scroll">
   <!-- Data Layer Toggle Panel -->
-  <RailPanel id="data-panel" start-collapsed class="active" :title="t('DATA LAYERS')">
+  <RailPanel id="data-panel" class="active" :title="t('Layers')">
     <template #actions><LayerFinder part="buttons" /></template>
     <LayerFinder part="bar" />
     <div id="data-toggles" class="data-toggle-list ui-scroll"></div>
