@@ -42,23 +42,36 @@ function getProviderHandler() {
  * Vercel normally keeps it intact; if it has been rewritten to the catch-all
  * route, rebuild it from the captured `path` segments.
  * @param {import('node:http').IncomingMessage & {query?: Record<string, unknown>}} req
- * @returns {string}
+ * @returns {string|null} The rebuilt URL, or null when a segment is unsafe (answer 400).
  */
 function originalApiUrl(req) {
   const raw = String(req.url || '/');
   if (raw.startsWith('/api/')) return raw;
   const captured = req.query?.path;
-  const segments = Array.isArray(captured)
-    ? captured
-    : captured
-      ? [captured]
-      : [];
+  const segments = (
+    Array.isArray(captured) ? captured : captured ? [captured] : []
+  ).map(String);
+  if (
+    segments.some(
+      (segment) =>
+        segment === '.' || segment === '..' || /[/?#\\]/.test(segment),
+    )
+  ) {
+    return null;
+  }
   const search = raw.includes('?') ? raw.slice(raw.indexOf('?')) : '';
-  return `/api/${segments.map(String).join('/')}${search}`;
+  return `/api/${segments.map(encodeURIComponent).join('/')}${search}`;
 }
 
 export default async function handler(req, res) {
   const url = originalApiUrl(req);
+  if (url === null) {
+    res.statusCode = 400;
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    res.setHeader('Cache-Control', 'no-store');
+    res.end(JSON.stringify({ error: 'bad_path' }));
+    return;
+  }
   let run;
   try {
     run = await getProviderHandler();

@@ -51,12 +51,31 @@ the plan's limit.
 
 ## Feature matrix on Vercel
 
-Works, as far as tested above (stateless request/response proxies):
+Works (stateless, keyless request/response proxies; only the routes in the table above were exercised):
 
 - Static frontend from `dist/`.
 - Stateless REST proxies: CelesTrak (`/api/celestrak/<group>`), Nominatim geocoding
-  (`/api/geocode`, needs `NOMINATIM_URL`), and the other request/response providers, which
-  were not individually tested. Each needs its own upstream key (see the env table).
+  (`/api/geocode`, needs `NOMINATIM_URL`), and the other keyless providers, which were not
+  individually tested.
+
+### Keyed routes are off by default
+
+Routes that spend a paid API key (for example `/api/realtime/token`, `/api/openai/*`,
+`/api/google/nearby-places`) sit behind the same-site gate. Vercel adds `x-forwarded-for`,
+`x-forwarded-proto` and `x-forwarded-host` to every request, and the gate refuses any request
+carrying proxy headers. **On Vercel these routes answer 403 by default.** That is intended.
+
+Setting `SATELLITESPY_PUBLIC_KEYED_ROUTES=1` in the function's environment turns them on. The
+adapter then derives the client IP (`x-vercel-forwarded-for`, else the first `x-forwarded-for`
+entry) and protocol (`x-forwarded-proto`), strips the proxy headers, and lets the gate run its
+Origin, Host and Sec-Fetch-Site checks. **This lets anyone who can load the site spend those
+keys.** The Origin checks only stop other websites in a browser; `curl` or any script can omit
+or forge `Origin`. The only limit is the per-IP rate limit, which is in memory per instance.
+Enable it only with provider-side budgets and alerts, or put the site behind authentication.
+
+Still local-only (not available on Vercel with or without the opt-in): Provider Settings and
+key setup (`/api/setup/*`), the AIS live stream, realtime voice sessions, SSE streams and any
+WebSocket upgrade, and persistent disk caches.
 
 Does not work, or is not supported:
 

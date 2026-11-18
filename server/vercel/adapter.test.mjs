@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import http from 'node:http';
 import { after, describe, it } from 'node:test';
+import { PROXY_SIGNALS } from '../../src/localRequestGate.mjs';
+import { isLoopbackPeer } from '../providers/common/rate-limit.js';
+import { admitSameSite } from '../providers/common/same-site.js';
 import { createProviderHandler } from './adapter.js';
 
 const servers = [];
@@ -289,5 +292,156 @@ describe('createProviderHandler plugin installation', () => {
     });
     assert.equal(seen.env, env);
     assert.equal(seen.root, '/srv/app');
+  });
+});
+
+/** GET with custom headers; resolves status and JSON body. */
+async function getWith(handler, headers) {
+  const server = http.createServer(handler);
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  servers.push(server);
+  const { port } = server.address();
+  return new Promise((resolve, reject) => {
+    http
+      .get({ host: '127.0.0.1', port, path: '/api/keyed', headers }, (res) => {
+        let body = '';
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => (body += chunk));
+        res.on('end', () => resolve({ status: res.statusCode, body }));
+      })
+      .on('error', reject);
+  });
+}
+
+/** A fake keyed route guarded by the real same-site gate. */
+function keyedPlugin(seen) {
+  return plugin('keyed', '/api/keyed', (req, res) => {
+    if (admitSameSite(req, res)) return;
+    seen.push({
+      ip: req.socket.remoteAddress,
+      headers: { ...req.headers },
+    });
+    res.end('ok');
+  });
+}
+
+const VERCEL_HEADERS = {
+  host: 'app.example.com',
+  'x-forwarded-for': '203.0.113.9',
+  'x-vercel-forwarded-for': '203.0.113.7',
+  'x-forwarded-proto': 'https',
+  'x-forwarded-host': 'app.example.com',
+};
+
+describe('keyed routes on Vercel', () => {
+  it('refuses with 403 by default when x-forwarded-* headers are present', async () => {
+    const seen = [];
+    const handler = await createProviderHandler({
+      plugins: [keyedPlugin(seen)],
+      env: { SATELLITESPY_PUBLIC_KEYED_ROUTES: 'true' },
+    });
+    const response = await getWith(handler, {
+      ...VERCEL_HEADERS,
+      origin: 'https://app.example.com',
+    });
+    assert.equal(response.status, 403);
+    assert.equal(seen.length, 0);
+  });
+
+  it('opt-in admits a same-origin https request and strips proxy headers', async () => {
+    const seen = [];
+    const handler = await createProviderHandler({
+      plugins: [keyedPlugin(seen)],
+      env: { SATELLITESPY_PUBLIC_KEYED_ROUTES: '1' },
+    });
+    const response = await getWith(handler, {
+      ...VERCEL_HEADERS,
+      origin: 'https://app.example.com',
+      'sec-fetch-site': 'same-origin',
+    });
+    assert.equal(response.status, 200);
+    assert.equal(seen.length, 1);
+    for (const name of PROXY_SIGNALS)
+      assert.equal(seen[0].headers[name], undefined);
+  });
+
+  it('opt-in still refuses a cross-site Sec-Fetch-Site and a foreign Origin', async () => {
+    const handler = await createProviderHandler({
+      plugins: [keyedPlugin([])],
+      env: { SATELLITESPY_PUBLIC_KEYED_ROUTES: '1' },
+    });
+    const site = await getWith(handler, {
+      ...VERCEL_HEADERS,
+      'sec-fetch-site': 'cross-site',
+    });
+    assert.equal(site.status, 403);
+    const origin = await getWith(handler, {
+      ...VERCEL_HEADERS,
+      origin: 'https://evil.example',
+    });
+    assert.equal(origin.status, 403);
+    const downgraded = await getWith(handler, {
+      ...VERCEL_HEADERS,
+      'x-forwarded-proto': 'http',
+      origin: 'https://app.example.com',
+    });
+    assert.equal(downgraded.status, 403);
+  });
+
+  it('opt-in uses the client IP as the socket remoteAddress', async () => {
+    const seen = [];
+    const handler = await createProviderHandler({
+      plugins: [keyedPlugin(seen)],
+      env: { SATELLITESPY_PUBLIC_KEYED_ROUTES: '1' },
+    });
+    await getWith(handler, VERCEL_HEADERS);
+    assert.equal(seen[0].ip, '203.0.113.7');
+    const { 'x-vercel-forwarded-for': _drop, ...fallback } = VERCEL_HEADERS;
+    await getWith(handler, {
+      ...fallback,
+      'x-forwarded-for': '198.51.100.4, 10.0.0.1',
+    });
+    assert.equal(seen[1].ip, '198.51.100.4');
+  });
+});
+
+describe('keyed routes loopback client IP', () => {
+  it('never treats a loopback or private derived IP as the peer', async () => {
+    const seen = [];
+    const handler = await createProviderHandler({
+      plugins: [keyedPlugin(seen)],
+      env: { SATELLITESPY_PUBLIC_KEYED_ROUTES: '1' },
+    });
+    const { 'x-vercel-forwarded-for': _drop, ...base } = VERCEL_HEADERS;
+    for (const ip of ['127.0.0.1', '::1', '::ffff:127.0.0.1', '10.1.2.3']) {
+      await getWith(handler, { ...base, 'x-forwarded-for': ip });
+    }
+    assert.equal(seen.length, 4);
+    for (const entry of seen) {
+      assert.equal(entry.ip, 'unknown');
+      assert.equal(isLoopbackPeer(entry.ip), false);
+    }
+  });
+});
+
+describe('api catch-all path validation', () => {
+  it('answers 400 for unsafe path segments', async () => {
+    const { default: apiHandler } = await import('../../api/[...path].mjs');
+    for (const segment of ['.', '..', 'a/b', 'a?b', 'a#b', 'a\\b']) {
+      const res = {
+        headers: {},
+        setHeader(k, v) {
+          this.headers[k] = v;
+        },
+        end(body) {
+          this.body = body;
+        },
+      };
+      await apiHandler(
+        { url: '/rewritten', query: { path: ['x', segment] } },
+        res,
+      );
+      assert.equal(res.statusCode, 400, `segment ${JSON.stringify(segment)}`);
+    }
   });
 });

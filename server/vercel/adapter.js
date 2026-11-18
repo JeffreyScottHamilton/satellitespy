@@ -13,6 +13,70 @@
  * `httpServer: null`, so their lifecycle hooks are skipped and their upgrade
  * paths never attach.
  */
+import { isIP } from 'node:net';
+import { PROXY_SIGNALS } from '../../src/localRequestGate.mjs';
+
+/**
+ * Whether an address is loopback, private, link-local or unspecified. A public
+ * Vercel request is never local, so such a value must not become the peer.
+ * @param {string} ip A value already validated by `isIP`.
+ * @returns {boolean}
+ */
+function isLocalOrPrivateAddress(ip) {
+  const mapped = /^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/i.exec(ip);
+  const addr = (mapped ? mapped[1] : ip).toLowerCase();
+  if (isIP(addr) === 4) {
+    const [a, b] = addr.split('.').map(Number);
+    return (
+      a === 0 ||
+      a === 10 ||
+      a === 127 ||
+      (a === 169 && b === 254) ||
+      (a === 172 && b >= 16 && b <= 31) ||
+      (a === 192 && b === 168)
+    );
+  }
+  return (
+    addr === '::' ||
+    addr === '::1' ||
+    /^f[cd]/.test(addr) ||
+    /^fe[89ab]/.test(addr) ||
+    /^::ffff:/.test(addr)
+  );
+}
+
+/**
+ * Opt-in request normalisation for keyed routes (SATELLITESPY_PUBLIC_KEYED_ROUTES=1).
+ * Vercel adds x-forwarded-* headers to every request and terminates TLS, so the
+ * same-site gate would refuse every keyed route. When enabled, derive the client
+ * IP and protocol from Vercel's headers, strip every proxy signal header, and
+ * present a socket shim so the gate still enforces Origin/Host/Sec-Fetch-Site.
+ * Anyone who can load the site can then spend the keys (see docs/DEPLOYMENT.md).
+ * @param {import('node:http').IncomingMessage} req
+ */
+function normaliseVercelRequest(req) {
+  const headers = req.headers || {};
+  const first = (value) =>
+    String(Array.isArray(value) ? value[0] : value || '')
+      .split(',')[0]
+      .trim();
+  const candidate =
+    first(headers['x-vercel-forwarded-for']) ||
+    first(headers['x-forwarded-for']);
+  const clientIp =
+    isIP(candidate) && !isLocalOrPrivateAddress(candidate)
+      ? candidate
+      : 'unknown';
+  const proto = first(headers['x-forwarded-proto']).toLowerCase();
+  const encrypted = proto === 'https';
+  for (const name of PROXY_SIGNALS) delete headers[name];
+  delete headers['x-vercel-forwarded-for'];
+  Object.defineProperty(req, 'socket', {
+    value: Object.freeze({ encrypted, remoteAddress: clientIp }),
+    configurable: true,
+    writable: true,
+  });
+}
 
 /**
  * Normalise a mount path: drop a trailing slash, and treat '/' as "match all".
@@ -186,5 +250,9 @@ export async function createProviderHandler({
     }
   }
 
-  return (req, res) => dispatch(req, res, stack);
+  const publicKeyed = env?.SATELLITESPY_PUBLIC_KEYED_ROUTES === '1';
+  return (req, res) => {
+    if (publicKeyed) normaliseVercelRequest(req);
+    dispatch(req, res, stack);
+  };
 }
