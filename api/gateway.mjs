@@ -1,7 +1,9 @@
 /**
  * Vercel Node function for the provider API.
  *
- * Every `/api/*` request lands here. The provider plugins are built once per
+ * Every `/api/*` request lands here: vercel.json rewrites `/api/:path*` to
+ * `/api/gateway?__path=:path*`, because a catch-all file name only matched
+ * single-segment paths in production. The provider plugins are built once per
  * function instance (lazily, on the first request) and then reused. Vercel only
  * allows writes under /tmp, so the Nominatim cache is pointed there.
  *
@@ -39,27 +41,57 @@ function getProviderHandler() {
 
 /**
  * The adapter routes on req.url, which must be the original `/api/...` path.
- * Vercel normally keeps it intact; if it has been rewritten to the catch-all
- * route, rebuild it from the captured `path` segments.
+ * vercel.json rewrites every `/api/:path*` request to `/api/gateway?__path=:path*`
+ * (a catch-all file only matched single-segment paths in production), so rebuild
+ * the original URL from `__path` and keep the remaining query params in order.
  * @param {import('node:http').IncomingMessage & {query?: Record<string, unknown>}} req
  * @returns {string|null} The rebuilt URL, or null when a segment is unsafe (answer 400).
  */
-function originalApiUrl(req) {
+export function originalApiUrl(req) {
   const raw = String(req.url || '/');
-  if (raw.startsWith('/api/')) return raw;
-  const captured = req.query?.path;
+  let parsed;
+  try {
+    parsed = new URL(raw, 'http://localhost');
+  } catch {
+    return null;
+  }
+  const pathname = parsed.pathname;
+  const isGateway =
+    pathname === '/api/gateway' ||
+    pathname === '/api/gateway/' ||
+    pathname === '/api/gateway.mjs';
+  const params = parsed.searchParams;
+  const rest = new URLSearchParams();
+  for (const [key, value] of params) {
+    if (key !== '__path') rest.append(key, value);
+  }
+  const query = rest.toString();
+  const search = query ? `?${query}` : '';
+
+  if (!isGateway && pathname.startsWith('/api/')) {
+    if (!params.has('__path')) return raw;
+    return `${pathname}${search}`;
+  }
+
+  let captured = params.has('__path') ? params.get('__path') : req.query?.__path;
+  if (captured === undefined || captured === null) captured = [];
   const segments = (
-    Array.isArray(captured) ? captured : captured ? [captured] : []
-  ).map(String);
+    Array.isArray(captured)
+      ? captured.map(String)
+      : String(captured).split('/')
+  ).filter((segment) => segment !== '');
   if (
+    segments.length === 0 ||
     segments.some(
       (segment) =>
-        segment === '.' || segment === '..' || /[/?#\\]/.test(segment),
+        segment === '.' ||
+        segment === '..' ||
+        // eslint-disable-next-line no-control-regex
+        /[/?#\\\u0000-\u001f\u007f]/.test(segment),
     )
   ) {
     return null;
   }
-  const search = raw.includes('?') ? raw.slice(raw.indexOf('?')) : '';
   return `/api/${segments.map(encodeURIComponent).join('/')}${search}`;
 }
 

@@ -424,9 +424,9 @@ describe('keyed routes loopback client IP', () => {
   });
 });
 
-describe('api catch-all path validation', () => {
+describe('api gateway path validation', () => {
   it('answers 400 for unsafe path segments', async () => {
-    const { default: apiHandler } = await import('../../api/[...path].mjs');
+    const { default: apiHandler } = await import('../../api/gateway.mjs');
     for (const segment of ['.', '..', 'a/b', 'a?b', 'a#b', 'a\\b']) {
       const res = {
         headers: {},
@@ -438,7 +438,7 @@ describe('api catch-all path validation', () => {
         },
       };
       await apiHandler(
-        { url: '/rewritten', query: { path: ['x', segment] } },
+        { url: '/api/gateway', query: { __path: ['x', segment] } },
         res,
       );
       assert.equal(res.statusCode, 400, `segment ${JSON.stringify(segment)}`);

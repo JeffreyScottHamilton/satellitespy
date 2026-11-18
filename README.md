@@ -59,7 +59,7 @@ Metered keys can cost real money. App-level rate limits are per-IP and in-memory
 
 See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the full detail. In summary:
 
-- **Static and Vercel.** `npm run build` produces a static frontend. On Vercel, one serverless function (`api/[...path].mjs`) serves the stateless, request/response provider proxies. The Vercel setup has not been verified on a real deployment; the doc lists exactly what was and was not tested.
+- **Static and Vercel.** `npm run build` produces a static frontend. On Vercel, one serverless function (`api/gateway.mjs`) serves the stateless, request/response provider proxies. The Vercel setup has not been verified on a real deployment; the doc lists exactly what was and was not tested.
 - **Keyed routes are off on Vercel by default.** Routes that spend a paid key (for example `/api/realtime/token`, `/api/openai/*`, `/api/google/nearby-places`) answer 403. Setting `SATELLITESPY_PUBLIC_KEYED_ROUTES=1` turns them on for everyone who can load the site. That lets anyone spend those keys, and only a per-instance in-memory rate limit applies. Enable it only with provider-side budgets and alerts, or behind authentication.
 - **Persistent pieces need the Docker image.** The live AIS stream, realtime voice sessions, SSE and WebSocket routes, Provider Settings and persistent disk caches do not work on serverless. Run the Docker image (`Dockerfile`, `compose.yaml`) on a host that keeps a process alive, and set `GEV_ALLOWED_HOSTS` to the public hostname.
 

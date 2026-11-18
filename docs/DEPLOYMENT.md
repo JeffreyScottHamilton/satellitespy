@@ -17,7 +17,7 @@ keeps a process alive.
   `src/data/local_data` folders that the providers read at runtime (`natural_earth`,
   `cctv_ground_heights`), and `node_modules/ws/**` (loaded through `createRequire`, which
   Vercel's file tracing may not see). `maxDuration` is 30 seconds.
-- `api/[...path].mjs`: one Node function for every `/api/*` path. It builds the provider
+- `api/gateway.mjs`: one Node function for every `/api/*` path. It builds the provider
   handler once per instance, from `localProviderPlugins({ nominatimStorageDir: '/tmp/satellitespy/nominatim' })`.
   It leaves out the `gev-key-setup` plugin, which writes `.env` on disk and has no use on Vercel.
 - `server/vercel/adapter.js`: `createProviderHandler` runs each plugin's `configureServer`
@@ -25,8 +25,10 @@ keeps a process alive.
   collected middleware in connect style. Unmatched requests get `404 {"error":"not_found"}`,
   and errors get `500 {"error":"internal_error"}`. A plugin that throws during install is
   logged and skipped, and the others still load.
-- No `rewrites` entry is needed: Vercel routes `/api/*` to the catch-all function
-  automatically, and the app has no client-side router that needs an SPA fallback.
+- A catch-all file (`api/[...path].mjs`) only matched single-segment paths in production
+  (`/api/tomtom/status` got the platform 404), so `vercel.json` rewrites every `/api/*` path
+  to `api/gateway.mjs` with the path in the `__path` query param. The app has no client-side
+  router that needs an SPA fallback.
 
 ## What was verified, and how
 
