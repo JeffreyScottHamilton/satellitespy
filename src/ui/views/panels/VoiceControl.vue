@@ -1,8 +1,10 @@
 <script setup>
+import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { formatNumber, t } from '../../../i18n/index.js';
 import { vClassToggle } from '../../rail/classToggle.js';
 import { useVoiceStore } from '../../stores/voice.js';
+import { useProviderSettingsStore } from '../../stores/providerSettings.js';
 import { ASSISTANT_NAME } from '../../../voice/control.js';
 import VoiceCard from './VoiceCard.vue';
 import VoiceVisualizer from './VoiceVisualizer.vue';
@@ -17,6 +19,20 @@ import UiSelect from '../../kit/UiSelect.js';
 defineProps({ view: { type: Object, required: true } });
 const { controls } = storeToRefs(useVoiceStore());
 const emit = (name, ...args) => controls.value?.emit(name, ...args);
+
+// Voice and chat need an OpenAI or Gemini key. Key setup reports which are set
+// (dev surface only). Without a key the dock shows nothing rather than a mic
+// that cannot start. Until key setup has reported (or where it does not exist,
+// as in production builds), there is no signal, so the control stays shown.
+const VOICE_KEY_IDS = ['openai', 'gemini'];
+const keySetup = storeToRefs(useProviderSettingsStore()).view;
+const voiceConfigured = computed(() => {
+  const setup = keySetup.value;
+  if (!setup?.ready) return true;
+  return (setup.rows || []).some(
+    (row) => VOICE_KEY_IDS.includes(row.id) && row.set,
+  );
+});
 
 // A value the owner may restore after a refused change; written on every
 // render, as the owner's own writes were.
@@ -65,7 +81,7 @@ const frameStyle = (panel) => ({
 </script>
 
 <template>
-  <div id="gev-voice-control" v-bind="rootData(view.root)" v-class-toggle="{ 'error-dismissed': view.root.errorDismissed }" @pointerleave="emit('pointerleave', $event)" @pointerenter="emit('pointerenter', $event)">
+  <div v-if="voiceConfigured" id="gev-voice-control" v-bind="rootData(view.root)" v-class-toggle="{ 'error-dismissed': view.root.errorDismissed }" @pointerleave="emit('pointerleave', $event)" @pointerenter="emit('pointerenter', $event)">
       <span class="gev-active-border" aria-hidden="true"></span>
       <label v-if="!view.panel" id="gev-voice-provider-field" class="gev-voice-provider-field" :hidden="view.provider.hidden">
         <span>{{ t('Voice provider') }}</span>
@@ -170,3 +186,72 @@ const frameStyle = (panel) => ({
       </div>
   </div>
 </template>
+
+<style scoped>
+/* The dock shows one compact round group: mic and chat. The status, readout,
+   help tray and waveform stay out of the way; the panels keep their own styles. */
+#gev-voice-control {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  text-shadow: none;
+}
+#gev-voice-control .gev-active-border,
+#gev-voice-control .gev-voice-heading,
+#gev-voice-control .gev-voice-readout,
+#gev-voice-control .gev-voice-help-tray,
+#gev-voice-control .gev-voice-visualizer,
+#gev-voice-control .gev-chat-thinking,
+#gev-voice-control #gev-assistant-phase,
+#gev-voice-control .gev-mic-label,
+#gev-voice-control .gev-chat-label {
+  display: none;
+}
+#gev-voice-control #gev-voice-button,
+#gev-voice-control #gev-chat-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  padding: 0;
+  margin: 0;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  box-shadow: none;
+  text-shadow: none;
+  cursor: pointer;
+}
+#gev-voice-control #gev-voice-button[aria-pressed='true'] {
+  color: var(--accent);
+}
+#gev-voice-control #gev-voice-button .gev-mic-orbit {
+  animation: none;
+  box-shadow: none;
+}
+#gev-voice-control #gev-voice-button img {
+  width: 18px;
+  height: 18px;
+}
+#gev-voice-control #gev-chat-button svg {
+  width: 18px;
+  height: 18px;
+}
+#gev-voice-control button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+</style>

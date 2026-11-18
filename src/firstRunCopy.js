@@ -11,9 +11,9 @@ import { msg, t } from './i18n/index.js';
 export const ENVIRONMENTAL_LABEL_CHOICE = 'ENVIRONMENTAL';
 
 const ENVIRONMENTAL_LABEL_KEYS = Object.freeze({
-  ENVIRONMENTAL: msg('ENVIRONMENTAL'),
-  EARTH_WATCH: msg('EARTH WATCH'),
-  ACTIVE_EVENTS: msg('ACTIVE EVENTS'),
+  ENVIRONMENTAL: msg('Environmental'),
+  EARTH_WATCH: msg('Earth watch'),
+  ACTIVE_EVENTS: msg('Active events'),
 });
 
 /**
@@ -28,5 +28,5 @@ export function environmentalLabel(choice = ENVIRONMENTAL_LABEL_CHOICE) {
 
 /** The status line between missions. */
 export const FIRST_RUN_TIP = msg(
-  'Tip: the GEV MIC button in the dock lets you talk to the map.',
+  'Tip: the mic in the dock lets you talk to the map.',
 );

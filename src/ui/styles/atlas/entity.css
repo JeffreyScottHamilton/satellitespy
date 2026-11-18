@@ -1,1 +1,340 @@
 /* Owner: selected-object info panel (EntityCard, right side, 320px). */
+
+/* The card sits at the top of the Context rail, in flow, so the rail's own
+   stacking keeps it clear of the other rail panels and the top chrome. Its
+   own height is capped and it scrolls inside that cap. */
+#entity-card.entity-card {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  max-height: calc(100dvh - 160px);
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  margin: 0 0 var(--s3);
+  padding: var(--s3);
+  color: var(--text);
+  font-family: var(--font-sans);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-1);
+}
+
+/* Header: kind label, title, close. */
+#entity-card .entity-card__head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s2);
+}
+#entity-card .entity-card__icon {
+  display: none;
+}
+#entity-card .entity-card__name {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+#entity-card .entity-card__kind {
+  display: block;
+  color: var(--text-2);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+}
+#entity-card .entity-card__kind > span:first-child {
+  color: var(--text-2);
+}
+#entity-card .entity-card__title {
+  margin: 0;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+#entity-card .entity-card__subtitle {
+  display: block;
+  color: var(--text-2);
+  font-size: 12px;
+}
+#entity-card .entity-card__close {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin: -4px -4px 0 0;
+  padding: 0;
+  color: var(--text-2);
+  background: none;
+  border: 0;
+  border-radius: var(--r-md);
+  cursor: pointer;
+}
+#entity-card .entity-card__close:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+#entity-card .entity-card__close .material-symbols-outlined {
+  font-size: 18px;
+}
+
+/* Status and position: one quiet line under the header. */
+#entity-card .entity-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s1) var(--s2);
+  margin: var(--s2) 0 0;
+  color: var(--text-2);
+  font-size: 11px;
+}
+#entity-card .entity-card__status {
+  padding: 0;
+  color: var(--text-2);
+  font-size: 11px;
+  white-space: normal;
+  border: 0;
+  border-radius: 0;
+}
+#entity-card .entity-card__status--live {
+  color: var(--ok);
+}
+#entity-card .entity-card__status--aged {
+  color: var(--text-2);
+}
+#entity-card .entity-card__status--lost {
+  color: var(--warn);
+}
+#entity-card .entity-card__status--live::before {
+  animation: none;
+}
+#entity-card .entity-card__where {
+  margin: 0;
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+#entity-card .entity-card__warning {
+  display: flex;
+  gap: var(--s2);
+  margin: var(--s2) 0 0;
+  color: var(--warn);
+  font-size: 12px;
+}
+
+/* Hero: the photo, globe, model or camera sized to the card's width. */
+#entity-card .entity-hero {
+  width: 100%;
+  margin: var(--s3) 0 0;
+  overflow: hidden;
+  border-radius: var(--r-md);
+}
+#entity-card .entity-hero__placeholder {
+  min-height: 0;
+  padding: var(--s3);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: none;
+}
+#entity-card .entity-hero__glyph {
+  color: var(--text-2);
+}
+#entity-card .entity-hero__kind,
+#entity-card .entity-hero__figure span {
+  color: var(--text-2);
+  font-size: 11px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Route and flight stats: plain text. */
+#entity-card .entity-card__route {
+  color: var(--text);
+  font-size: 13px;
+}
+#entity-card .entity-card__route-stats,
+#entity-card .entity-card__route-places,
+#entity-card .entity-card__route-note {
+  color: var(--text-2);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Headline tiles: figures, no decoration. */
+#entity-card .entity-card__tiles {
+  gap: var(--s2);
+  margin: var(--s3) 0 0;
+}
+#entity-card .entity-card__tile {
+  padding: 0;
+  background: none;
+  border: 0;
+}
+#entity-card .entity-card__tile span {
+  color: var(--text-2);
+  font-size: 11px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+#entity-card .entity-card__tile strong {
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+#entity-card .entity-card__tile small {
+  color: var(--text-2);
+  font-size: 12px;
+}
+
+/* Details: a two-column definition list, then More details. */
+#entity-card .entity-card__section {
+  margin: var(--s3) 0 0;
+}
+#entity-card .entity-card__section h4 {
+  margin: 0 0 var(--s2);
+  color: var(--text-2);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+#entity-card .entity-card__facts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--s2) var(--s3);
+  margin: 0;
+}
+#entity-card .entity-card__fact {
+  min-width: 0;
+}
+#entity-card .entity-card__fact dt {
+  color: var(--text-2);
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+#entity-card .entity-card__fact dd {
+  margin: 2px 0 0;
+  overflow-wrap: anywhere;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  white-space: normal;
+}
+#entity-card .entity-card__more {
+  margin: var(--s2) 0 0;
+}
+#entity-card .entity-card__more summary {
+  padding: var(--s1) 0;
+  color: var(--text-2);
+  font-size: 12px;
+  cursor: pointer;
+}
+#entity-card .entity-card__more[open] summary {
+  margin-bottom: var(--s2);
+}
+#entity-card .entity-card__more summary:hover {
+  color: var(--text);
+}
+#entity-card .entity-card__no-match {
+  margin: var(--s3) 0 0;
+  color: var(--text-2);
+  font-size: 12px;
+}
+
+/* Links and actions. */
+#entity-card .entity-card__links {
+  gap: var(--s2);
+  margin: var(--s3) 0 0;
+}
+#entity-card .entity-card__links a {
+  padding: var(--s1) var(--s2);
+  color: var(--accent);
+  font-size: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+#entity-card .entity-card__links a:hover {
+  background: var(--accent-soft);
+}
+#entity-card .entity-card__actions {
+  gap: var(--s2);
+  margin-top: var(--s3);
+  padding-top: var(--s3);
+  border-top: 1px solid var(--border);
+}
+#entity-card .entity-card__action-row {
+  display: flex;
+  gap: var(--s2);
+}
+#entity-card .entity-card__action {
+  height: 32px;
+  min-height: 32px;
+  padding: 0 var(--s3);
+  color: var(--text);
+  font-size: 13px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: none;
+}
+#entity-card .entity-card__action:hover {
+  background: var(--surface-2);
+  border-color: var(--border);
+}
+#entity-card .entity-card__action--primary {
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-color: transparent;
+}
+#entity-card .entity-card__action--primary:hover {
+  background: var(--accent);
+  filter: none;
+  opacity: 0.9;
+}
+#entity-card .entity-card__action--on {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+#entity-card .entity-card__action--ask {
+  width: 100%;
+  color: var(--text-2);
+}
+#entity-card .entity-card__action--ask:hover {
+  color: var(--text);
+}
+
+/* Footer: source and when it was last read, quiet and small. */
+#entity-card .entity-card__source {
+  margin: var(--s3) 0 0;
+  color: var(--text-2);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+/* Keyboard focus for every control in the card. */
+#entity-card :is(button, a, summary):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Context rail: the same surface as the card, for the open panel. Collapsed
+   launchers keep their own look. */
+#right-context-rail #global-context-panel:not(.collapsed) .global-context-panel-inner {
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-1);
+}

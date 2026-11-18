@@ -51,7 +51,7 @@ async function launch(t, { styleManager = {}, refuse = false } = {}) {
     documentRef: document,
     storage,
     sessionStorageRef,
-    location: { search: '' },
+    location: { search: '?welcome=1' },
     store,
   });
   t.after(() => {
@@ -71,7 +71,7 @@ async function launch(t, { styleManager = {}, refuse = false } = {}) {
   return { launcher, root, list, box, opener, storage, sessionStorageRef };
 }
 
-test('the card is hidden until initialized, then revealed with its copy', async (t) => {
+test('the card is hidden until initialized, then revealed with its copy (?welcome=1)', async (t) => {
   document.body.replaceChildren();
   const pinia = createPinia();
   const app = createApp(WelcomeView).use(pinia);
@@ -88,11 +88,11 @@ test('the card is hidden until initialized, then revealed with its copy', async 
   assert.equal(list.dataset.scrollable, 'true');
   assert.equal(
     root.querySelector('[data-first-run-status]').textContent,
-    'Tip: the GEV MIC button in the dock lets you talk to the map.',
+    'Tip: the mic in the dock lets you talk to the map.',
   );
   assert.equal(
     root.querySelector('[data-first-run-environmental-title]').textContent,
-    'ENVIRONMENTAL',
+    'Environmental',
   );
   assert.ok(
     document.activeElement === root.querySelector('[data-first-run-choice]'),
@@ -156,7 +156,7 @@ test('a saved tick stays ticked', async (t) => {
   assert.equal(storage.read(), 'suppressed');
 });
 
-test('the DISMISS button closes the card the way ESC does', async (t) => {
+test('the Dismiss button closes the card the way ESC does', async (t) => {
   const { root, sessionStorageRef } = await launch(t);
   root.querySelector('[data-first-run-dismiss]').click();
   await nextTick();

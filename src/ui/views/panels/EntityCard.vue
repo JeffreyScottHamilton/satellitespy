@@ -49,18 +49,26 @@ function ago(ms) {
   return t('{n} d ago', { n: Math.round(hours / 24) });
 }
 
+// What the card's reading is: live, delayed, cached, or nothing claimed. Only
+// a reading from the layer's own record can be live; a moving reading older
+// than two minutes is delayed, never labelled live.
 const status = computed(() => {
   void tick.value;
   const current = card.value;
   if (!current) return null;
   if (lost.value) return { tone: 'lost', text: t('Out of feed · last reading') };
-  if (current.observedAgeMs !== null)
+  if (current.basis === 'store')
     return {
-      tone: current.moving && current.observedAgeMs < 120_000 ? 'live' : 'aged',
-      text: current.moving
-        ? t('Live · {age}', { age: ago(current.observedAgeMs) })
-        : ago(current.observedAgeMs),
+      tone: 'aged',
+      text: current.observedAgeMs !== null ? t('Cached · {age}', { age: ago(current.observedAgeMs) }) : t('Cached'),
     };
+  if (current.basis !== 'record') return null;
+  if (current.observedAgeMs !== null) {
+    if (!current.moving) return { tone: 'aged', text: ago(current.observedAgeMs) };
+    return current.observedAgeMs < 120_000
+      ? { tone: 'live', text: t('Live · {age}', { age: ago(current.observedAgeMs) }) }
+      : { tone: 'aged', text: t('Delayed · {age}', { age: ago(current.observedAgeMs) }) };
+  }
   if (current.moving) return { tone: 'live', text: t('Live') };
   return null;
 });
@@ -136,6 +144,11 @@ const gridFacts = computed(() =>
     ? (card.value?.facts || []).filter((fact) => matchesContextSearch(factLabel(fact), factValue(fact), fact.value))
     : restFacts.value.filter((fact) => !(card.value?.operator && fact.field === 'operator') && !(card.value?.aircraftClass && fact.field === 'aircraftClass')),
 );
+// The default view keeps to the first rows; the rest sit under More details.
+// A search shows every match.
+const DEFAULT_FACT_ROWS = 8;
+const shownFacts = computed(() => (contextNeedle.value ? gridFacts.value : gridFacts.value.slice(0, DEFAULT_FACT_ROWS)));
+const moreFacts = computed(() => (contextNeedle.value ? [] : gridFacts.value.slice(DEFAULT_FACT_ROWS)));
 
 // How far along its route the flight is, when both airports are known: the
 // share flown (distance from the origin over that plus the distance still to
@@ -328,6 +341,24 @@ const kindLine = computed(() => {
   return plain(layer).includes(plain(current.kind)) ? shown : `${kindLabel.value} · ${shown}`;
 });
 
+// Escape closes the card while it is open. It leaves alone typing in a field,
+// and whatever already handled the key.
+function onEscape(event) {
+  if (event.key !== 'Escape' || event.defaultPrevented || !card.value) return;
+  const target = event.target;
+  if (target instanceof HTMLElement && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))) return;
+  store.clear();
+}
+watch(
+  () => Boolean(card.value),
+  (open) => {
+    if (open) globalThis.addEventListener?.('keydown', onEscape);
+    else globalThis.removeEventListener?.('keydown', onEscape);
+  },
+  { immediate: true },
+);
+onBeforeUnmount(() => globalThis.removeEventListener?.('keydown', onEscape));
+
 // A new item starts at the top of the panel, not wherever the last one was
 // scrolled to.
 watch(
@@ -396,7 +427,7 @@ watch(
           <h3 class="entity-card__title">{{ shownTitle }}</h3>
           <span v-if="subtitle" class="entity-card__subtitle">{{ subtitle }}</span>
         </div>
-        <button type="button" class="entity-card__close" :aria-label="t('Close card')" :title="t('Close card')" @click="store.clear()">
+        <button type="button" class="entity-card__close" :aria-label="t('Close')" :title="t('Close')" @click="store.clear()">
           <span class="material-symbols-outlined" aria-hidden="true">close</span>
         </button>
       </header>
@@ -450,11 +481,20 @@ watch(
       <section v-if="gridFacts.length" class="entity-card__section">
         <h4>{{ contextNeedle ? t('Matching details') : t('Details') }}</h4>
         <dl class="entity-card__facts">
-          <div v-for="fact in gridFacts" :key="fact.field" class="entity-card__fact">
+          <div v-for="fact in shownFacts" :key="fact.field" class="entity-card__fact">
             <dt>{{ factLabel(fact) }}</dt>
             <dd>{{ factValue(fact) }}</dd>
           </div>
         </dl>
+        <details v-if="moreFacts.length" class="entity-card__more">
+          <summary>{{ t('More details') }}</summary>
+          <dl class="entity-card__facts">
+            <div v-for="fact in moreFacts" :key="fact.field" class="entity-card__fact">
+              <dt>{{ factLabel(fact) }}</dt>
+              <dd>{{ factValue(fact) }}</dd>
+            </div>
+          </dl>
+        </details>
       </section>
 
       <div v-if="card.links.length" class="entity-card__links">

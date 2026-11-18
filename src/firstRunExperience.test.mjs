@@ -37,12 +37,17 @@ const fresh = () => ({
 
 // ── Show policy ──────────────────────────────────────────────────────────────
 
-test('a fresh session receives the launcher, and keeps receiving it', () => {
-  assert.equal(shouldShowFirstRun(fresh()), true);
-  // Not one-shot: a previous session's completion does not suppress a new one.
+test('a fresh session does not receive the launcher: the globe opens directly', () => {
+  assert.equal(shouldShowFirstRun(fresh()), false);
+  // A returning session is the same: no stored state turns the default on.
   const returning = fresh();
   returning.sessionStorageRef = memoryStorage(FIRST_RUN_SESSION_KEY);
-  assert.equal(shouldShowFirstRun(returning), true);
+  assert.equal(shouldShowFirstRun(returning), false);
+  // Only the explicit replay hatch shows it.
+  assert.equal(
+    shouldShowFirstRun({ ...fresh(), location: { search: '?welcome=1' } }),
+    true,
+  );
 });
 
 test('dismissal is session-scoped; only the checkbox suppresses durably', () => {
@@ -51,7 +56,7 @@ test('dismissal is session-scoped; only the checkbox suppresses durably', () => 
 
   rememberFirstRunSessionDismissed(session);
   assert.equal(session.read(), 'dismissed');
-  // Gone for THIS session...
+  // Off by default with or without the session flag...
   assert.equal(
     shouldShowFirstRun({
       storage,
@@ -60,12 +65,12 @@ test('dismissal is session-scoped; only the checkbox suppresses durably', () => 
     }),
     false,
   );
-  // ...and back in the next one, because sessionStorage did not survive it.
+  // ...and the replay hatch still shows it past that flag.
   assert.equal(
     shouldShowFirstRun({
       storage,
-      sessionStorageRef: memoryStorage(FIRST_RUN_SESSION_KEY),
-      location: { search: '' },
+      sessionStorageRef: session,
+      location: { search: '?welcome=1' },
     }),
     true,
   );
@@ -77,6 +82,8 @@ test('the checkbox writes and clears durable suppression, and a storage reset un
   const storage = memoryStorage(FIRST_RUN_STORAGE_KEY);
   setFirstRunSuppressed(true, storage);
   assert.equal(storage.read(), 'suppressed');
+  // The default path is off either way; the stored tick is what the replay
+  // hatch outranks, so it is still asserted through ?welcome=1.
   assert.equal(
     shouldShowFirstRun({
       storage,
@@ -85,20 +92,20 @@ test('the checkbox writes and clears durable suppression, and a storage reset un
     }),
     false,
   );
-
-  // Unticking before dismissing takes the suppression back.
-  setFirstRunSuppressed(false, storage);
-  assert.equal(storage.read(), null);
   assert.equal(
     shouldShowFirstRun({
       storage,
       sessionStorageRef: memoryStorage(FIRST_RUN_SESSION_KEY),
-      location: { search: '' },
+      location: { search: '?welcome=1' },
     }),
     true,
   );
 
-  // A cleared/hard-reset profile shows it again — an accepted, documented cost.
+  // Unticking clears the stored suppression.
+  setFirstRunSuppressed(false, storage);
+  assert.equal(storage.read(), null);
+
+  // A cleared/hard-reset profile is equally off by default.
   setFirstRunSuppressed(true, storage);
   assert.equal(
     shouldShowFirstRun({
@@ -106,7 +113,7 @@ test('the checkbox writes and clears durable suppression, and a storage reset un
       sessionStorageRef: memoryStorage(FIRST_RUN_SESSION_KEY),
       location: { search: '' },
     }),
-    true,
+    false,
   );
 });
 
@@ -155,7 +162,11 @@ test('privacy-restricted storage fails open and every write stays best-effort', 
     },
   };
   assert.equal(
-    shouldShowFirstRun({ storage: blocked, sessionStorageRef: blocked }),
+    shouldShowFirstRun({
+      storage: blocked,
+      sessionStorageRef: blocked,
+      location: { search: '?welcome=1' },
+    }),
     true,
   );
   assert.doesNotThrow(() => setFirstRunSuppressed(true, blocked));
@@ -189,8 +200,13 @@ test('a THROWING storage getter still fails open — Safari private mode', () =>
     );
     assert.equal(
       shouldShowFirstRun({ location: { search: '' } }),
+      false,
+      'the default path is off whatever storage does',
+    );
+    assert.equal(
+      shouldShowFirstRun({ location: { search: '?welcome=1' } }),
       true,
-      'a visitor whose storage throws must still SEE the launcher',
+      'a visitor whose storage throws must still SEE the replay launcher',
     );
     assert.doesNotThrow(() => setFirstRunSuppressed(true));
     assert.doesNotThrow(() => setFirstRunSuppressed(false));
@@ -688,10 +704,10 @@ test('a failed Context mission reports the layers the facade named', async () =>
 });
 
 test('the fires/quakes tile name is switchable from one constant', () => {
-  assert.equal(environmentalLabel('ENVIRONMENTAL').title, 'ENVIRONMENTAL');
-  assert.equal(environmentalLabel('EARTH_WATCH').title, 'EARTH WATCH');
-  assert.equal(environmentalLabel('ACTIVE_EVENTS').title, 'ACTIVE EVENTS');
-  assert.equal(environmentalLabel('nonsense').title, 'ENVIRONMENTAL');
+  assert.equal(environmentalLabel('ENVIRONMENTAL').title, 'Environmental');
+  assert.equal(environmentalLabel('EARTH_WATCH').title, 'Earth watch');
+  assert.equal(environmentalLabel('ACTIVE_EVENTS').title, 'Active events');
+  assert.equal(environmentalLabel('nonsense').title, 'Environmental');
   assert.equal(
     environmentalLabel().title,
     environmentalLabel(ENVIRONMENTAL_LABEL_CHOICE).title,
@@ -811,16 +827,19 @@ test('markup, startup ordering and accessibility remain pinned', async () => {
     'the tile must promise the fires it enables',
   );
 
-  // The card's one persuasive line is OWNER-AUTHORED and pinned verbatim,
-  // unspaced em dash included. This is copy, not prose to be improved in a
-  // passing edit — changing it needs the owner, not a nicer-sounding rewrite.
+  // The card's one line is neutral, sentence case, and free of the old
+  // "forbidden cockpit" framing.
   assert.ok(
     html.includes(
-      '<p id="first-run-description">It feels like a forbidden cockpit' +
-        '—then you realize the sources are public and the data is real.</p>',
+      '<p id="first-run-description">Pick a starting point. Every feed comes from a public source.</p>',
     ),
-    'the owner-authored first-run line must ship exactly as written',
+    'the first-run line must ship as the neutral copy',
   );
+  const launcherMarkup = html.slice(
+    html.indexOf('id="first-run-launcher"'),
+    html.indexOf('</aside>', html.indexOf('id="first-run-launcher"')),
+  );
+  assert.doesNotMatch(launcherMarkup, /forbidden|cockpit/i);
 
   // Menu order is the owner's, read straight off the markup.
   const order = [...html.matchAll(/data-first-run-choice="([a-z-]+)"/g)].map(
@@ -906,7 +925,7 @@ test('the card closes without a keyboard: the ESC hint is a button, kept on phon
     /<button type="button" class="first-run-dismiss" data-first-run-dismiss>/,
   );
   assert.match(footer, />ESC to dismiss</);
-  assert.match(footer, />DISMISS</);
+  assert.match(footer, />Dismiss</);
   // It closes the way ESC does, through the one dismiss path, so the session
   // flag and focus handling are the same: firstRunLauncherView.test.mjs.
   // Phones used to hide the hint, leaving no way out but picking a mission.

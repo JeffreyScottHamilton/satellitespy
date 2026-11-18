@@ -6,17 +6,12 @@ import { createSurfaceKeyboard } from './ui/surfaceKeyboard.js';
 // would spend optional API quotas, surprise returning operators, and fight share
 // links. A new visitor instead gets one compact, explicit choice after startup.
 //
-// SHOW POLICY (owner ruling, 2026-08-23). The launcher is NOT one-shot. A new
-// operator needs the map explained more than once, so it returns every fresh
-// browser session until they say otherwise:
-//
-//   - a share link never sees it — its author already chose the experience;
-//   - `?welcome=0` suppresses, `?welcome=1` replays (it outranks BOTH the
-//     session flag and the durable one, so support can always demo it);
-//   - ticking "Don't show this again" writes the DURABLE suppression — that
-//     tick is the only thing that stops it coming back;
-//   - any other close (a mission, Explore manually, ESC) writes only the
-//     SESSION flag, so it stays gone for this tab and returns next session.
+// SHOW POLICY. The launcher is OFF by default: the app opens straight into the
+// globe with no intro card. It appears only when the URL carries `?welcome=1`
+// (demo / support replay). A share link or an embed never shows it, and
+// `?welcome=0` keeps it off explicitly. The durable and session dismissal keys
+// are still written by the card's controls, but they no longer gate the default
+// path, because the default path never shows it.
 //
 // Choosing a mission is deliberately NOT durable suppression: picking a mission
 // is enthusiasm, not "never show me this again".
@@ -198,20 +193,13 @@ export function shouldShowFirstRun({
 } = {}) {
   if (hasShareState) return false;
   const params = new URLSearchParams(location?.search || '');
-  if (params.get('welcome') === '0') return false;
   // An embedded globe never shows the welcome launcher.
   if (params.get('embed') === '1' || globalThis.GEV_EMBED_INLINE === true)
     return false;
-  // The demo/support escape hatch outranks both suppressions on purpose.
-  if (params.get('welcome') === '1') return true;
-  if (readStored('local', storage, FIRST_RUN_STORAGE_KEY) === 'suppressed')
-    return false;
-  if (
-    readStored('session', sessionStorageRef, FIRST_RUN_SESSION_KEY) ===
-    'dismissed'
-  )
-    return false;
-  return true;
+  // Off by default. Only the explicit replay hatch turns it on, and it outranks
+  // the stored suppression and session dismissal so support can always demo it.
+  // Storage is not read on the default path at all.
+  return params.get('welcome') === '1';
 }
 
 /**
@@ -344,7 +332,7 @@ export function initFirstRunExperience({
       'Live earthquakes and active fires, from USGS and NASA',
     ),
     description: t(
-      'It feels like a forbidden cockpit—then you realize the sources are public and the data is real.',
+      'Pick a starting point. Every feed comes from a public source.',
     ),
     scrollable: null,
   };

@@ -11,7 +11,7 @@ import { useFirstRunStore } from '../stores/firstRun.js';
 const { launcher, controls } = storeToRefs(useFirstRunStore());
 // The card stays hidden until it is initialized; these show in the markup.
 const DESCRIPTION = msg(
-  'It feels like a forbidden cockpit—then you realize the sources are public and the data is real.',
+  'Pick a starting point. Every feed comes from a public source.',
 );
 const ENVIRONMENTAL_SUB = msg(
   'Live earthquakes and active fires, from USGS and NASA',
@@ -32,23 +32,19 @@ function onSuppress(event) {
   <aside v-if="!launcher?.removed" id="first-run-launcher" role="dialog" aria-labelledby="first-run-title" aria-describedby="first-run-description" :class="{ visible: launcher?.visible }" :hidden="!launcher?.shown" :aria-hidden="launcher?.closing ? 'true' : undefined" :aria-busy="launcher?.busy ?? undefined" :data-state="launcher?.state ?? undefined">
     <div class="first-run-scanline" aria-hidden="true"></div>
     <header class="first-run-header">
-      <span class="first-run-kicker">{{ t('MISSION CONTROL · FIRST LAUNCH') }}</span>
     </header>
     <h2 id="first-run-title">{{ t('Choose your first view') }}</h2>
-    <!-- The card's one persuasive line, owner-authored and VERBATIM (2026-08-23)
-         — including the unspaced em dash. The arc it has to carry: this looks
-         like something you should not have access to → the sources are all
-         public → the data is real. Tile subcopy stays purely functional. -->
+    <!-- One plain line on what the choices are; the sources are public. -->
     <p id="first-run-description">{{ launcher?.description ?? DESCRIPTION }}</p>
     <div class="first-run-choices ui-scroll" :data-scrollable="launcher?.scrollable ?? undefined">
       <button type="button" data-first-run-choice="contacts" :aria-disabled="launcher?.busy ?? undefined" @click="controls?.choose('contacts')">
         <span class="material-symbols-outlined" aria-hidden="true">radar</span>
-        <span><strong>{{ t('LIVE CONTACTS') }}</strong><small>{{ t('Aircraft, vessels and nearby intelligence') }}</small></span>
+        <span><strong>{{ t('Live contacts') }}</strong><small>{{ t('Aircraft, vessels and nearby intelligence') }}</small></span>
         <span class="material-symbols-outlined first-run-arrow" aria-hidden="true">arrow_forward</span>
       </button>
       <button type="button" data-first-run-choice="space-missions" :aria-disabled="launcher?.busy ?? undefined" @click="controls?.choose('space-missions')">
         <span class="material-symbols-outlined" aria-hidden="true">rocket_launch</span>
-        <span><strong>{{ t('SPACE MISSIONS') }}</strong><small>{{ t('Launches, spacecraft and orbital context') }}</small></span>
+        <span><strong>{{ t('Space missions') }}</strong><small>{{ t('Launches, spacecraft and orbital context') }}</small></span>
         <span class="material-symbols-outlined first-run-arrow" aria-hidden="true">arrow_forward</span>
       </button>
       <button type="button" data-first-run-choice="environmental" :aria-disabled="launcher?.busy ?? undefined" @click="controls?.choose('environmental')">
@@ -62,7 +58,7 @@ function onSuppress(event) {
       </button>
       <button type="button" class="first-run-explore" data-first-run-choice="explore" :aria-disabled="launcher?.busy ?? undefined" @click="controls?.choose('explore')">
         <span class="material-symbols-outlined" aria-hidden="true">public</span>
-        <span><strong>{{ t('EXPLORE MANUALLY') }}</strong><small>{{ t('Begin with a clean globe') }}</small></span>
+        <span><strong>{{ t('Explore manually') }}</strong><small>{{ t('Begin with a clean globe') }}</small></span>
         <span class="material-symbols-outlined first-run-arrow" aria-hidden="true">arrow_forward</span>
       </button>
     </div>
@@ -76,7 +72,7 @@ function onSuppress(event) {
            see DISMISS; a keyboard keeps the ESC hint (first-run.css). -->
       <button type="button" class="first-run-dismiss" data-first-run-dismiss @click="controls?.dismiss()">
         <span class="first-run-dismiss-key">{{ t('ESC to dismiss') }}</span>
-        <span class="first-run-dismiss-touch">{{ t('DISMISS') }}</span>
+        <span class="first-run-dismiss-touch">{{ t('Dismiss') }}</span>
       </button>
     </div>
     <!-- Kept out of the footer row: it swaps to mission progress and errors, and
@@ -84,3 +80,92 @@ function onSuppress(event) {
     <p class="first-run-note" data-first-run-status role="status" aria-live="polite">{{ launcher?.status ?? FIRST_RUN_TIP }}</p>
   </aside>
 </template>
+
+<style scoped>
+/* Minimal card on the atlas tokens. Geometry and visibility stay with the
+   legacy launcher rules; these only replace the surfaces, type and glow. */
+#first-run-launcher {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-1);
+  font-family: var(--font-sans);
+  text-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  padding: 16px;
+}
+#first-run-launcher * {
+  text-shadow: none;
+  text-transform: none;
+  letter-spacing: 0;
+}
+#first-run-launcher .first-run-scanline,
+#first-run-launcher .first-run-header {
+  display: none;
+}
+#first-run-launcher h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 4px;
+}
+#first-run-launcher #first-run-description {
+  font-size: 13px;
+  color: var(--text-2);
+  margin: 0 0 12px;
+}
+#first-run-launcher .first-run-choices {
+  display: grid;
+  gap: 8px;
+}
+#first-run-launcher .first-run-choices button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: none;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+#first-run-launcher .first-run-choices button:hover {
+  border-color: var(--text-2);
+}
+#first-run-launcher .first-run-choices strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+}
+#first-run-launcher .first-run-choices small {
+  display: block;
+  font-size: 12px;
+  color: var(--text-2);
+}
+#first-run-launcher .first-run-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+#first-run-launcher .first-run-note {
+  font-size: 12px;
+  color: var(--text-2);
+  margin: 8px 0 0;
+}
+#first-run-launcher button:focus-visible,
+#first-run-launcher input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+</style>

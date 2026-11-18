@@ -134,14 +134,8 @@ function watchCredit() {
 
 // ── One onboarding popup in GEV ──
 const POP_KEY = 'gevStoriesPopSeen';
+// The promo never opens on its own; nothing here auto-opens it.
 const popOpen = ref(false);
-function readPopSeen() {
-  try {
-    return localStorage.getItem(POP_KEY) === '1';
-  } catch {
-    return store.popSeen;
-  }
-}
 function markPopSeen() {
   store.popSeen = true;
   popOpen.value = false;
@@ -273,7 +267,7 @@ onMounted(() => {
       mode.value !== 'closed' ||
       document.body.classList.contains('stories-mode'),
   });
-  popOpen.value = !readPopSeen();
+  popOpen.value = false;
   watchCredit();
 });
 onBeforeUnmount(() => {
@@ -316,7 +310,8 @@ watch([mode, storyId], () => nextTick(watchCredit));
   <div id="gev-stories" ref="rootEl">
     <svg width="0" height="0" style="position: absolute" aria-hidden="true" v-html="GEV_LOGO_SYMBOL"></svg>
 
-    <!-- GEV: the Stories entry, its first-visit popup and the Opened-in-GEV toast -->
+    <!-- The Stories entry (hidden from the main chrome; opened from Settings), its
+         opt-in promo popover (never auto-opened) and the Opened-in-GEV toast -->
     <template v-if="mode === 'closed' && store.available">
       <button
         id="hStories"
@@ -339,7 +334,7 @@ watch([mode, storyId], () => nextTick(watchCredit));
         :style="{ top: `${entry.top + 52}px`, right: `${Math.max(12, entry.right - 40)}px` }"
       >
         <span class="k">{{ t('NEW') }}</span>
-        <h2 id="hPopT">{{ t('GEV Stories') }}</h2>
+        <h2 id="hPopT">{{ t('Stories') }}</h2>
         <p>{{ t('Curated, interactive views of what is happening on Earth. Play one, take over the map whenever you like, then pick the story back up.') }}</p>
         <div class="row">
           <button class="tbtn solid" type="button" @click="openExplore">{{ t('Browse stories') }}</button>
@@ -360,3 +355,11 @@ watch([mode, storyId], () => nextTick(watchCredit));
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Stories is reached from the Settings menu, not from a top-right button.
+   The entry stays mounted so openExplore and the focus bookkeeping still work. */
+#gev-stories #hStories {
+  display: none !important;
+}
+</style>
