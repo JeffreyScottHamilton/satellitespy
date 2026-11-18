@@ -4219,6 +4219,7 @@
       "src/sources/sourceSlot.js",
       "src/app/sources.js",
       "src/app/startupChrome.js",
+      "src/app/startupDeadline.js",
       "src/app/stateChannel.js",
       "src/app/surfaceServices.js",
       "src/app/tools.js",

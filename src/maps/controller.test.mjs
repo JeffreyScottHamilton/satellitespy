@@ -1393,3 +1393,18 @@ test('a hung imagery attempt that lands after its deadline is released, never ca
   await settle();
   assert.equal(good.destroyed, true);
 });
+
+test('terrain creation that hangs past its deadline installs the flat fallback', async (t) => {
+  const { env, installed, terrain } = terrainFixture(t, () =>
+    new Promise(() => {}),
+  );
+  const switching = env.controller.setStack('esri-imagery');
+  await settle();
+  assert.deepEqual(installed, [], 'still waiting');
+  t.mock.timers.tick(10_000);
+  await switching;
+  assert.equal(installed.length, 1);
+  assert.equal(terrain.calls, 1);
+  assert.ok(installed[0].constructor?.name?.includes('Ellipsoid'));
+  env.controller.destroy();
+});

@@ -12,6 +12,7 @@ import {
   startPageLocale,
 } from '../i18n/page.js';
 import { mountApplicationViews } from '../ui/views/index.js';
+import { armLoaderFailsafe } from '../app/startupDeadline.js';
 import { createGoogleTokenSource } from '../maps/googleTokens.js';
 
 // The existing controls and layer catalog contain page-scoped state.
@@ -51,7 +52,7 @@ export function createStandaloneApplication({
   const loaderStatus = loadingScreen.querySelector('.loader-status');
   let placeSearch;
   let catalog;
-  return createApplication({
+  const application = createApplication({
     createScene: async (context) => {
       // A language switch applies in place; the page's own markup follows.
       context.defer(followPageLocale(document));
@@ -103,4 +104,11 @@ export function createStandaloneApplication({
     createTools: (context) =>
       createStandaloneTools({ ...context, loadingScreen, placeSearch, voice }),
   });
+  // Boot must never leave the page behind the loading screen: whichever phase
+  // is still pending, the screen goes after a bound (startupDeadline.js).
+  armLoaderFailsafe({
+    loadingScreen,
+    pendingPhase: () => application.getState().phase,
+  });
+  return application;
 }

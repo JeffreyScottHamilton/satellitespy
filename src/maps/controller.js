@@ -15,6 +15,29 @@ const FALLBACK_RETRY_MS = 30_000;
 const FALLBACK_RETRY_MAX_MS = 600_000;
 /** A retry attempt still unsettled after a minute counts as failed. */
 const FALLBACK_ATTEMPT_MS = 60_000;
+/** First-load imagery or terrain creation may block a switch this long. */
+const CREATE_DEADLINE_MS = 10_000;
+
+/**
+ * Race a creation against a deadline. A late result is released, never used;
+ * a timeout rejects like any creation failure so the fallback path runs.
+ */
+function withCreateDeadline(pending, label, release, ms = CREATE_DEADLINE_MS) {
+  let timer;
+  const expired = new Promise((_, reject) => {
+    timer = setTimeout(
+      () => reject(new Error(`${label} timed out after ${ms} ms`)),
+      ms,
+    );
+  });
+  const late = Promise.resolve(pending);
+  return Promise.race([late, expired])
+    .catch((error) => {
+      late.then(release, () => {});
+      throw error;
+    })
+    .finally(() => clearTimeout(timer));
+}
 
 const resolved = (provider, effectiveStackId) => ({
   provider,
@@ -364,7 +387,16 @@ export class MapSourceController {
     if (source?.terrain && source.terrain.id !== this._terrainMode) {
       const terrain = source.terrain;
       const pending = this._cached(this._terrainProviders, terrain.id, () =>
-        terrain.create({ signal: this._abort.signal }),
+        withCreateDeadline(
+          terrain.create({ signal: this._abort.signal }),
+          'Terrain',
+          (late) => this._dispose(late?.provider),
+        ).catch((error) => {
+          if (this._destroyed || !this._engine.terrain?.flat) throw error;
+          // The flat ellipsoid, as the engine's own failure path returns it.
+          console.warn('[MapStack] terrain unavailable:', error);
+          return this._engine.terrain.flat();
+        }),
       );
       let result = await pending;
       if (gen !== this._switchGen) return;
@@ -550,7 +582,11 @@ export class MapSourceController {
     return this._cached(this._imageryProviders, stack.id, async () => {
       const source = this._sources.get(stack.id);
       try {
-        const provider = await source.imagery({ signal: this._abort.signal });
+        const provider = await withCreateDeadline(
+          source.imagery({ signal: this._abort.signal }),
+          'Imagery',
+          (late) => this._dispose(late),
+        );
         if (this._destroyed) this._dispose(provider);
         return resolved(provider, stack.id);
       } catch (error) {

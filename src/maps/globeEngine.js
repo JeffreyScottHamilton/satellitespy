@@ -268,6 +268,12 @@ export const globeMapEngine = Object.freeze({
       );
       return { provider: null, spec: { kind: 'ellipsoid' }, fallback: true };
     },
+    /** The flat stand-in a terrain that missed its deadline gets. */
+    flat: () => ({
+      provider: null,
+      spec: { kind: 'ellipsoid' },
+      fallback: true,
+    }),
   }),
   createImageryLayer: (spec) => ({ spec, layer: null }),
   requestRender(host) {

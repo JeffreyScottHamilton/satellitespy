@@ -30,6 +30,11 @@ export const cesiumMapEngine = Object.freeze({
   terrain: Object.freeze({
     world: createWorldTerrain,
     keyless: createKeylessTerrain,
+    /** The flat stand-in a terrain that missed its deadline gets. */
+    flat: () => ({
+      provider: new Cesium.EllipsoidTerrainProvider(),
+      fallback: true,
+    }),
   }),
   /** The layer a globe stack's imagery provider draws through. */
   createImageryLayer: (provider) => new Cesium.ImageryLayer(provider),

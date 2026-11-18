@@ -88,3 +88,19 @@ test('an empty 204 response explicitly means no Google token is available', asyn
   assert.equal(await tokens.token(), null);
   assert.deepEqual(calls, [GOOGLE_TOKEN_PATH]);
 });
+
+test('a token request that stalls past its timeout is unavailable', async () => {
+  let signal;
+  const fetchImpl = (_url, options) => {
+    signal = options.signal;
+    return new Promise((_, reject) =>
+      signal.addEventListener('abort', () => reject(signal.reason)),
+    );
+  };
+  const tokens = createGoogleTokenSource({ fetchImpl });
+  const pending = tokens.token();
+  assert.ok(signal instanceof AbortSignal);
+  // The request carries a deadline; a stalled one rejects when it fires.
+  signal.dispatchEvent(new Event('abort'));
+  assert.equal(await pending, null);
+});

@@ -25,6 +25,7 @@ import { keepPanelRendering } from './panelRendering.js';
 import { useStatusStore } from '../ui/stores/status.js';
 import { applicationPinia } from '../ui/vueRuntime.js';
 import { createSceneHost } from '../render/rendererOf.js';
+import { PHOTOREAL_DEADLINE_MS, raceDeadline } from './startupDeadline.js';
 
 let defaultLoad = null;
 
@@ -180,11 +181,26 @@ export async function createApplicationScene({
   // The map stacks, and the photoreal base among them, switch through the
   // scene's map engine: the renderer's own, or its globe port.
   const engine = mapOptions.engine ?? mapEngineFor(viewer);
-  const photoreal = (await engine.loadPhotoreal?.(viewer, {
-    googleApiKey,
-    googleTokens,
-    cesiumToken,
-  })) ?? { tileset: null, route: 'none', errors: [] };
+  // The photoreal load holds boot only so long. One that misses the deadline
+  // reports as unavailable, and its late tileset is released, never shown.
+  const none = { tileset: null, route: 'none', errors: [] };
+  const loading = Promise.resolve(
+    engine.loadPhotoreal?.(viewer, { googleApiKey, googleTokens, cesiumToken }),
+  );
+  const loaded = await raceDeadline(loading, PHOTOREAL_DEADLINE_MS, (late) => {
+    const tileset = late.value?.tileset;
+    if (tileset && !engine.isDestroyed(tileset)) engine.release(tileset);
+  });
+  const photoreal = loaded.timedOut
+    ? {
+        ...none,
+        errors: [
+          new Error(
+            `Google 3D Tiles timed out after ${PHOTOREAL_DEADLINE_MS / 1000} s`,
+          ),
+        ],
+      }
+    : (loaded.value ?? none);
   const tileset = photoreal.tileset;
   // A provider can finish after cancellation; retain ownership of its result.
   defer(() => {

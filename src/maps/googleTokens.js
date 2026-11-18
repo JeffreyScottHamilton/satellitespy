@@ -9,6 +9,9 @@ export const GOOGLE_TOKEN_PATH = '/api/google/tiles-token';
 /** Renew a token this long before it expires. */
 const RENEW_EARLY_MS = 60_000;
 
+/** A stalled token request counts as the server not offering tokens. */
+export const TOKEN_REQUEST_TIMEOUT_MS = 8000;
+
 function parseToken(data, now) {
   const accessToken = data?.accessToken;
   const expiresAt = Number(data?.expiresAt);
@@ -37,6 +40,7 @@ export function createGoogleTokenSource({
       const response = await fetchImpl(url, {
         headers: { Accept: 'application/json' },
         cache: 'no-store',
+        signal: AbortSignal.timeout(TOKEN_REQUEST_TIMEOUT_MS),
       });
       if (response.status === 204) return null;
       if (!response.ok) {
