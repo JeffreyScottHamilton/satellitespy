@@ -229,6 +229,8 @@
       "src/ui/views/IntelHudView.vue",
       "src/ui/stores/firstRun.js",
       "src/firstRunCopy.js",
+      "src/exclusiveSurfaces.js",
+      "src/firstRunExperience.js",
       "src/ui/kit/UiButton.vue",
       "src/ui/kit/UiSegmented.vue",
       "src/ui/rail/RailPanel.vue",
@@ -1300,6 +1302,7 @@
       "src/data/distanceFormat.js",
       "src/i18n/marker.js",
       "src/ui/mobileShell.js",
+      "src/ui/hudVisibility.js",
       "src/exclusiveSurfaces.js",
       "src/ui/placeNames.js",
       "src/hudLayouts.js",
@@ -3989,6 +3992,7 @@
       "./voice/realtime-session"
     ],
     "modules": [
+      "src/ui/brand.js",
       "src/voice/realtimeController.js",
       "src/voice/realtimeBackend.js",
       "src/voice/cloudVoiceAuth.js",
@@ -4094,6 +4098,8 @@
       "./standalone/catalog"
     ],
     "modules": [
+      "src/ui/hudVisibility.js",
+      "src/ui/brand.js",
       "src/data/units.js",
       "src/data/vesselSprites.js",
       "src/data/rotorFrames.js",
@@ -6880,6 +6886,7 @@
   "voice-session-controls": {
     "exports": ["./voice/session-controls"],
     "modules": [
+      "src/ui/brand.js",
       "src/ui/placeNames.js",
       "src/voice/sessionCommands.js",
       "src/voice/session.js",

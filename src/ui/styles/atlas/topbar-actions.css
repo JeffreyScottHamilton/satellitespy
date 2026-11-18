@@ -288,6 +288,21 @@
   background: var(--surface-2);
 }
 
+.top-actions-action:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.top-actions-action:disabled:hover {
+  background: var(--surface);
+}
+
+.top-actions-action:focus-visible,
+.top-actions-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .top-actions-action-note {
   color: var(--text-2);
   font-size: 12px;
@@ -295,7 +310,12 @@
 
 .top-actions-link {
   display: inline-block;
+  min-height: 32px;
   padding: 6px 8px;
+  font: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
   color: var(--accent);
   text-decoration: none;
 }

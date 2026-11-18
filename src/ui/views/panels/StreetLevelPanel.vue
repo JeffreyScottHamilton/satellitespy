@@ -129,7 +129,7 @@ const vThumb = {
 </script>
 
 <template>
-<RailPanel id="street-level-panel" start-collapsed :data-sl-enabled="view ? String(view.enabled) : undefined" :title="t('STREET LEVEL')" sideways scroll rail-scroller>
+<RailPanel id="street-level-panel" start-collapsed :data-sl-enabled="view ? String(view.enabled) : undefined" :title="t('Street level')" sideways scroll rail-scroller>
   <template #actions><UiButton id="sl-status" :class="`sl-status${status.tone ? ` is-${status.tone}` : ''}`" :pressed="Boolean(status.pressed)" :title="status.title">{{ status.text }}</UiButton></template>
     <div id="sl-body" class="sl-body">
       <div id="sl-viewer-wrap" class="sl-viewer-wrap" :hidden="!viewer.open">

@@ -13,6 +13,8 @@ import {
   FIRST_RUN_STORAGE_KEY,
   environmentalLabel,
   exclusiveSurfaceActive,
+  initFirstRunExperience,
+  openFirstRunExperience,
   rememberFirstRunSessionDismissed,
   runFirstRunChoice,
   setFirstRunSuppressed,
@@ -1127,4 +1129,88 @@ test('every layer a mission drives is already in the shipped set_layer_visibilit
       `${layerId} must already be an allowed enum value`,
     );
   }
+});
+
+test('an explicit open ignores share state but never opens in an embed', () => {
+  const base = { ...fresh(), location: { search: '' } };
+  assert.equal(shouldShowFirstRun({ ...base, hasShareState: true }), false);
+  assert.equal(
+    shouldShowFirstRun({ ...base, hasShareState: true, explicit: true }),
+    true,
+  );
+  assert.equal(
+    shouldShowFirstRun({
+      ...base,
+      hasShareState: true,
+      explicit: true,
+      location: { search: '?embed=1' },
+    }),
+    false,
+  );
+});
+
+/** A mounted welcome view and an initialized launcher, for reopen tests. */
+async function mountLauncher(t) {
+  await import('./testSupport/registerDom.mjs');
+  const { createApp, nextTick } = await import('vue');
+  const { createPinia } = await import('pinia');
+  const { useFirstRunStore } = await import('./ui/stores/firstRun.js');
+  const { default: WelcomeView } = await import('./ui/views/WelcomeView.vue');
+  document.body.replaceChildren();
+  const previousFrame = globalThis.requestAnimationFrame;
+  globalThis.requestAnimationFrame = () => 0;
+  const pinia = createPinia();
+  const store = useFirstRunStore(pinia);
+  const app = createApp(WelcomeView).use(pinia);
+  app.mount(document.body.appendChild(document.createElement('div')));
+  const launcher = initFirstRunExperience({
+    styleManager: { hasShareState: true },
+    dataManager: {},
+    documentRef: document,
+    storage: memoryStorage(FIRST_RUN_STORAGE_KEY),
+    sessionStorageRef: memoryStorage(FIRST_RUN_SESSION_KEY),
+    location: { search: '' },
+    store,
+  });
+  t.after(() => {
+    app.unmount();
+    globalThis.requestAnimationFrame = previousFrame;
+  });
+  await nextTick();
+  return { launcher, store, nextTick };
+}
+
+test('openFirstRunExperience opens on a share-link session and returns the same launcher twice', async (t) => {
+  const { launcher: auto, store } = await mountLauncher(t);
+  assert.equal(auto, null, 'a share link does not auto-open it');
+  const first = await openFirstRunExperience();
+  t.after(() => first?.destroy());
+  assert.ok(first, 'the explicit request opens it');
+  assert.ok(store.controls, 'its controls are connected');
+  const second = await openFirstRunExperience();
+  assert.equal(second, first);
+});
+
+test('a stale dismiss timer does not disconnect a reopened launcher', async (t) => {
+  const { store } = await mountLauncher(t);
+  const first = await openFirstRunExperience();
+  const timers = [];
+  const realSetTimeout = globalThis.setTimeout;
+  globalThis.setTimeout = (fn, ms) => {
+    timers.push(fn);
+    return 0;
+  };
+  try {
+    first.dismiss();
+  } finally {
+    globalThis.setTimeout = realSetTimeout;
+  }
+  assert.ok(timers.length > 0, 'dismiss scheduled its removal');
+  const second = await openFirstRunExperience();
+  t.after(() => second?.destroy());
+  assert.ok(second && second !== first);
+  assert.ok(store.controls, 'reopened launcher is connected');
+  for (const fn of timers) fn();
+  assert.ok(store.controls, 'the stale removal left the new launcher connected');
+  assert.notEqual(store.launcher?.removed, true);
 });

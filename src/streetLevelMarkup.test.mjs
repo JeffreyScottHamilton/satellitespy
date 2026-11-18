@@ -26,7 +26,7 @@ test('Street Level is a collapsible right-rail panel that starts collapsed', () 
   );
   assert.match(
     html,
-    /<span class="ui-panel__title panel-title">STREET LEVEL<\/span>/,
+    /<span class="ui-panel__title panel-title">Street level<\/span>/,
   );
   // Provider-neutral header: no vendor mark; the inner restores its scroll.
   assert.doesNotMatch(html, /sl-mark|mly-mark/);

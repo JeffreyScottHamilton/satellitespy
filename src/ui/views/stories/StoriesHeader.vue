@@ -8,6 +8,7 @@ import {
   watch,
 } from 'vue';
 import { t } from '../../../i18n/index.js';
+import { PRODUCT_NAME } from '../../brand.js';
 import { useStoriesStore } from '../../stores/stories.js';
 
 /**
@@ -167,7 +168,7 @@ onBeforeUnmount(() => observer?.disconnect());
         >
           <path d="M19 12H5M11 6l-6 6 6 6" />
         </svg>
-        <span>{{ t('Back to GEV') }}</span>
+        <span>{{ t('Back to {product}', { product: PRODUCT_NAME }) }}</span>
       </button>
       <button
         v-else
@@ -185,7 +186,7 @@ onBeforeUnmount(() => observer?.disconnect());
         >
           <path d="M19 12H5M11 6l-6 6 6 6" />
         </svg>
-        <span>{{ t('GEV Stories') }}</span>
+        <span>{{ t('Stories') }}</span>
       </button>
     </div>
   </header>

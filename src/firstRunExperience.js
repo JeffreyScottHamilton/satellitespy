@@ -16,6 +16,7 @@ import { createSurfaceKeyboard } from './ui/surfaceKeyboard.js';
 // Choosing a mission is deliberately NOT durable suppression: picking a mission
 // is enthusiasm, not "never show me this again".
 
+import { nextTick } from 'vue';
 import { t, msg } from './i18n/index.js';
 import { EXCLUSIVE_SURFACE_CLASSES } from './exclusiveSurfaces.js';
 import { FIRST_RUN_TIP, environmentalLabel } from './firstRunCopy.js';
@@ -183,6 +184,8 @@ function removeStored(kind, injected, key) {
  * @param {{getItem: Function}|null} [input.storage] Durable (localStorage).
  * @param {{getItem: Function}|null} [input.sessionStorageRef] Per-session.
  * @param {{search?: string}|null} [input.location]
+ * @param {boolean} [input.explicit] The visitor asked for it (Settings): the
+ *   share-state and replay-hatch checks are skipped, embeds still never show it.
  * @returns {boolean}
  */
 export function shouldShowFirstRun({
@@ -190,12 +193,14 @@ export function shouldShowFirstRun({
   storage,
   sessionStorageRef,
   location = globalThis.location,
+  explicit = false,
 } = {}) {
-  if (hasShareState) return false;
+  if (hasShareState && !explicit) return false;
   const params = new URLSearchParams(location?.search || '');
   // An embedded globe never shows the welcome launcher.
   if (params.get('embed') === '1' || globalThis.GEV_EMBED_INLINE === true)
     return false;
+  if (explicit) return true;
   // Off by default. Only the explicit replay hatch turns it on, and it outranks
   // the stored suppression and session dismissal so support can always demo it.
   // Storage is not read on the default path at all.
@@ -290,6 +295,31 @@ export function exclusiveSurfaceActive(documentRef = globalThis.document) {
   return EXCLUSIVE_SURFACE_CLASSES.some((name) => list.contains(name));
 }
 
+// The arguments of the latest init, so Settings can reopen the launcher later.
+let lastInit = null;
+let currentInstance = null;
+let activeHandle = null;
+
+/**
+ * Open the guided start because the visitor asked for it (Settings). Reuses
+ * the launcher path, and bypasses the share-state check and the `?welcome=1`
+ * requirement; nothing reloads.
+ * @returns {Promise<null|{dismiss: Function}>} null when it cannot open
+ *   (not initialized yet, embedded, or already open).
+ */
+export async function openFirstRunExperience() {
+  if (!lastInit) return null;
+  if (activeHandle) return activeHandle;
+  const { store } = lastInit;
+  // Drop a closed or removed card so the view renders a fresh one.
+  store.connect(null);
+  store.publish({ removed: true });
+  await nextTick();
+  store.publish(null);
+  await nextTick();
+  return initFirstRunExperience({ ...lastInit, explicit: true });
+}
+
 /**
  * Wire and reveal the mission launcher.
  * @param {object} input
@@ -300,6 +330,7 @@ export function exclusiveSurfaceActive(documentRef = globalThis.document) {
  * @param {Storage} [input.sessionStorageRef]
  * @param {Location} [input.location]
  * @param {object} [input.store] The welcome view's `gev-first-run` store.
+ * @param {boolean} [input.explicit] Opened by the visitor (see openFirstRunExperience).
  * @returns {null|{dismiss: Function}}
  */
 export function initFirstRunExperience({
@@ -310,7 +341,11 @@ export function initFirstRunExperience({
   sessionStorageRef,
   location = globalThis.location,
   store = useFirstRunStore(applicationPinia()),
+  explicit = false,
 } = {}) {
+  lastInit = { styleManager, dataManager, documentRef, storage, sessionStorageRef, location, store };
+  const instance = {};
+  currentInstance = instance;
   // The welcome view renders the card; it is read here for its geometry, the
   // keyboard and focus.
   const root = documentRef?.getElementById?.('first-run-launcher');
@@ -352,6 +387,7 @@ export function initFirstRunExperience({
       storage,
       sessionStorageRef,
       location,
+      explicit,
     })
   ) {
     present({ removed: true });
@@ -414,11 +450,14 @@ export function initFirstRunExperience({
   const dismiss = ({ restoreFocus = true } = {}) => {
     if (closing) return;
     closing = true;
+    if (currentInstance === instance) activeHandle = null;
     rememberFirstRunSessionDismissed(sessionStorageRef);
     present({ visible: false, closing: true });
     globalThis.removeEventListener?.('resize', onViewportResize);
     surfaceObserver?.disconnect();
     const remove = () => {
+      // A launcher reopened from Settings owns the store now.
+      if (currentInstance !== instance) return;
       store.connect(null);
       present({ removed: true });
     };
@@ -638,11 +677,14 @@ export function initFirstRunExperience({
   // Teardown is not a user dismissal and must not change the show preference.
   const destroy = () => {
     closing = true;
+    if (currentInstance === instance) activeHandle = null;
     keyboard.destroy();
     globalThis.removeEventListener?.('resize', onViewportResize);
     surfaceObserver?.disconnect();
     store.connect(null);
     present({ visible: false, removed: true });
   };
-  return { dismiss, isTopmost, destroy };
+  const handle = { dismiss, isTopmost, destroy };
+  activeHandle = handle;
+  return handle;
 }

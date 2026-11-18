@@ -1,10 +1,11 @@
 import { nextTick } from 'vue';
 import { onLocaleChange, t } from '../i18n/index.js';
+import { PRODUCT_NAME } from '../ui/brand.js';
 import { useVoiceStore } from '../ui/stores/voice.js';
 import { applicationPinia } from '../ui/vueRuntime.js';
 
 // The assistant's name on its card. i18n-ignore: product name
-export const ASSISTANT_NAME = 'GEV';
+export const ASSISTANT_NAME = PRODUCT_NAME;
 
 /** Bars in the dock waveform. */
 export const VOICE_VISUALIZER_BARS = 15;

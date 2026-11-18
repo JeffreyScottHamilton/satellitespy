@@ -1,4 +1,5 @@
 import { msg, t, translateKnown } from '../i18n/index.js';
+import { PRODUCT_NAME } from '../ui/brand.js';
 import { STORY_TAGS } from '../scenes/storyTags.js';
 
 /**
@@ -102,7 +103,7 @@ export function clockText(s, chapterIndex) {
       n: chapterIndex + 1,
       total: s.chapters.length,
     }),
-    small: t('GEV scene'),
+    small: t('{product} scene', { product: PRODUCT_NAME }),
   };
 }
 
@@ -123,7 +124,7 @@ export function chapterTitle(story, c) {
 
 /** The story's time window as the feed shows it. */
 export function windowText() {
-  return t('GEV scene');
+  return t('{product} scene', { product: PRODUCT_NAME });
 }
 
 /** Stamp for a chapter or key moment: its place on the scene's clock. */

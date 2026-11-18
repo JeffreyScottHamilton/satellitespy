@@ -12,6 +12,7 @@ import { storeToRefs } from 'pinia';
 import { t } from '../../i18n/index.js';
 import { useStoriesStore } from '../stores/stories.js';
 import { GEV_LOGO_SYMBOL } from '../../stories/gevLogo.js';
+import { PRODUCT_NAME } from '../brand.js';
 import {
   cornerControls,
   creditPlacement,
@@ -132,21 +133,8 @@ function watchCredit() {
   }
 }
 
-// ── One onboarding popup in GEV ──
-const POP_KEY = 'gevStoriesPopSeen';
-// The promo never opens on its own; nothing here auto-opens it.
-const popOpen = ref(false);
-function markPopSeen() {
-  store.popSeen = true;
-  popOpen.value = false;
-  try {
-    localStorage.setItem(POP_KEY, '1');
-  } catch {
-    /* storage off: the popup comes back next visit */
-  }
-}
+// ── Open the explore screen ──
 function openExplore() {
-  markPopSeen();
   store.controller.open();
 }
 
@@ -267,7 +255,6 @@ onMounted(() => {
       mode.value !== 'closed' ||
       document.body.classList.contains('stories-mode'),
   });
-  popOpen.value = false;
   watchCredit();
 });
 onBeforeUnmount(() => {
@@ -299,7 +286,6 @@ watch(mode, (m, previous) => {
     });
   } else {
     if (previous === 'closed') returnFocus = document.activeElement;
-    popOpen.value = false;
   }
 });
 // Each screen (and each story, keyed) mounts its own map slot.
@@ -310,8 +296,8 @@ watch([mode, storyId], () => nextTick(watchCredit));
   <div id="gev-stories" ref="rootEl">
     <svg width="0" height="0" style="position: absolute" aria-hidden="true" v-html="GEV_LOGO_SYMBOL"></svg>
 
-    <!-- The Stories entry (hidden from the main chrome; opened from Settings), its
-         opt-in promo popover (never auto-opened) and the Opened-in-GEV toast -->
+    <!-- The Stories entry (hidden from the main chrome; opened from Settings), and the
+         Opened-in-GEV toast -->
     <template v-if="mode === 'closed' && store.available">
       <button
         id="hStories"
@@ -325,24 +311,8 @@ watch([mode, storyId], () => nextTick(watchCredit));
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3" /><path d="M10 9.5v5l4.5-2.5z" fill="currentColor" /></svg>
         <span>{{ t('Stories') }}</span>
       </button>
-      <div
-        v-if="popOpen"
-        id="hPop"
-        class="h-pop gs-pop"
-        role="region"
-        aria-labelledby="hPopT"
-        :style="{ top: `${entry.top + 52}px`, right: `${Math.max(12, entry.right - 40)}px` }"
-      >
-        <span class="k">{{ t('NEW') }}</span>
-        <h2 id="hPopT">{{ t('Stories') }}</h2>
-        <p>{{ t('Curated, interactive views of what is happening on Earth. Play one, take over the map whenever you like, then pick the story back up.') }}</p>
-        <div class="row">
-          <button class="tbtn solid" type="button" @click="openExplore">{{ t('Browse stories') }}</button>
-          <button class="tbtn" type="button" @click="markPopSeen">{{ t('Not now') }}</button>
-        </div>
-      </div>
       <div v-if="openedToast" id="hToast" class="h-toast glass gs-opened-toast" role="status">
-        <b>{{ t('Opened in GEV') }}</b>
+        <b>{{ t('Opened in {product}', { product: PRODUCT_NAME }) }}</b>
         <span>{{ openedToast.title }} · {{ openedWhen }}</span>
         <button class="tbtn" type="button" @click="backToStory">{{ t('Back to story') }}</button>
       </div>

@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 import { t } from '../../../i18n/index.js';
+import { PRODUCT_NAME } from '../../brand.js';
 import { useStoriesStore } from '../../stores/stories.js';
 
 /**
@@ -29,7 +30,7 @@ async function share() {
       id="railGev"
       class="rail-btn rail-gev"
       type="button"
-      :aria-label="t('Open this moment in GEV')"
+      :aria-label="t('Open this moment in {product}', { product: PRODUCT_NAME })"
       @click="store.controller.openInGev()"
     >
       <span class="ic"

@@ -2,6 +2,8 @@
 import { storeToRefs } from 'pinia';
 import { computed, onBeforeUnmount, shallowRef } from 'vue';
 import { msg, t, tn } from '../../../i18n/index.js';
+import { openFirstRunExperience } from '../../../firstRunExperience.js';
+import { useCockpitStore } from '../../stores/cockpit.js';
 import { useDisplayStore } from '../../stores/display.js';
 import { useLocaleStore } from '../../stores/locale.js';
 import { useProviderSettingsStore } from '../../stores/providerSettings.js';
@@ -68,8 +70,24 @@ const storiesOpenable = computed(
   () => storiesAvailable.value !== false && typeof storiesController.value?.open === 'function',
 );
 function openStories() {
+  if (!storiesOpenable.value) return;
   storiesController.value.open();
   emit('close');
+}
+
+// Cockpit view: the readout's entry is answered by the Cockpit controller's
+// delegated click, so this triggers that same action rather than a copy of it.
+const { presence: cockpit } = storeToRefs(useCockpitStore());
+const cockpitOpenable = computed(() => cockpit.value?.entryAvailable === true);
+function openCockpit() {
+  if (!cockpitOpenable.value) return;
+  document.getElementById('cockpit-entry-readout')?.click();
+  emit('close');
+}
+
+function showGuidedStart() {
+  emit('close');
+  void openFirstRunExperience();
 }
 
 // The language picker the shell publishes. Its own id keeps it apart from the
@@ -123,14 +141,19 @@ const { picker } = storeToRefs(useLocaleStore());
       </label>
     </section>
 
-    <section v-if="keysShown || storiesOpenable" class="top-actions-section" aria-labelledby="top-actions-data">
+    <section class="top-actions-section" aria-labelledby="top-actions-data">
       <h2 id="top-actions-data" class="top-actions-heading">{{ t('Data') }}</h2>
       <button v-if="keysShown" type="button" class="top-actions-action" data-key-setup-open aria-haspopup="dialog" aria-controls="key-setup" @click="openKeys">
         <span class="top-actions-action-name">{{ t('Data sources & API keys') }}</span>
         <span class="top-actions-action-note">{{ keysLabel }}</span>
       </button>
-      <button v-if="storiesOpenable" type="button" class="top-actions-action" data-stories-open @click="openStories">
+      <button type="button" class="top-actions-action" data-stories-open :disabled="!storiesOpenable" :aria-disabled="String(!storiesOpenable)" @click="openStories">
         <span class="top-actions-action-name">{{ t('Stories') }}</span>
+        <span v-if="!storiesOpenable" class="top-actions-action-note">{{ t('Stories unavailable') }}</span>
+      </button>
+      <button type="button" class="top-actions-action" data-cockpit-open :disabled="!cockpitOpenable" :aria-disabled="String(!cockpitOpenable)" @click="openCockpit">
+        <span class="top-actions-action-name">{{ t('Cockpit view') }}</span>
+        <span v-if="!cockpitOpenable" class="top-actions-action-note">{{ t('Select a vehicle to enter') }}</span>
       </button>
     </section>
 
@@ -140,7 +163,7 @@ const { picker } = storeToRefs(useLocaleStore());
     </section>
 
     <section class="top-actions-section">
-      <a class="top-actions-link" href="?welcome=1">{{ t('Show guided start') }}</a>
+      <button type="button" class="top-actions-link" data-guided-start @click="showGuidedStart">{{ t('Show guided start') }}</button>
     </section>
   </div>
 </template>

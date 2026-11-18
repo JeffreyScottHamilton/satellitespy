@@ -9,6 +9,7 @@ import {
 } from 'vue';
 import { storeToRefs } from 'pinia';
 import { t, tn } from '../../../i18n/index.js';
+import { PRODUCT_NAME } from '../../brand.js';
 import { useStoriesStore } from '../../stores/stories.js';
 import {
   FILTERS,
@@ -376,7 +377,7 @@ defineExpose({
   <section
     id="scrExplore"
     class="scr scr-explore"
-    :aria-label="t('GEV Stories explore')"
+    :aria-label="t('{product} Stories explore', { product: PRODUCT_NAME })"
   >
     <StoriesHeader
       screen="explore"
@@ -427,7 +428,7 @@ defineExpose({
               :aria-label="t('Story list size. Drag, or press to change')"
               @keydown="onGripKey"
             ></button>
-            <h1>{{ t('GEV Stories') }}</h1>
+            <h1>{{ t('Stories') }}</h1>
             <span
               id="exCount"
               :aria-label="

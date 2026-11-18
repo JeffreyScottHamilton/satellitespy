@@ -180,7 +180,7 @@ watch(
       <template #badge><span id="recent-imagery-panel-count" :aria-label="t('Imagery days in the box')"></span></template>
       <div id="recent-imagery-panel-body" class="ui-scroll" data-rail-scroller></div>
     </RailPanel>
-    <RailPanel id="global-context-panel" start-collapsed v-class-toggle="{ ...(ctx && { 'context-enabled': ctx.enabled }) }" :data-context-mode="ctx?.mode" :data-context-tab="activeTab" :title="t('CONTEXT')" sideways scroll rail-scroller>
+    <RailPanel id="global-context-panel" start-collapsed v-class-toggle="{ ...(ctx && { 'context-enabled': ctx.enabled }) }" :data-context-mode="ctx?.mode" :data-context-tab="activeTab" :title="t('Context')" sideways scroll rail-scroller>
         <template #actions>
           <button type="button" class="context-dock-btn" :aria-pressed="String(contextSearchOpen)" :aria-label="contextSearchOpen ? t('Close Context search') : t('Search in Context')" :title="contextSearchOpen ? t('Close search') : t('Search in Context')" @click="toggleSearch">
             <span class="material-symbols-outlined" aria-hidden="true">search</span>

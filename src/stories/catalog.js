@@ -1,5 +1,6 @@
 import { SCENE_RECIPES } from '../scenes/recipes.js';
 import { msg } from '../i18n/index.js';
+import { PRODUCT_NAME } from '../ui/brand.js';
 /**
  * Stories are GEV scenes, played on GEV's own globe: the scenes GEV
  * ships (recipes with a camera path) and the scenes the person authored and
@@ -180,7 +181,7 @@ function sceneContext(recipe) {
     ...(own.area ? { area: own.area } : {}),
     ...(own.tMinMs != null ? { tMinMs: own.tMinMs, tMaxMs: own.tMaxMs } : {}),
     description:
-      own.description ?? msg('A GEV scene, played on the live globe.'),
+      own.description ?? msg('A Satellitespy scene, played on the live globe.'),
     places: own.places ?? [],
     moments: own.moments ?? [],
     // The layers' own names on the legend.
@@ -236,7 +237,7 @@ function shippedStory(recipe) {
     sceneId: recipe.id,
     kind: 'gev',
     title: recipe.title,
-    creator: 'GEV',
+    creator: PRODUCT_NAME,
     tags: Object.entries(recipe.layers ?? {})
       .filter(([, on]) => on)
       .map(([id]) => id),
@@ -255,7 +256,7 @@ const describe = (scene) =>
     ? msg(
         'A draft, not saved as a story yet. Use SAVE TO STORIES in AUTHORING to save it.',
       )
-    : msg('A scene you made in GEV, played on the live globe.');
+    : msg('A scene you made in Satellitespy, played on the live globe.');
 
 /**
  * A scene the person saved to Stories (SceneDirector.storyScenes()). Its

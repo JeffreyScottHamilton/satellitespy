@@ -9,6 +9,7 @@ import {
 } from 'vue';
 import { storeToRefs } from 'pinia';
 import { formatNumber, t } from '../../../i18n/index.js';
+import { PRODUCT_NAME } from '../../brand.js';
 import { useStoriesStore } from '../../stores/stories.js';
 import { chapterAt } from '../../../stories/format.js';
 import {
@@ -322,7 +323,7 @@ watch([k, page], () => nextTick(sizeCard));
       'sheet-hinting': sheetHint,
       'ctx-resizing': resizing,
     }"
-    :aria-label="t('GEV Story')"
+    :aria-label="t('{product} Story', { product: PRODUCT_NAME })"
     :data-sheet="sheet"
     data-chapters="timeline"
     :style="sectionStyle"
