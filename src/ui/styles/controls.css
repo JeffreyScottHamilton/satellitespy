@@ -12,13 +12,8 @@
 #control-panel .panel-glow {
   position: absolute;
   inset: -30px;
-  background: radial-gradient(
-    ellipse at center bottom,
-    var(--accent-dim) 0%,
-    transparent 60%
-  );
-  filter: blur(30px);
-  opacity: 0.4;
+  background: none;
+  opacity: 0;
   pointer-events: none;
 }
 
@@ -28,12 +23,9 @@
   border: 1px solid var(--glass-border);
   border-radius: var(--panel-radius);
   padding: 16px 20px 18px;
-  backdrop-filter: blur(24px) saturate(1.4);
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
-    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow: none;
 }
 
 .panel-header {
@@ -56,28 +48,28 @@
 }
 
 .panel-mini-label {
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 8px;
-  letter-spacing: 1.4px;
+  letter-spacing: normal;
   color: var(--text-dim);
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .panel-mini-value {
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 9px;
-  letter-spacing: 1.8px;
+  letter-spacing: normal;
   color: var(--accent);
-  text-transform: uppercase;
-  text-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+  text-transform: none;
+  text-shadow: none;
 }
 
 .panel-title {
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 9px;
-  letter-spacing: 3px;
+  letter-spacing: normal;
   color: var(--text-dim);
-  text-transform: uppercase;
+  text-transform: none;
   white-space: nowrap;
 }
 
@@ -88,11 +80,11 @@
    Recent Imagery short. */
 :is(#left-panel-stack, #right-context-rail)
   :is(.panel-header > .panel-title, .pp-header-label) {
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: min(var(--dock-label-font-size), 9.28px);
   font-weight: var(--dock-label-font-weight);
-  letter-spacing: min(var(--dock-label-letter-spacing), 2.08px);
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 /* A hovered panel sets --rail-label-hover on itself (see below); its own
@@ -178,7 +170,7 @@ html:not([lang='en']):not(:lang(zh)):not(:lang(ja))
   > .panel-header
   > .panel-title {
   font-size: 8px;
-  letter-spacing: 1px;
+  letter-spacing: normal;
 }
 
 .panel-divider {
@@ -191,8 +183,8 @@ html:not([lang='en']):not(:lang(zh)):not(:lang(ja))
   width: 22px;
   height: 22px;
   border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--text) 3%, transparent);
   color: var(--text-dim);
   font-family: var(--font-mono);
   font-size: 13px;
@@ -209,7 +201,7 @@ html:not([lang='en']):not(:lang(zh)):not(:lang(ja))
 .panel-collapse-btn:hover {
   border-color: var(--glass-border-hover);
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.07);
+  background: color-mix(in srgb, var(--text) 7%, transparent);
 }
 
 /* A side panel answers the pointer as the command dock's trays do: a
@@ -275,8 +267,8 @@ html:not([lang='en']):not(:lang(zh)):not(:lang(ja))
   padding: 14px 16px 10px;
   min-width: 78px;
   flex-shrink: 0;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--text) 3%, transparent);
+  border: 1px solid var(--border);
   border-radius: var(--btn-radius);
   cursor: pointer;
   /* Keep the keyboard focus outline immediate. */
@@ -302,7 +294,7 @@ html:not([lang='en']):not(:lang(zh)):not(:lang(ja))
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.04) 0%,
+    color-mix(in srgb, var(--text) 4%, transparent) 0%,
     transparent 100%
   );
   opacity: 0;
@@ -311,7 +303,7 @@ html:not([lang='en']):not(:lang(zh)):not(:lang(ja))
 
 .style-btn:hover {
   border-color: var(--glass-border-hover);
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--text) 6%, transparent);
   transform: translateY(-1px);
 }
 
@@ -326,14 +318,12 @@ html:not([lang='en']):not(:lang(zh)):not(:lang(ja))
 .style-btn.active {
   border-color: var(--accent);
   background: var(--accent-dim);
-  box-shadow:
-    0 0 20px rgba(0, 212, 255, 0.15),
-    0 0 0 1px rgba(0, 212, 255, 0.1) inset;
+  box-shadow: none;
 }
 
 .style-btn.active .btn-icon {
   color: var(--accent);
-  text-shadow: 0 0 12px var(--accent-glow);
+  text-shadow: none;
 }
 
 .style-btn.active .btn-label {
@@ -354,7 +344,7 @@ html:not([lang='en']):not(:lang(zh)):not(:lang(ja))
   font-size: 11px;
   font-weight: 500;
   color: var(--text-secondary);
-  letter-spacing: 0.3px;
+  letter-spacing: normal;
   transition: color var(--transition-fast);
 }
 
@@ -403,7 +393,7 @@ html:not([lang='en']):not(:lang(zh)):not(:lang(ja))
   width: 128px;
   height: auto;
   margin: 0 auto 24px;
-  filter: drop-shadow(0 0 24px rgba(0, 246, 255, 0.42));
+  filter: none;
   animation: logo-pulse 2s ease-in-out infinite;
 }
 
@@ -420,18 +410,18 @@ html:not([lang='en']):not(:lang(zh)):not(:lang(ja))
 }
 
 .loader-content h2 {
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 18px;
   font-weight: 600;
-  letter-spacing: 6px;
+  letter-spacing: normal;
   color: var(--text-primary);
   margin-bottom: 12px;
 }
 
 .loader-status {
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 11px;
-  letter-spacing: 2px;
+  letter-spacing: normal;
   color: var(--text-dim);
   animation: pulse 2s ease-in-out infinite;
 }
@@ -465,11 +455,9 @@ html:not([lang='en']):not(:lang(zh)):not(:lang(ja))
   border: 1px solid var(--glass-border);
   border-radius: var(--panel-radius);
   background: var(--glass-bg);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.42),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(24px) saturate(1.4);
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  box-shadow: none;
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
 }
 
 #pp-toggles:not(.collapsed) > .pp-header-row,
@@ -495,8 +483,8 @@ html:not([lang='en']):not(:lang(zh)):not(:lang(ja))
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   border-radius: 8px;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   cursor: pointer;
   transition:
     background-color var(--transition-fast),
@@ -533,11 +521,9 @@ html:not([lang='en']):not(:lang(zh)):not(:lang(ja))
   border: 1px solid var(--glass-border);
   border-radius: var(--panel-radius);
   background: var(--glass-bg);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.42),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(24px) saturate(1.4);
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  box-shadow: none;
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
   cursor: default;
 }
 
@@ -608,13 +594,13 @@ html:not([lang='en']):not(:lang(zh)):not(:lang(ja))
 
 .pp-toggle-btn:hover {
   border-color: var(--glass-border-hover);
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--text) 6%, transparent);
 }
 
 .pp-toggle-btn.active {
   border-color: var(--accent);
   background: var(--accent-dim);
-  box-shadow: 0 0 12px rgba(0, 212, 255, 0.15);
+  box-shadow: none;
 }
 
 .pp-icon {
@@ -637,11 +623,11 @@ html:not([lang='en']):not(:lang(zh)):not(:lang(ja))
 }
 
 .pp-label {
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 9px;
-  letter-spacing: 1.5px;
+  letter-spacing: normal;
   color: var(--text-secondary);
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .pp-toggle-btn.active .pp-label {
@@ -685,8 +671,8 @@ html:not([lang='en']):not(:lang(zh)):not(:lang(ja))
   border: 1px solid var(--glass-border);
   border-top: none;
   border-radius: 0 0 8px 8px;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .pp-slider-row.visible {
@@ -704,11 +690,11 @@ html:not([lang='en']):not(:lang(zh)):not(:lang(ja))
 }
 
 .pp-slider-mini-label {
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 8px;
-  letter-spacing: 1px;
+  letter-spacing: normal;
   color: var(--text-dim);
-  text-transform: uppercase;
+  text-transform: none;
   white-space: nowrap;
 }
 
@@ -774,17 +760,17 @@ html:not([lang='en']) .pp-slider-row > .pp-slider-mini-label {
   gap: 6px;
   margin-top: 8px;
   padding-top: 8px;
-  border-top: 1px solid rgba(123, 189, 211, 0.18);
+  border-top: 1px solid var(--border);
 }
 
 .map-source-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: rgba(190, 221, 230, 0.62);
-  font-family: var(--font-mono);
+  color: color-mix(in srgb, var(--text-2) 62%, transparent);
+  font-family: inherit;
   font-size: 8px;
-  letter-spacing: 1.35px;
+  letter-spacing: normal;
 }
 
 .map-stack-chip-row {
@@ -799,14 +785,14 @@ html:not([lang='en']) .pp-slider-row > .pp-slider-mini-label {
   justify-content: center;
   gap: 4px;
   padding: 4px 7px;
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 9px;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
   white-space: nowrap;
   color: var(--text-dim);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  border: 1px solid var(--border);
   border-radius: 4px;
   cursor: pointer;
   /* Explicit property list, NOT `transition: all`: `all` animates
@@ -840,7 +826,7 @@ html:not([lang='en']) .pp-slider-row > .pp-slider-mini-label {
 .map-stack-chip:hover,
 .map-stack-chip:focus-visible {
   border-color: var(--glass-border-hover);
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--text) 6%, transparent);
   color: var(--text-primary);
 }
 
@@ -857,21 +843,21 @@ html:not([lang='en']) .pp-slider-row > .pp-slider-mini-label {
   color: var(--accent);
   border-color: var(--accent);
   background: var(--accent-dim);
-  box-shadow: 0 0 10px rgba(0, 212, 255, 0.15);
+  box-shadow: none;
 }
 
 .map-stack-chip.unavailable,
 .map-stack-chip[aria-disabled='true'] {
-  color: rgba(232, 234, 237, 0.28);
-  border-color: rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.02);
+  color: color-mix(in srgb, var(--text) 28%, transparent);
+  border-color: var(--border);
+  background: color-mix(in srgb, var(--text) 2%, transparent);
   cursor: not-allowed;
 }
 
 .map-stack-chip-req {
   font-size: 7px;
-  letter-spacing: 0.3px;
-  color: rgba(232, 234, 237, 0.28);
+  letter-spacing: normal;
+  color: color-mix(in srgb, var(--text) 28%, transparent);
 }
 
 .pp-stack-status {
@@ -880,16 +866,16 @@ html:not([lang='en']) .pp-slider-row > .pp-slider-mini-label {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 9px;
-  letter-spacing: 0.8px;
+  letter-spacing: normal;
   color: var(--accent);
   text-align: center;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .pp-stack-status.warn {
-  color: #ffb84d;
+  color: var(--warn);
 }
 
 .pp-select {
@@ -926,13 +912,13 @@ html:not([lang='en']) .pp-slider-row > .pp-slider-mini-label {
   width: 16px;
   height: 16px;
   padding: 0;
-  border: 1px solid rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--border);
   border-radius: 50%;
   cursor: pointer;
 }
 /* The swatch keeps its own colour in every theme; only a ring marks it. */
 #utilities-panel .draw-color:is(.active, :hover, :focus-visible) {
-  border-color: rgba(0, 0, 0, 0.45);
+  border-color: var(--border);
   box-shadow: none;
 }
 #utilities-panel .draw-color.active,
@@ -980,11 +966,11 @@ html:not([lang='en']) .pp-slider-row > .pp-slider-mini-label {
   opacity: 0.85;
 }
 .draw-mark-name:hover {
-  border-color: rgba(255, 255, 255, 0.14);
+  border-color: var(--border);
 }
 .draw-mark-name:focus {
   border-color: var(--accent);
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--text) 6%, transparent);
 }
 .draw-mark-row.hidden-mark .draw-mark-name,
 .draw-mark-row.hidden-mark .draw-mark-swatch {
@@ -996,9 +982,9 @@ html:not([lang='en']) .pp-slider-row > .pp-slider-mini-label {
   order: 2;
   flex-basis: 100%;
   padding: 0 0 2px 16px;
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 10px;
-  letter-spacing: 0.4px;
+  letter-spacing: normal;
   color: var(--text-dim);
   overflow-wrap: anywhere;
 }
@@ -1019,14 +1005,14 @@ html:not([lang='en']) .pp-slider-row > .pp-slider-mini-label {
 .draw-clear-btn {
   flex: 0 0 auto;
   padding: 0 8px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid var(--border);
   border-radius: 6px;
 }
 .draw-hint {
   flex-basis: 100%;
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 8px;
-  letter-spacing: 0.6px;
+  letter-spacing: normal;
   color: var(--text-dim);
   line-height: 1.4;
 }
@@ -1073,9 +1059,9 @@ body.gev-drawing #cesiumContainer canvas {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 10px;
-  letter-spacing: 0.6px;
+  letter-spacing: normal;
   color: var(--text-primary);
 }
 .geo-import-action {
@@ -1087,7 +1073,7 @@ body.gev-drawing #cesiumContainer canvas {
   height: 22px;
   padding: 0;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid var(--border);
   border-radius: 6px;
   color: var(--text-dim);
   cursor: pointer;
@@ -1119,25 +1105,25 @@ body.gev-geo-import-drag #cesiumContainer {
 .pp-mode-btn:not(.gev-segment) {
   flex: 1;
   height: 22px;
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--text) 4%, transparent);
   border: none;
   color: var(--text-dim);
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 9px;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
   cursor: pointer;
   transition:
     background-color var(--transition-fast),
     color var(--transition-fast);
 }
 .pp-mode-btn:not(.gev-segment):hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--text) 8%, transparent);
   color: var(--text-primary);
 }
 .pp-mode-btn:not(.gev-segment).active {
   background: var(--accent);
-  color: #000;
+  color: var(--accent-ink);
 }
 
 /* These controls also move into Cockpit Display; keep focus on the control
@@ -1150,7 +1136,7 @@ body.gev-geo-import-drag #cesiumContainer {
 }
 
 .pp-mode-btn:focus-visible {
-  box-shadow: inset 0 0 0 4px #061014;
+  box-shadow: none;
 }
 
 #clean-view-toggle {
@@ -1164,12 +1150,12 @@ body.gev-geo-import-drag #cesiumContainer {
   transform: translateX(50%);
   z-index: 300;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  background: rgba(8, 10, 14, 0.88);
-  color: #d9f7ff;
-  font-family: var(--font-mono);
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  color: var(--text-2);
+  font-family: inherit;
   font-size: 10px;
-  letter-spacing: 1.8px;
+  letter-spacing: normal;
   padding: 8px 14px;
   cursor: pointer;
   display: none;
@@ -1207,35 +1193,35 @@ body.ui-clean-view #scene-runtime.active {
 
 /* ── Detection Toggle States ─────────────────── */
 #detection-toggle.active {
-  border-color: rgba(0, 255, 80, 0.6);
-  background: rgba(0, 255, 80, 0.1);
-  box-shadow: 0 0 12px rgba(0, 255, 80, 0.15);
+  border-color: var(--ok);
+  background: color-mix(in srgb, var(--ok) 10%, transparent);
+  box-shadow: none;
 }
 
 #detection-toggle.active .pp-label {
-  color: rgba(0, 255, 80, 0.9);
+  color: color-mix(in srgb, var(--ok) 90%, transparent);
 }
 
 #detection-toggle.active .pp-icon {
-  color: rgba(0, 255, 80, 0.9);
-  text-shadow: 0 0 6px rgba(0, 255, 80, 0.5);
+  color: color-mix(in srgb, var(--ok) 90%, transparent);
+  text-shadow: none;
 }
 
 #detection-toggle.panoptic,
 #detection-toggle.god {
-  border-color: rgba(0, 255, 80, 0.8);
-  background: rgba(0, 255, 80, 0.18);
-  box-shadow: 0 0 16px rgba(0, 255, 80, 0.25);
+  border-color: var(--ok);
+  background: color-mix(in srgb, var(--ok) 18%, transparent);
+  box-shadow: none;
   animation: detection-pulse 2s ease-in-out infinite;
 }
 
 @keyframes detection-pulse {
   0%,
   100% {
-    box-shadow: 0 0 12px rgba(0, 255, 80, 0.15);
+    box-shadow: none;
   }
   50% {
-    box-shadow: 0 0 22px rgba(0, 255, 80, 0.35);
+    box-shadow: none;
   }
 }
 
@@ -1258,9 +1244,9 @@ body.ui-clean-view #scene-runtime.active {
   border: 1px solid var(--glass-border);
   border-radius: 12px;
   padding: 14px 16px;
-  backdrop-filter: blur(24px) saturate(1.4);
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow: var(--shadow-1);
   opacity: 0;
   visibility: hidden;
   transform: translateY(6px);
@@ -1298,11 +1284,11 @@ body.ui-clean-view #scene-runtime.active {
 }
 
 .param-panel-title {
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 8px;
-  letter-spacing: 2.5px;
+  letter-spacing: normal;
   color: var(--text-dim);
-  text-transform: uppercase;
+  text-transform: none;
   white-space: nowrap;
 }
 
@@ -1315,8 +1301,8 @@ body.ui-clean-view #scene-runtime.active {
 #param-slider-panel:not(.collapsed) .param-panel-divider {
   background: linear-gradient(
     90deg,
-    rgb(0 212 255 / 28%),
-    rgba(0, 212, 255, 0.18) 58%,
+    color-mix(in srgb, var(--accent) 28%, transparent),
+    color-mix(in srgb, var(--accent) 18%, transparent) 58%,
     transparent
   );
 }
@@ -1349,9 +1335,9 @@ html:not([lang='en']) .param-slider-row {
 }
 
 .param-label {
-  font-family: var(--font-mono);
+  font-family: inherit;
   font-size: 9px;
-  letter-spacing: 1px;
+  letter-spacing: normal;
   color: var(--text-secondary);
   min-width: 72px;
   flex-shrink: 0;

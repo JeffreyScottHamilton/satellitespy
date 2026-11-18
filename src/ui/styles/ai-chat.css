@@ -38,12 +38,10 @@
   width: 2.45rem;
   height: 2.45rem;
   padding: 0.48rem;
-  border: 1px solid rgba(232, 234, 237, 0.36);
+  border: 1px solid var(--text);
   border-radius: 0.65rem;
-  background: rgba(232, 234, 237, 0.04);
-  box-shadow:
-    0 0 0 0.18rem rgba(232, 234, 237, 0.04),
-    0 0 0.75rem rgba(232, 234, 237, 0.08);
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  box-shadow: none;
   transition:
     border-color 160ms ease,
     box-shadow 160ms ease;
@@ -53,21 +51,19 @@
   #gev-voice-control[data-assistant-mode='chat']
   #gev-chat-button
   > svg {
-  border-color: rgba(54, 220, 255, 0.48);
-  box-shadow:
-    0 0 0 0.18rem #36dcff0f,
-    0 0 0.75rem #36dcff1f;
+  border-color: var(--accent);
+  box-shadow: none;
 }
 #command-dock :is(.gev-mic-label, .gev-chat-label) {
   margin: 0;
   font: 0.48rem var(--font-mono);
-  letter-spacing: 0.08em;
+  letter-spacing: normal;
 }
 #command-dock #gev-chat-button:hover,
 #command-dock #gev-voice-control[data-assistant-mode='chat'] #gev-chat-button,
 #command-dock #gev-voice-button:hover {
   color: var(--accent);
-  background: rgba(54, 220, 255, 0.08);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
 }
 #command-dock #gev-chat-button:focus-visible {
   outline: 2px solid var(--accent);
@@ -84,10 +80,10 @@
   flex-direction: column;
   overflow: hidden;
   color: var(--text-primary);
-  background: rgba(7, 22, 31, 0.97);
-  border: 1px solid rgba(54, 220, 255, 0.3);
+  background: color-mix(in srgb, var(--surface) 97%, transparent);
+  border: 1px solid var(--accent);
   border-radius: 0.9rem;
-  box-shadow: 0 1rem 3rem #0008;
+  box-shadow: none;
   text-align: left;
   font: 0.8rem/1.5 var(--font-sans);
   color-scheme: dark;
@@ -189,7 +185,7 @@
 #gev-chat-empty button {
   border: 1px solid var(--glass-border);
   border-radius: 1rem;
-  background: #ffffff05;
+  background: color-mix(in srgb, var(--text) 2%, transparent);
   color: var(--text-secondary);
   padding: 0.35rem 0.65rem;
   margin: 0.2rem;
@@ -201,7 +197,7 @@
   overflow-wrap: anywhere;
   padding: 0.65rem 0.8rem;
   border-radius: 0.6rem;
-  background: #ffffff05;
+  background: color-mix(in srgb, var(--text) 2%, transparent);
 }
 .gev-chat-message[data-role='user'] {
   display: flex;
@@ -232,9 +228,9 @@
   gap: 0.6rem;
   margin: 0.4rem 0.8rem 0.8rem;
   padding: 0.65rem;
-  border: 1px solid #36dcff40;
+  border: 1px solid var(--accent);
   border-radius: 0.65rem;
-  background: #020a1080;
+  background: color-mix(in srgb, var(--surface) 50%, transparent);
 }
 #gev-chat-input {
   box-sizing: border-box;
@@ -253,7 +249,7 @@
   line-height: 1.2rem;
 }
 #gev-chat-form:focus-within {
-  border-color: rgba(54, 220, 255, 0.45);
+  border-color: var(--accent);
 }
 #gev-chat-send {
   width: 2rem;
@@ -262,7 +258,7 @@
   border: 0;
   border-radius: 0.4rem;
   background: var(--accent);
-  color: #06141b;
+  color: var(--accent-ink);
   cursor: pointer;
 }
 #gev-chat-send:disabled {
@@ -353,7 +349,7 @@
   )
   :is(.location-toolbar-label, .panel-header .panel-title) {
   font-size: 0;
-  letter-spacing: 0;
+  letter-spacing: normal;
   gap: 0;
   justify-content: center;
 }
@@ -412,7 +408,7 @@
   .gev-panel-layout
   button:is(:hover, [aria-pressed='true']) {
   color: var(--accent);
-  background: #36dcff14;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
 }
 #gev-chat-panel .gev-chat-header {
   align-items: flex-start;
@@ -447,7 +443,7 @@
 }
 #gev-chat-attach:is(:hover, [aria-expanded='true']) {
   color: var(--accent);
-  background: #36dcff14;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
 }
 #gev-chat-attach:disabled {
   opacity: 0.3;
@@ -458,7 +454,7 @@
   padding: 0.7rem;
   border: 1px solid var(--glass-border);
   border-radius: 0.6rem;
-  background: #020a10;
+  background: var(--surface);
 }
 #gev-chat-attach-menu label {
   display: block;
@@ -471,7 +467,7 @@
   border: 1px solid var(--glass-border);
   border-radius: 0.3rem;
   color: var(--text-primary);
-  background: #10232d;
+  background: var(--surface);
   font: inherit;
 }
 #gev-chat-layer-row {
@@ -504,9 +500,9 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   padding: 0.3rem 0.5rem;
-  border: 1px solid #36dcff40;
+  border: 1px solid var(--accent);
   border-radius: 1rem;
-  background: #36dcff14;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
   color: var(--accent);
   font: inherit;
   font-size: 0.7rem;
@@ -550,7 +546,7 @@
   border: 0;
   border-radius: 0.5rem;
   color: var(--accent);
-  background: #36dcff14;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
   cursor: pointer;
 }
 #gev-chat-panel[data-minimized='true'] #gev-chat-input {
@@ -564,10 +560,8 @@
 
 #gev-chat-panel[data-minimized='true']:focus-within {
   width: min(25rem, calc(100vw - 1.5rem));
-  border-color: rgba(54, 220, 255, 0.45);
-  box-shadow:
-    0 0.5rem 1.5rem #0006,
-    0 0 0 1px #36dcff14;
+  border-color: var(--accent);
+  box-shadow: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -587,10 +581,10 @@
   width: 100%;
   box-sizing: border-box;
   padding: 0.65rem 0.8rem;
-  border: 1px solid #36dcff26;
+  border: 1px solid var(--accent);
   border-radius: 0.85rem;
-  background: rgba(12, 26, 34, 0.96);
-  box-shadow: 0 0.5rem 1.5rem #0005;
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+  box-shadow: none;
   animation: gev-reply-slide 180ms ease-out;
 }
 #gev-chat-mini-reply header {
@@ -610,12 +604,12 @@
   border: 0;
   border-radius: 0.3rem;
   color: var(--text-secondary);
-  background: #ffffff06;
+  background: color-mix(in srgb, var(--text) 2%, transparent);
   cursor: pointer;
 }
 #gev-chat-expand-reply:hover {
   color: var(--accent);
-  background: #36dcff14;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
 }
 #gev-chat-mini-text {
   margin: 0.4rem 0 0;
@@ -703,16 +697,16 @@
   gap: 0.35rem;
   min-height: 2rem;
   padding: 0.3rem 0.75rem 0.3rem 0.45rem;
-  border: 1px solid #36dcff66;
+  border: 1px solid var(--accent);
   border-radius: 0.45rem;
-  background: #36dcff1f;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
   color: var(--accent);
   font: 600 0.75rem var(--font-sans);
   letter-spacing: 0.02em;
   cursor: pointer;
 }
 #gev-voice-control .gev-voice-panel :is(#gev-chat-back, #gev-voice-back):hover {
-  background: #36dcff33;
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
 }
 #gev-chat-back:disabled {
   opacity: 0.3;
@@ -742,8 +736,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 0.45rem;
-  background: #fff;
-  color: #132630;
+  background: var(--text);
+  color: var(--accent-ink);
   font-size: 0;
   letter-spacing: 0;
 }
@@ -761,8 +755,8 @@
   min-width: 0;
   padding: 0.65rem 0.8rem;
   border-radius: 0.6rem;
-  background: #36dcff14;
-  border: 1px solid #36dcff20;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border: 1px solid var(--accent);
 }
 
 .gev-chat-message[data-role='assistant'] {
@@ -777,7 +771,7 @@
   min-width: 0;
   padding: 0.65rem 0.8rem;
   border-radius: 0.6rem;
-  background: #ffffff05;
+  background: color-mix(in srgb, var(--text) 2%, transparent);
 }
 .gev-chat-message[data-role='assistant'] small {
   order: 0;
@@ -786,7 +780,7 @@
   height: 1.75rem;
   margin: 0.4rem 0 0;
   border-radius: 0.45rem;
-  background: #10242e url('/logo.svg') center / 1.45rem 1.45rem no-repeat;
+  background: var(--surface) url('/logo.svg') center / 1.45rem 1.45rem no-repeat;
   font-size: 0;
   letter-spacing: 0;
 }
@@ -799,52 +793,41 @@
 #command-dock > :is(#location-bar, #control-panel) {
   background: linear-gradient(
     160deg,
-    rgba(26, 30, 34, 0.96),
-    rgba(16, 21, 26, 0.97)
+    color-mix(in srgb, var(--surface) 96%, transparent),
+    color-mix(in srgb, var(--surface) 97%, transparent)
   );
-  border-color: rgba(125, 158, 169, 0.25);
-  box-shadow:
-    inset 0 1px 0 #b3f1ff0d,
-    inset 0 -1px 0 #74d2e50a,
-    0 6px 18px #0005;
+  border-color: var(--border);
+  box-shadow: none;
 }
 #command-dock .dock-label-icon {
-  color: #91aab2;
+  color: var(--text-2);
 }
 #command-dock :is(.location-toolbar-label, .panel-header .panel-title) {
-  color: #b8c9cf;
+  color: var(--text);
 }
 #command-dock > #gev-voice-control {
   justify-content: space-between;
   gap: 1rem;
   padding: 0.65rem 0.9rem 0.85rem;
-  border: 1px solid rgba(54, 220, 255, 0.32);
+  border: 1px solid var(--accent);
   border-radius: 1.35rem;
   background: linear-gradient(
     155deg,
-    rgba(14, 39, 50, 0.98),
-    rgba(7, 25, 35, 0.98) 70%
+    color-mix(in srgb, var(--surface) 98%, transparent),
+    color-mix(in srgb, var(--surface) 98%, transparent) 70%
   );
-  box-shadow:
-    inset 0 0 0 1px #8ae5f00a,
-    inset 0 1px 0 #c3f5ff14,
-    0 8px 24px #0006,
-    0 0 18px #36dcff12;
+  box-shadow: none;
 }
 #command-dock #gev-voice-button,
 #command-dock #gev-chat-button {
-  color: #a8c5ce;
+  color: var(--text-2);
   transform: translateY(0.1rem);
 }
 #command-dock #gev-voice-control .gev-mic-orbit,
 #command-dock #gev-chat-button > svg {
-  border-color: #90b7c366;
-  background: linear-gradient(145deg, #1a3743, #0b202b);
-  box-shadow:
-    0 0 0 3px #061d2980,
-    0 0 0 4px #a4e7f029,
-    inset 0 1px 3px #c6f5ff12,
-    0 3px 7px #0006;
+  border-color: var(--border);
+  background: linear-gradient(145deg, var(--surface-2), var(--surface));
+  box-shadow: none;
 }
 #command-dock #gev-voice-control > .gev-chat-thinking,
 #command-dock
@@ -973,7 +956,7 @@
 #gev-chat-panel .gev-chat-message > span,
 #gev-chat-panel #gev-chat-input,
 #gev-chat-panel #gev-chat-mini-text {
-  color: #dcebf0;
+  color: var(--text);
   font-size: 13px;
 }
 #gev-chat-suggestions {
@@ -996,15 +979,15 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   padding: 5px 8px;
-  border: 1px solid #70c8dd26;
+  border: 1px solid var(--accent);
   border-radius: 6px;
-  color: #b4cdd5;
-  background: #36dcff08;
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent) 3%, transparent);
   font: 11px var(--font-sans);
   cursor: pointer;
 }
 #gev-chat-suggestions button:hover {
-  background: #36dcff18;
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
 }
 #gev-chat-panel[data-minimized='true'] #gev-chat-suggestions {
   display: none;
@@ -1028,8 +1011,8 @@
   transform: translate(-50%, -50%);
   background: linear-gradient(
     transparent,
-    rgba(145, 190, 204, 0.35) 25%,
-    rgba(145, 190, 204, 0.35) 75%,
+    color-mix(in srgb, var(--accent) 35%, transparent) 25%,
+    color-mix(in srgb, var(--accent) 35%, transparent) 75%,
     transparent
   );
   pointer-events: none;
@@ -1058,17 +1041,17 @@
   background: conic-gradient(
     from var(--gev-edge-angle),
     transparent 0deg,
-    #36dcff18 55deg,
-    #36dcffb3 90deg,
-    #b6f5ff 105deg,
+    color-mix(in srgb, var(--accent) 9%, transparent) 55deg,
+    color-mix(in srgb, var(--accent) 70%, transparent) 90deg,
+    var(--text) 105deg,
     transparent 145deg,
     transparent 220deg,
-    #36dcff70 270deg,
+    color-mix(in srgb, var(--accent) 44%, transparent) 270deg,
     transparent 310deg
   );
   mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+    linear-gradient(var(--text) 0 0) content-box,
+    linear-gradient(var(--text) 0 0);
   mask-composite: exclude;
 }
 /* The edge orbits only while voice is live or a chat reply is on its way;
@@ -1101,14 +1084,14 @@
   justify-content: center;
   align-items: center;
   gap: 2px;
-  filter: drop-shadow(0 0 3px #36dcff24);
+  filter: none;
 }
 #command-dock #gev-voice-control > .gev-voice-visualizer span {
   flex: 1 1 0;
   min-width: 0;
   max-width: 4px;
   border-radius: 999px;
-  background: linear-gradient(180deg, #a3edf4, #42bfd7 55%, #238ba8);
+  background: linear-gradient(180deg, var(--accent), var(--accent) 55%, var(--accent));
   box-shadow: none;
   transform-origin: center;
   transform: scaleY(calc(0.4 + min(var(--bar), 14 - var(--bar)) * 0.085));
@@ -1142,7 +1125,7 @@
   #gev-voice-control[data-speaker='user']
   > .gev-voice-visualizer
   span {
-  background: linear-gradient(180deg, #f4dcab, #d9ac61);
+  background: linear-gradient(180deg, var(--surface-2), var(--warn));
 }
 @media (prefers-reduced-motion: reduce) {
   #command-dock #gev-voice-control > .gev-voice-visualizer span {
@@ -1195,7 +1178,7 @@
   left: 50%;
   transform: translateX(-50%);
   max-width: 6rem;
-  color: #a8c5ce;
+  color: var(--text-2);
   font: 8px/1.2 var(--font-mono, monospace);
   text-align: center;
   pointer-events: none;
@@ -1279,10 +1262,10 @@ body[data-assistant-docked='true'] #right-context-rail {
   justify-content: center;
   gap: 0;
   padding: 0.65rem 0.8rem;
-  border: 1px solid #36dcff26;
+  border: 1px solid var(--accent);
   border-radius: 0.85rem;
-  background: rgba(12, 26, 34, 0.96);
-  box-shadow: 0 0.5rem 1.5rem #0005;
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+  box-shadow: none;
 }
 #command-dock
   #gev-voice-control
@@ -1298,7 +1281,7 @@ body[data-assistant-docked='true'] #right-context-rail {
   .gev-voice-panel-title {
   color: var(--text-secondary);
   font: 0.6rem var(--font-mono);
-  letter-spacing: 0.1em;
+  letter-spacing: normal;
 }
 #command-dock
   #gev-voice-control
@@ -1315,7 +1298,7 @@ body[data-assistant-docked='true'] #right-context-rail {
   border: 0;
   border-radius: 0.3rem;
   color: var(--text-secondary);
-  background: #ffffff06;
+  background: color-mix(in srgb, var(--text) 2%, transparent);
   box-shadow: none;
 }
 #command-dock
@@ -1324,7 +1307,7 @@ body[data-assistant-docked='true'] #right-context-rail {
   .gev-voice-panel-header
   button:not(#gev-chat-back, #gev-voice-back):hover {
   color: var(--accent);
-  background: #36dcff14;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
 }
 #command-dock
   #gev-voice-control
@@ -1454,8 +1437,8 @@ body[data-assistant-docked='true'] #right-context-rail {
   --assistant-glass: var(--glass-bg);
   --assistant-glass-border: var(--glass-border);
   --assistant-glass-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03) inset,
-    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+    0 8px 32px color-mix(in srgb, var(--surface) 50%, transparent), 0 0 0 1px color-mix(in srgb, var(--text) 3%, transparent) inset,
+    0 1px 0 color-mix(in srgb, var(--text) 6%, transparent) inset;
 }
 :root:not([data-ui-theme='cyber'])
   #command-dock
@@ -1476,14 +1459,14 @@ body[data-assistant-docked='true'] #right-context-rail {
   #command-dock
   #gev-voice-control
   :is(#gev-chat-panel, #gev-voice-panel, #gev-voice-panel[data-minimized]) {
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
-  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
 }
 :root:not([data-ui-theme='cyber'])
   #command-dock
   #gev-voice-control
   #gev-chat-panel[data-minimized='true']:focus-within {
-  border-color: rgba(54, 220, 255, 0.45);
+  border-color: var(--accent);
 }
 
 /* A backdrop-filter on the voice control would stop the panels inside it
@@ -1500,8 +1483,8 @@ body[data-assistant-docked='true'] #right-context-rail {
   z-index: -1;
   border-radius: inherit;
   pointer-events: none;
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
-  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
 }
 
 /* The empty voice preview suggests a few things to say until voice starts. */
@@ -1518,12 +1501,12 @@ body[data-assistant-docked='true'] #right-context-rail {
   flex-basis: 100%;
   text-align: center;
   font: 0.6rem var(--font-mono);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
 }
 .gev-voice-hints q {
   padding: 0.25rem 0.6rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--text);
   border-radius: 0.45rem;
   color: var(--text-primary);
 }
@@ -1567,7 +1550,7 @@ body[data-assistant-docked='true'] #right-context-rail {
   )
   button:not(#gev-chat-back, #gev-voice-back, #gev-voice-preview-tab):hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--text) 8%, transparent);
 }
 #command-dock
   #gev-voice-control
@@ -1580,8 +1563,8 @@ body[data-assistant-docked='true'] #right-context-rail {
     [aria-selected='true']
   ) {
   color: var(--accent);
-  background: rgba(54, 220, 255, 0.12);
-  border-color: rgba(54, 220, 255, 0.35);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border-color: var(--accent);
 }
 #command-dock
   #gev-voice-control

@@ -44,13 +44,8 @@
 #utilities-panel .panel-glow {
   position: absolute;
   inset: -20px;
-  background: radial-gradient(
-    ellipse at center,
-    var(--accent-dim) 0%,
-    transparent 60%
-  );
-  filter: blur(20px);
-  opacity: 0.25;
+  background: none;
+  opacity: 0;
   pointer-events: none;
 }
 
@@ -61,12 +56,9 @@
   border: 1px solid var(--glass-border);
   border-radius: var(--panel-radius);
   padding: 14px 16px 12px;
-  backdrop-filter: blur(24px) saturate(1.4);
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
-    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow: none;
   max-height: min(
     620px,
     calc(100vh - var(--left-stack-top) - var(--left-stack-gap) - 36px)
@@ -92,12 +84,12 @@
 .data-layer-group-heading {
   margin: 8px 10px 2px;
   padding-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--text);
   color: var(--text-secondary);
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: 1.4px;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 .data-layer-group-heading:first-child {
@@ -113,7 +105,7 @@
 }
 
 .data-toggle-row:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: color-mix(in srgb, var(--text) 3%, transparent);
 }
 
 /* Selected-only, provenance-first proximity results. This is intentionally a
@@ -390,9 +382,9 @@ body.recording-mode .gev-panel-rail {
   min-height: 0;
   gap: 8px;
   padding: 9px;
-  border: 1px solid rgba(98, 181, 255, 0.2);
+  border: 1px solid var(--accent);
   border-radius: 7px;
-  background: rgba(4, 17, 31, 0.28);
+  background: color-mix(in srgb, var(--surface) 28%, transparent);
 }
 #space-mission-panel-host .space-mission-roster-header {
   display: flex;
@@ -400,7 +392,7 @@ body.recording-mode .gev-panel-rail {
   justify-content: space-between;
   gap: 10px;
   padding: 1px 3px 7px;
-  border-bottom: 1px solid rgba(34, 230, 230, 0.14);
+  border-bottom: 1px solid var(--accent);
   font-family: var(--font-mono);
 }
 #space-mission-panel-host .space-mission-roster-header > div {
@@ -409,18 +401,18 @@ body.recording-mode .gev-panel-rail {
   gap: 3px;
 }
 #space-mission-panel-host .space-mission-roster-header strong {
-  color: #8fcfff;
+  color: var(--accent);
   font-size: 9px;
   letter-spacing: 0.16em;
 }
 #space-mission-panel-host .space-mission-roster-header span {
-  color: rgba(190, 230, 230, 0.46);
+  color: color-mix(in srgb, var(--text) 46%, transparent);
   font-size: 7px;
   letter-spacing: 0.1em;
 }
 #space-mission-panel-host .space-mission-roster-header output {
   flex: 0 0 auto;
-  color: #22e6e6;
+  color: var(--accent);
   font-size: 9px;
   letter-spacing: 0.08em;
 }
@@ -441,10 +433,10 @@ body.recording-mode .gev-panel-rail {
   width: 100%;
   min-height: 42px;
   padding: 7px 7px;
-  border: 1px solid rgba(98, 181, 255, 0.13);
+  border: 1px solid var(--accent);
   border-radius: 4px;
-  color: #d8ffff;
-  background: rgba(42, 113, 171, 0.045);
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent) 4%, transparent);
   font-family: var(--font-mono);
   text-align: left;
   cursor: pointer;
@@ -460,23 +452,23 @@ body.recording-mode .gev-panel-rail {
   z-index: 1;
   opacity: 0;
   background:
-    linear-gradient(#22e6e6, #22e6e6) left top / 9px 1px no-repeat,
-    linear-gradient(#22e6e6, #22e6e6) left top / 1px 9px no-repeat,
-    linear-gradient(#22e6e6, #22e6e6) right top / 9px 1px no-repeat,
-    linear-gradient(#22e6e6, #22e6e6) right top / 1px 9px no-repeat,
-    linear-gradient(#22e6e6, #22e6e6) left bottom / 9px 1px no-repeat,
-    linear-gradient(#22e6e6, #22e6e6) left bottom / 1px 9px no-repeat,
-    linear-gradient(#22e6e6, #22e6e6) right bottom / 9px 1px no-repeat,
-    linear-gradient(#22e6e6, #22e6e6) right bottom / 1px 9px no-repeat;
-  filter: drop-shadow(0 0 4px rgba(34, 230, 230, 0.45));
+    linear-gradient(var(--accent), var(--accent)) left top / 9px 1px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) left top / 1px 9px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) right top / 9px 1px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) right top / 1px 9px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) left bottom / 9px 1px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) left bottom / 1px 9px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) right bottom / 9px 1px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) right bottom / 1px 9px no-repeat;
+  filter: none;
   pointer-events: none;
   transition: opacity 0.12s ease;
 }
 #space-mission-panel-host .space-mission-roster-item:hover,
 #space-mission-panel-host .space-mission-roster-item:focus-visible {
-  border-color: rgba(34, 230, 230, 0.58);
+  border-color: var(--accent);
   outline: none;
-  background: rgba(34, 230, 230, 0.09);
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
   transform: translateX(2px);
 }
 #space-mission-panel-host .space-mission-roster-item:hover::before,
@@ -492,9 +484,8 @@ body.recording-mode .gev-panel-rail {
   height: 5px;
   justify-self: center;
   border-radius: 50%;
-  background: var(--mission-roster-color, #22e6e6);
-  box-shadow: 0 0 7px
-    color-mix(in srgb, var(--mission-roster-color, #22e6e6) 70%, transparent);
+  background: var(--mission-roster-color, var(--accent));
+  box-shadow: none;
 }
 #space-mission-panel-host .space-mission-roster-copy {
   display: grid;
@@ -508,24 +499,24 @@ body.recording-mode .gev-panel-rail {
   white-space: nowrap;
 }
 #space-mission-panel-host .space-mission-roster-copy strong {
-  color: #d8ffff;
+  color: var(--text);
   font-size: 9px;
   font-weight: 500;
   letter-spacing: 0.07em;
 }
 #space-mission-panel-host .space-mission-roster-copy small {
-  color: rgba(190, 230, 230, 0.48);
+  color: color-mix(in srgb, var(--text) 48%, transparent);
   font-size: 7px;
   letter-spacing: 0.035em;
 }
 #space-mission-panel-host .space-mission-roster-chevron {
-  color: rgba(34, 230, 230, 0.54);
+  color: color-mix(in srgb, var(--accent) 54%, transparent);
   font-size: 16px;
   line-height: 1;
 }
 #space-mission-panel-host .space-mission-roster-empty {
   padding: 18px 10px;
-  color: rgba(190, 230, 230, 0.48);
+  color: color-mix(in srgb, var(--text) 48%, transparent);
   font:
     8px/1.5 'JetBrains Mono',
     monospace;
@@ -535,7 +526,7 @@ body.recording-mode .gev-panel-rail {
 #space-mission-panel-host .space-mission-roster-focus-continuation {
   margin: 0;
   padding: 3px;
-  color: rgba(190, 230, 230, 0.58);
+  color: color-mix(in srgb, var(--text) 58%, transparent);
   font:
     7px/1.4 'JetBrains Mono',
     monospace;
@@ -547,8 +538,8 @@ body.recording-mode .gev-panel-rail {
   align-items: center;
   justify-content: space-between;
   padding: 8px 0 2px;
-  border-top: 1px solid rgba(34, 230, 230, 0.18);
-  color: rgba(190, 230, 230, 0.58);
+  border-top: 1px solid var(--accent);
+  color: color-mix(in srgb, var(--text) 58%, transparent);
   font:
     8px 'JetBrains Mono',
     monospace;
@@ -557,21 +548,21 @@ body.recording-mode .gev-panel-rail {
 #space-mission-panel .space-mission-view-header button {
   width: 24px;
   height: 24px;
-  border: 1px solid rgba(98, 181, 255, 0.24);
+  border: 1px solid var(--accent);
   border-radius: 5px;
-  color: rgba(190, 230, 230, 0.7);
-  background: rgba(42, 113, 171, 0.08);
+  color: color-mix(in srgb, var(--text) 70%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
   cursor: pointer;
 }
 #space-mission-panel .space-mission-view-header button:hover {
-  border-color: #22e6e6;
-  color: #fff;
+  border-color: var(--accent);
+  color: var(--text);
 }
 #space-mission-panel .space-mission-detail {
   display: grid;
   gap: 8px;
   padding: 12px 0;
-  color: var(--hud-cyan, #22e6e6);
+  color: var(--hud-cyan, var(--accent));
   font:
     11px 'JetBrains Mono',
     monospace;
@@ -581,20 +572,20 @@ body.recording-mode .gev-panel-rail {
   font-size: 14px;
 }
 #space-mission-panel .space-mission-detail span {
-  color: rgba(190, 230, 230, 0.7);
+  color: color-mix(in srgb, var(--text) 70%, transparent);
 }
 #space-mission-panel .space-mission-detail b {
-  color: #d8ffff;
+  color: var(--text);
   font-weight: 400;
 }
 #space-mission-panel .mission-data-section {
   margin: 0 0 11px;
-  border-top: 1px solid rgba(34, 230, 230, 0.18);
+  border-top: 1px solid var(--accent);
   padding-top: 9px;
 }
 #space-mission-panel .mission-data-section h4 {
   margin: 0 0 6px;
-  color: #22e6e6;
+  color: var(--accent);
   font:
     10px 'JetBrains Mono',
     monospace;
@@ -607,7 +598,7 @@ body.recording-mode .gev-panel-rail {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  color: #d8ffff;
+  color: var(--text);
   font:
     9px 'JetBrains Mono',
     monospace;
@@ -615,15 +606,15 @@ body.recording-mode .gev-panel-rail {
 }
 #space-mission-panel .mission-data-table th {
   padding: 4px 5px;
-  border-bottom: 1px solid rgba(34, 230, 230, 0.22);
-  color: rgba(190, 230, 230, 0.58);
+  border-bottom: 1px solid var(--accent);
+  color: color-mix(in srgb, var(--text) 58%, transparent);
   font-weight: 400;
   text-align: left;
 }
 #space-mission-panel .mission-data-table td {
   overflow-wrap: anywhere;
   padding: 6px 5px;
-  border-bottom: 1px solid rgba(34, 230, 230, 0.1);
+  border-bottom: 1px solid var(--accent);
   vertical-align: top;
 }
 #space-mission-panel .mission-data-table th:nth-child(1),
@@ -637,12 +628,12 @@ body.recording-mode .gev-panel-rail {
 #space-mission-panel .mission-data-table small {
   display: block;
   margin-top: 3px;
-  color: rgba(190, 230, 230, 0.56);
+  color: color-mix(in srgb, var(--text) 56%, transparent);
   font-size: 8px;
   line-height: 1.35;
 }
 #space-mission-panel .mission-table-empty {
-  color: rgba(190, 230, 230, 0.56);
+  color: color-mix(in srgb, var(--text) 56%, transparent);
   text-align: center;
 }
 #space-mission-panel .mission-replay-speed-control {
@@ -650,9 +641,9 @@ body.recording-mode .gev-panel-rail {
   gap: 5px;
   margin: 1px 0 10px;
   padding: 8px 10px 6px;
-  border: 1px solid rgba(34, 230, 230, 0.2);
+  border: 1px solid var(--accent);
   border-radius: 5px;
-  background: rgba(3, 21, 31, 0.36);
+  background: color-mix(in srgb, var(--surface) 36%, transparent);
 }
 #space-mission-panel .mission-replay-speed-control[hidden] {
   display: none;
@@ -661,7 +652,7 @@ body.recording-mode .gev-panel-rail {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: rgba(190, 230, 230, 0.68);
+  color: color-mix(in srgb, var(--text) 68%, transparent);
   font:
     8px 'JetBrains Mono',
     monospace;
@@ -677,7 +668,7 @@ body.recording-mode .gev-panel-rail {
 #space-mission-panel .mission-replay-speed-scale {
   display: flex;
   justify-content: space-between;
-  color: rgba(190, 230, 230, 0.42);
+  color: color-mix(in srgb, var(--text) 42%, transparent);
   font:
     7px 'JetBrains Mono',
     monospace;
@@ -694,13 +685,13 @@ body.recording-mode .gev-panel-rail {
   flex: 1;
   min-width: 0;
   padding: 9px 12px;
-  border: 1px solid rgba(255, 159, 67, 0.62);
+  border: 1px solid var(--warn);
   border-radius: 5px;
-  color: #ffc078;
+  color: var(--warn);
   background: linear-gradient(
     90deg,
-    rgba(255, 159, 67, 0.08),
-    rgba(34, 230, 230, 0.08)
+    color-mix(in srgb, var(--warn) 8%, transparent),
+    color-mix(in srgb, var(--accent) 8%, transparent)
   );
   font:
     9px 'JetBrains Mono',
@@ -714,29 +705,29 @@ body.recording-mode .gev-panel-rail {
     box-shadow 0.15s ease;
 }
 #space-mission-panel .mission-focus-button {
-  border-color: rgba(34, 230, 230, 0.58);
-  color: #22e6e6;
-  background: rgba(34, 230, 230, 0.07);
+  border-color: var(--accent);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
 }
 #space-mission-panel .mission-replay-button:hover,
 #space-mission-panel .mission-replay-button:focus-visible,
 #space-mission-panel .mission-focus-button:hover,
 #space-mission-panel .mission-focus-button:focus-visible {
-  border-color: #ffb45f;
-  color: #fff;
+  border-color: var(--warn);
+  color: var(--text);
   outline: none;
-  box-shadow: 0 0 14px rgba(255, 159, 67, 0.14);
+  box-shadow: none;
 }
 #space-mission-panel .mission-focus-button:hover,
 #space-mission-panel .mission-focus-button:focus-visible {
-  border-color: #22e6e6;
-  box-shadow: 0 0 14px rgba(34, 230, 230, 0.14);
+  border-color: var(--accent);
+  box-shadow: none;
 }
 #space-mission-panel .mission-replay-button.active {
-  border-color: #22e6e6;
-  color: #d8ffff;
-  background: rgba(34, 230, 230, 0.13);
-  box-shadow: inset 0 0 16px rgba(34, 230, 230, 0.08);
+  border-color: var(--accent);
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent) 13%, transparent);
+  box-shadow: none;
 }
 #space-mission-panel .mission-replay-transport {
   flex: 1;
@@ -752,10 +743,10 @@ body.recording-mode .gev-panel-rail {
   min-width: 0;
   min-height: 34px;
   padding: 0;
-  border: 1px solid rgba(34, 230, 230, 0.5);
+  border: 1px solid var(--accent);
   border-radius: 4px;
-  color: #22e6e6;
-  background: rgba(34, 230, 230, 0.08);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
   font:
     15px/1 'JetBrains Mono',
     monospace;
@@ -769,28 +760,28 @@ body.recording-mode .gev-panel-rail {
 }
 #space-mission-panel .mission-replay-transport button:hover:not(:disabled),
 #space-mission-panel .mission-replay-transport button:focus-visible {
-  border-color: #d8ffff;
-  color: #fff;
+  border-color: var(--text);
+  color: var(--text);
   outline: none;
-  background: rgba(34, 230, 230, 0.16);
-  box-shadow: 0 0 12px rgba(34, 230, 230, 0.14);
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  box-shadow: none;
 }
 #space-mission-panel .mission-replay-transport button:disabled {
   opacity: 0.28;
   cursor: default;
 }
 #space-mission-panel .mission-replay-transport button.cancel {
-  border-color: rgba(255, 159, 67, 0.58);
-  color: #ffb15c;
-  background: rgba(255, 159, 67, 0.08);
+  border-color: var(--warn);
+  color: var(--warn);
+  background: color-mix(in srgb, var(--warn) 8%, transparent);
 }
 #space-mission-panel
   .mission-replay-transport.is-paused
   [data-mission-replay-play] {
-  border-color: #22e6e6;
-  color: #d8ffff;
-  background: rgba(34, 230, 230, 0.18);
-  box-shadow: inset 0 0 12px rgba(34, 230, 230, 0.1);
+  border-color: var(--accent);
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  box-shadow: none;
 }
 #space-mission-panel .space-mission-nav {
   display: flex;
@@ -802,9 +793,9 @@ body.recording-mode .gev-panel-rail {
 #space-mission-panel .mission-nav-button {
   min-width: 94px;
   padding: 7px 10px;
-  border: 1px solid rgba(34, 230, 230, 0.55);
-  background: rgba(8, 34, 42, 0.72);
-  color: #22e6e6;
+  border: 1px solid var(--accent);
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  color: var(--accent);
   font:
     11px 'JetBrains Mono',
     monospace;
@@ -816,8 +807,8 @@ body.recording-mode .gev-panel-rail {
     opacity 0.15s ease;
 }
 #space-mission-panel .mission-nav-button:hover:not(:disabled) {
-  background: rgba(34, 230, 230, 0.18);
-  border-color: #22e6e6;
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  border-color: var(--accent);
 }
 #space-mission-panel .mission-nav-button:disabled {
   cursor: not-allowed;
@@ -831,7 +822,7 @@ body.recording-mode .gev-panel-rail {
 #space-mission-panel .mission-nav-index {
   min-width: 58px;
   text-align: center;
-  color: #d8ffff;
+  color: var(--text);
   font:
     11px 'JetBrains Mono',
     monospace;
@@ -870,8 +861,8 @@ body.recording-mode .gev-panel-rail {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #22e6e6;
-  box-shadow: 0 0 7px rgba(34, 230, 230, 0.78);
+  background: var(--accent);
+  box-shadow: none;
 }
 
 .mission-replay-vehicle-overlay[data-mode='orbit']
@@ -890,18 +881,18 @@ body.recording-mode .gev-panel-rail {
   width: 48px;
   height: 72px;
   overflow: visible;
-  filter: drop-shadow(0 0 6px rgba(34, 230, 230, 0.66));
+  filter: none;
 }
 
 .mission-replay-rocket-body {
-  fill: #22e6e6;
-  stroke: #22e6e6;
+  fill: var(--accent);
+  stroke: var(--accent);
   stroke-width: 2;
   stroke-linejoin: round;
 }
 
 .mission-replay-rocket-port {
-  fill: #22e6e6;
+  fill: var(--accent);
   stroke: none;
 }
 
@@ -917,7 +908,7 @@ body.recording-mode .gev-panel-rail {
   width: 72px;
   height: 72px;
   overflow: visible;
-  filter: drop-shadow(0 0 4px rgba(34, 230, 230, 0.9));
+  filter: none;
 }
 
 .mission-replay-vehicle-overlay.is-thrusting .mission-replay-thrust {
@@ -926,7 +917,7 @@ body.recording-mode .gev-panel-rail {
 
 .mission-replay-thrust ellipse {
   fill: none;
-  stroke: rgba(34, 230, 230, 0.98);
+  stroke: color-mix(in srgb, var(--accent) 98%, transparent);
   stroke-width: 2;
   opacity: 0;
   vector-effect: non-scaling-stroke;
@@ -935,7 +926,7 @@ body.recording-mode .gev-panel-rail {
 }
 
 .mission-replay-thrust ellipse:nth-child(2n) {
-  stroke: rgba(216, 255, 255, 0.78);
+  stroke: color-mix(in srgb, var(--text) 78%, transparent);
 }
 
 .mission-replay-vehicle-overlay.is-paused .mission-replay-thrust ellipse {
@@ -947,14 +938,12 @@ body.recording-mode .gev-panel-rail {
   top: 18px;
   left: 70px;
   min-width: 188px;
-  color: #fff;
+  color: var(--text);
   font:
     9px/1.38 'JetBrains Mono',
     monospace;
   letter-spacing: 0.075em;
-  text-shadow:
-    0 1px 2px #001018,
-    0 0 6px #001018;
+  text-shadow: none;
   white-space: nowrap;
 }
 
@@ -964,13 +953,13 @@ body.recording-mode .gev-panel-rail {
 }
 
 .mission-replay-overlay-callout strong {
-  color: #22e6e6;
+  color: var(--accent);
   font-size: 10px;
   font-weight: 500;
 }
 
 .mission-replay-overlay-callout span {
-  color: rgba(255, 255, 255, 0.92);
+  color: color-mix(in srgb, var(--text) 92%, transparent);
   white-space: pre-line;
 }
 
@@ -1012,11 +1001,9 @@ body.recording-mode .gev-panel-rail {
   border: 1px solid var(--glass-border);
   border-radius: var(--panel-radius);
   background: var(--glass-bg);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(24px) saturate(1.4);
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  box-shadow: none;
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
 }
 
 /* Data Layers and Context share the 14px side padding of the other default
@@ -1056,9 +1043,9 @@ body.recording-mode .gev-panel-rail {
   width: 26px;
   min-height: 30px;
   padding: 0;
-  border: 1px solid rgba(98, 181, 255, 0.22);
+  border: 1px solid var(--accent);
   border-radius: 5px;
-  background: rgba(42, 113, 171, 0.08);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
   /* The saucer is a COLOR-font glyph: `color` and `text-shadow` cannot touch
      it, so the dim/lit states are carried by `filter` alongside the border and
      fill. 14px sits inside the 26px chip with breathing room. */
@@ -1079,18 +1066,18 @@ body.recording-mode .gev-panel-rail {
 }
 .tr3b-toggle:hover,
 .tr3b-toggle:focus-visible {
-  border-color: rgba(127, 200, 255, 0.6);
-  background: rgba(66, 148, 211, 0.18);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
   filter: grayscale(0.15) opacity(0.95);
   outline: none;
 }
 .tr3b-toggle[aria-pressed='true'] {
-  border-color: rgba(190, 220, 255, 0.75);
-  background: rgba(20, 23, 28, 0.9);
+  border-color: var(--text);
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
   /* Active: full-colour saucer with a soft halo. drop-shadow works on an emoji
      where text-shadow does not, so the glyph itself telegraphs the state
      rather than relying on the chrome alone. */
-  filter: drop-shadow(0 0 5px rgba(150, 210, 255, 0.9));
+  filter: none;
 }
 /* One segmented control: the two modes read as a single choice. */
 .global-context-modes {
@@ -1099,9 +1086,9 @@ body.recording-mode .gev-panel-rail {
   gap: 2px;
   margin: 0 0 12px;
   padding: 2px;
-  border: 1px solid rgba(98, 181, 255, 0.22);
+  border: 1px solid var(--accent);
   border-radius: 7px;
-  background: rgba(0, 0, 0, 0.22);
+  background: color-mix(in srgb, var(--surface) 22%, transparent);
 }
 .context-mode-button {
   display: flex;
@@ -1113,7 +1100,7 @@ body.recording-mode .gev-panel-rail {
   padding: 6px 8px;
   border: 1px solid transparent;
   border-radius: 5px;
-  color: rgba(214, 236, 255, 0.72);
+  color: color-mix(in srgb, var(--text) 72%, transparent);
   background: transparent;
   font: 600 10px/1.2 var(--font-mono);
   letter-spacing: 0.06em;
@@ -1128,8 +1115,8 @@ body.recording-mode .gev-panel-rail {
 }
 .context-mode-button:hover,
 .context-mode-button:focus-visible {
-  color: #fff;
-  background: rgba(98, 181, 255, 0.08);
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
   outline: none;
 }
 /* Keep focus distinct when the selected tab owns the accent colors. */
@@ -1139,9 +1126,9 @@ body.recording-mode .gev-panel-rail {
 }
 
 .context-mode-button.active {
-  border-color: rgba(0, 212, 255, 0.55);
-  color: #fff;
-  background: rgba(0, 212, 255, 0.16);
+  border-color: var(--accent);
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
 }
 .context-mode-button:disabled {
   opacity: 0.55;
@@ -1156,7 +1143,7 @@ body.recording-mode .gev-panel-rail {
   display: grid;
   gap: 6px;
   padding: 2px 2px 4px;
-  color: rgba(214, 236, 255, 0.72);
+  color: color-mix(in srgb, var(--text) 72%, transparent);
   font: 10px/1.6 var(--font-mono);
   letter-spacing: 0.02em;
 }
@@ -1179,25 +1166,25 @@ body.recording-mode .gev-panel-rail {
 .panel-layer-toggle {
   min-width: 54px;
   padding: 4px 7px;
-  border: 1px solid rgba(98, 181, 255, 0.3);
+  border: 1px solid var(--accent);
   border-radius: 5px;
-  color: #8fcfff;
-  background: rgba(42, 113, 171, 0.12);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
   font: 7px/1.1 var(--font-mono);
   letter-spacing: 0.1em;
   cursor: pointer;
 }
 .panel-layer-toggle:hover,
 .panel-layer-toggle:focus-visible {
-  border-color: #79c2ff;
-  color: #fff;
+  border-color: var(--accent);
+  color: var(--text);
   outline: none;
 }
 .panel-layer-toggle.active {
-  border-color: rgba(0, 212, 255, 0.7);
-  color: #fff;
-  background: rgba(0, 212, 255, 0.14);
-  box-shadow: 0 0 12px rgba(0, 212, 255, 0.14);
+  border-color: var(--accent);
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  box-shadow: none;
 }
 .panel-layer-toggle:disabled {
   opacity: 0.45;
@@ -1306,7 +1293,7 @@ body.recording-mode #right-context-rail > [data-panel-id] {
 }
 
 #utilities-panel .utilities-tools .pp-toggle-btn:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: color-mix(in srgb, var(--text) 3%, transparent);
 }
 
 #utilities-panel .utilities-tools .pp-icon {
@@ -1322,7 +1309,7 @@ body.recording-mode #right-context-rail > [data-panel-id] {
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 500;
-  letter-spacing: 0.3px;
+  letter-spacing: normal;
   text-transform: none;
   color: var(--text-primary);
 }

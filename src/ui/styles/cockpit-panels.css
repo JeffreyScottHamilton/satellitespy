@@ -7,17 +7,15 @@
 
 .cockpit-context-window,
 .cockpit-signal-window {
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-top-color: rgba(255, 255, 255, 0.14);
+  border: 1px solid var(--text);
+  border-top-color: var(--text);
   border-radius: 16px;
-  background: rgba(12, 12, 20, 0.72);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.42),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(24px) saturate(1.4);
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  box-shadow: none;
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
   text-shadow: none;
-  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+  scrollbar-color: color-mix(in srgb, var(--text) 18%, transparent) transparent;
 }
 
 /* Open, both windows share one compact size; their lists scroll. */
@@ -63,36 +61,36 @@
 }
 
 .cockpit-context-window[data-state='uncertain'] {
-  border-top-color: rgba(116, 219, 255, 0.72);
+  border-top-color: var(--accent);
 }
 
 .cockpit-context-window[data-state='lost'] {
-  border-top-color: rgba(213, 168, 99, 0.72);
+  border-top-color: var(--warn);
 }
 
 .cockpit-context-window[data-collapsed='true'],
 .cockpit-signal-window[data-collapsed='true'] {
   border-radius: 12px;
-  background: rgba(12, 12, 20, 0.66);
+  background: color-mix(in srgb, var(--surface) 66%, transparent);
 }
 
 /* Headers: a quiet hairline like the panel headers. */
 .cockpit-card-header {
-  border-bottom-color: rgba(255, 255, 255, 0.08);
+  border-bottom-color: var(--text);
 }
 
 .cockpit-card-actions button {
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--text);
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(224, 236, 242, 0.82);
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  color: color-mix(in srgb, var(--text) 82%, transparent);
 }
 
 .cockpit-card-actions button:hover,
 .cockpit-card-actions button:focus-visible {
-  border-color: rgba(0, 212, 255, 0.45);
-  background: rgba(0, 212, 255, 0.1);
-  color: #fff;
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--text);
 }
 
 /* Rows and tiles inside: the card style used in Context and Visual. */
@@ -100,9 +98,9 @@
 .cockpit-signal-list li,
 .cockpit-news-list li,
 .cockpit-local-grid > div {
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--text);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.035);
+  background: color-mix(in srgb, var(--text) 4%, transparent);
 }
 
 /* The weather tiles stand apart as cards, with no lit grid behind them,
@@ -119,19 +117,17 @@
 }
 
 .cockpit-route-card {
-  border-bottom-color: rgba(255, 255, 255, 0.08);
+  border-bottom-color: var(--text);
 }
 
 /* Display / Radio: the closed launchers and the open panels match too. */
 :root:not([data-ui-theme='cyber'])
   body.cockpit-mode:not(.mobile-shell)
   .cockpit-utility-control.is-expanded {
-  border-color: rgba(255, 255, 255, 0.08);
+  border-color: var(--text);
   border-radius: 16px;
-  background: rgba(12, 12, 20, 0.72);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.42),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  box-shadow: none;
 }
 
 /* ── Cockpit uses the main page's rails ───────────────────────────────
@@ -222,11 +218,11 @@
       [data-rail-item='pp-toggles']
     )[aria-pressed='true']
   ) {
-  background: rgba(16, 20, 28, 0.82) !important;
-  border-color: rgba(255, 255, 255, 0.14) !important;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45) !important;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: color-mix(in srgb, var(--surface) 82%, transparent) !important;
+  border-color: var(--text) !important;
+  box-shadow: var(--shadow-1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 :root:not([data-ui-theme='cyber'])
@@ -277,36 +273,36 @@ body.cockpit-mode #intel-hud .hud-bottom-right {
   position: relative;
   display: block;
   padding: 5px 10px 5px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: inset 2px 0 0 rgba(244, 251, 255, 0.22);
+  border: 1px solid var(--text);
+  box-shadow: none;
 }
 
 .cockpit-signal-list li:is(.track, .current) {
   border-color: rgba(0, 212, 255, 0.22);
   background: rgba(0, 212, 255, 0.06);
-  box-shadow: inset 2px 0 0 var(--cockpit-accent, #00d4ff);
+  box-shadow: none;
 }
 
 .cockpit-signal-list li:is(.nearby) {
-  border-color: rgba(255, 255, 255, 0.06);
-  box-shadow: inset 2px 0 0 rgba(244, 251, 255, 0.55);
+  border-color: var(--text);
+  box-shadow: none;
 }
 
 .cockpit-signal-list li:is(.military, .warning) {
-  border-color: rgba(255, 255, 255, 0.06);
-  box-shadow: inset 2px 0 0 #d5a863;
+  border-color: var(--text);
+  box-shadow: none;
 }
 
 .cockpit-signal-list li.actionable:is(:hover, :focus-within) {
-  border-color: rgba(0, 212, 255, 0.3);
-  background: rgba(0, 212, 255, 0.08);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
 }
 
 .cockpit-signal-list time {
   position: absolute;
   top: 6px;
   inset-inline-end: 28px;
-  color: rgba(224, 236, 242, 0.4);
+  color: color-mix(in srgb, var(--text) 40%, transparent);
   font: 7px/1 var(--font-mono);
   letter-spacing: 0.06em;
   font-variant-numeric: tabular-nums;
@@ -329,17 +325,17 @@ body.cockpit-mode #intel-hud .hud-bottom-right {
 
 .cockpit-signal-target-chevron {
   justify-self: end;
-  color: rgba(224, 236, 242, 0.5) !important;
+  color: color-mix(in srgb, var(--text) 50%, transparent) !important;
 }
 
 .cockpit-signal-list
   li.actionable:is(:hover, :focus-within)
   .cockpit-signal-target-chevron {
-  color: #fff !important;
+  color: var(--text) !important;
 }
 
 .cockpit-signal-list span:not([class]) {
-  color: rgba(224, 236, 242, 0.62);
+  color: color-mix(in srgb, var(--text) 62%, transparent);
   font-size: 8px;
   letter-spacing: 0.08em;
 }
@@ -430,7 +426,7 @@ body.cockpit-mode #intel-hud .hud-bottom-right {
   align-items: center;
   gap: 8px;
   padding: 4px 4px 10px 8px;
-  color: rgba(224, 236, 242, 0.78);
+  color: color-mix(in srgb, var(--text) 78%, transparent);
   font: 9px/1 var(--font-mono);
   letter-spacing: 0.22em;
 }
@@ -442,7 +438,7 @@ body.cockpit-mode #intel-hud .hud-bottom-right {
   flex: 0 1 22px;
   height: 1px;
   margin-right: auto;
-  background: rgba(255, 255, 255, 0.18);
+  background: color-mix(in srgb, var(--text) 18%, transparent);
   box-shadow: none;
 }
 
@@ -464,10 +460,10 @@ body.cockpit-mode #intel-hud .hud-bottom-right {
   width: 22px;
   height: 22px;
   padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--text);
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.03);
-  color: rgba(206, 232, 239, 0.75);
+  background: color-mix(in srgb, var(--text) 3%, transparent);
+  color: color-mix(in srgb, var(--text) 75%, transparent);
   font: 13px/1 var(--font-mono);
   cursor: pointer;
 }
@@ -478,8 +474,8 @@ body.cockpit-mode #intel-hud .hud-bottom-right {
 :root:not([data-ui-theme='cyber'])
   body.cockpit-mode:not(.mobile-shell)
   .cockpit-utility-collapse:focus-visible {
-  border-color: rgba(0, 212, 255, 0.45);
-  color: #fff;
+  border-color: var(--accent);
+  color: var(--text);
   outline: none;
 }
 
@@ -535,14 +531,12 @@ body.cockpit-mode #intel-hud .hud-bottom-right {
   flex-direction: column;
   gap: 12px;
   padding: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid var(--text);
   border-radius: 14px;
-  background: rgba(16, 20, 28, 0.82);
-  box-shadow:
-    0 6px 20px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  box-shadow: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 :root:not([data-ui-theme='cyber'])
@@ -560,7 +554,7 @@ body.cockpit-mode #intel-hud .hud-bottom-right {
   display: flex;
   align-items: center;
   height: 32px;
-  color: rgba(225, 236, 242, 0.82);
+  color: color-mix(in srgb, var(--text) 82%, transparent);
   font:
     500 9.28px/1 Inter,
     -apple-system,
@@ -587,7 +581,7 @@ body.cockpit-mode #intel-hud .hud-bottom-right {
   border: 1px solid transparent;
   border-radius: 10px;
   background: transparent;
-  color: var(--text-secondary, rgba(206, 232, 239, 0.75));
+  color: var(--text-secondary, color-mix(in srgb, var(--text) 75%, transparent));
   cursor: pointer;
   transition:
     color var(--transition-fast, 120ms),
@@ -605,8 +599,8 @@ body.cockpit-mode #intel-hud .hud-bottom-right {
 :root:not([data-ui-theme='cyber'])
   body.cockpit-mode:not(.mobile-shell)
   .cockpit-utility-rail__item:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-primary, #fff);
+  background: color-mix(in srgb, var(--text) 5%, transparent);
+  color: var(--text-primary, var(--text));
 }
 
 :root:not([data-ui-theme='cyber'])
@@ -615,9 +609,9 @@ body.cockpit-mode #intel-hud .hud-bottom-right {
 :root:not([data-ui-theme='cyber'])
   body.cockpit-mode:not(.mobile-shell)
   .cockpit-utility-rail__item.is-on:hover {
-  border-color: rgba(0, 212, 255, 0.15);
-  background: rgba(0, 212, 255, 0.15);
-  color: #00d4ff;
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  color: var(--accent);
 }
 
 /* With a panel open, each icon is its own island, as on the main rails. */
@@ -646,12 +640,12 @@ body.cockpit-mode #intel-hud .hud-bottom-right {
   position: absolute;
   inset: -5px;
   z-index: -1;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid var(--text);
   border-radius: 14px;
-  background: rgba(16, 20, 28, 0.82);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  box-shadow: var(--shadow-1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   content: '';
   pointer-events: none;
 }
@@ -667,7 +661,7 @@ body.cockpit-mode #intel-hud .hud-bottom-right {
   .cockpit-utility-rail:has(.cockpit-utility-rail__item:nth-child(2):hover)
   .cockpit-utility-rail__labels
   > span:nth-child(2) {
-  color: var(--text-primary, #fff);
+  color: var(--text-primary, var(--text));
 }
 
 /* Mirror the left rail's 52px inset, clear of the HUD's vertical readouts. */
