@@ -592,15 +592,15 @@ test('a group heading folds its rows, persists the fold, and restores it on a ne
   try {
     const toggle = heading('Aviation').querySelector('button');
     assert.equal(toggle.getAttribute('aria-expanded'), 'true');
-    assert.equal(row('flights').hidden, false);
+    assert.equal(row('flights').classList.contains('is-collapsed'), false);
     // Idle rows show no em dash count placeholder.
     assert.equal(container.querySelector('.data-count'), null);
 
     toggle.click();
     assert.equal(heading('Aviation').querySelector('button').getAttribute('aria-expanded'), 'false');
-    assert.equal(row('flights').hidden, true);
-    assert.equal(row('military').hidden, true);
-    assert.equal(row('radio').hidden, false, 'other groups stay open');
+    assert.equal(row('flights').classList.contains('is-collapsed'), true);
+    assert.equal(row('military').classList.contains('is-collapsed'), true);
+    assert.equal(row('radio').classList.contains('is-collapsed'), false, 'other groups stay open');
     assert.deepEqual(JSON.parse(storage.store.get(LAYER_GROUPS_KEY)), {
       Aviation: true,
     });
@@ -608,9 +608,9 @@ test('a group heading folds its rows, persists the fold, and restores it on a ne
     panel.destroy();
     panel = new LayerPanel(options);
     panel.mount(container);
-    assert.equal(row('flights').hidden, true, 'the fold survives a reload');
+    assert.equal(row('flights').classList.contains('is-collapsed'), true, 'the fold survives a reload');
     heading('Aviation').querySelector('button').click();
-    assert.equal(row('flights').hidden, false);
+    assert.equal(row('flights').classList.contains('is-collapsed'), false);
   } finally {
     panel.destroy();
     document.body.replaceChildren();

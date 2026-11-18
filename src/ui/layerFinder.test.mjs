@@ -3,6 +3,7 @@
 // Escape, the clear request voice sends, and the group ticks.
 import '../testSupport/registerDom.mjs';
 import test from 'node:test';
+import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { createApp, h, nextTick } from 'vue';
 import LayerFinder, {
@@ -115,6 +116,24 @@ test('On and Off follow whether the layer is enabled', async (t) => {
   await flush();
   assert.deepEqual(shown(), ['flights']);
   assert.equal(on.getAttribute('aria-pressed'), 'true');
+});
+
+test('a search reveals matching rows inside a folded group, and the fold returns with the search', async (t) => {
+  const { shown, search, list } = fixture(t);
+  // LayerRows marks the rows of a folded group; Movement is flights and ships.
+  for (const id of ['flights', 'ships'])
+    list.querySelector(`[data-layer-id="${id}"]`).classList.add('is-collapsed');
+  assert.deepEqual(shown(), ['flights', 'ships', 'radar']);
+  await search('ship');
+  assert.equal(list.classList.contains('is-filtering'), true);
+  assert.deepEqual(shown(), ['ships']);
+  // The stylesheet reveals folded rows only while the list is filtering.
+  const css = readFileSync(
+    new URL('./styles/atlas/layers.css', import.meta.url),
+    'utf8',
+  );
+  assert.match(css, /#data-toggles\.is-filtering\s+\.data-toggle-row\.is-collapsed/);
+  assert.match(css, /\.data-toggle-row\.is-collapsed\s*\{\s*display:\s*none/);
 });
 
 test('a chosen category survives its heading being translated', async (t) => {

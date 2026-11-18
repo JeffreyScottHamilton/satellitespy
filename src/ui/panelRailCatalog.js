@@ -17,8 +17,8 @@ export const PANEL_RAIL_ITEMS = Object.freeze({
     label: msg('DATA LAYERS'),
     shownBy: 'active',
   },
-  'utilities-panel': { icon: 'handyman', label: msg('UTILITIES') },
-  'scene-panel': { icon: 'movie', label: msg('AUTHORING') },
+  'utilities-panel': { icon: 'handyman', label: msg('Utilities') },
+  'scene-panel': { icon: 'movie', label: msg('Authoring') },
   // `context` keeps the panel's name apart from the satellite class of the
   // same English word.
   'pp-toggles': { icon: 'palette', label: msg('VISUAL'), context: 'panel' },

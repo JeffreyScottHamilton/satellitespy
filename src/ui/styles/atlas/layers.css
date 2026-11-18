@@ -166,8 +166,16 @@
   body #left-panel-stack #data-toggles .data-layer-group-toggle[aria-expanded='true']::after {
     transform: rotate(90deg);
   }
-  /* A row folded away by its group's heading. */
-  body #left-panel-stack #data-toggles .data-toggle-row[hidden] {
+  /* A row folded away by its group's heading. A search or filter that is
+     narrowing the list (the list carries is-filtering) shows matching rows
+     inside folded groups; the finder still hides the rows it leaves out. */
+  body #left-panel-stack #data-toggles .data-toggle-row.is-collapsed {
+    display: none;
+  }
+  body #left-panel-stack #data-toggles.is-filtering .data-toggle-row.is-collapsed {
+    display: flex;
+  }
+  body #left-panel-stack #data-toggles .data-toggle-row.is-collapsed.is-filtered {
     display: none;
   }
   /* A row is one 32px line; its status line appears only when the feed
@@ -372,6 +380,11 @@
     font-family: var(--font-sans);
     font-size: 13px;
     outline: none;
+  }
+  /* Scene step headings: sentence case, like the rest of the navigator. */
+  body #left-panel-stack .scene-step-heading {
+    text-transform: none;
+    letter-spacing: 0;
   }
   /* Data Library: a text button at the foot of the list, in flow, so it never
      covers a row. */

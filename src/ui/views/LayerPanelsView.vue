@@ -61,7 +61,7 @@ async function importChosen(event) {
   </RailPanel>
 
   <!-- Utilities: Directions (LayerPanel renders its row here), Draw, Import -->
-  <RailPanel id="utilities-panel" start-collapsed :title="t('UTILITIES')" :hint="t('Directions, drawing and your own files')" scroll>
+  <RailPanel id="utilities-panel" start-collapsed :title="t('Utilities')" :hint="t('Directions, drawing and your own files')" scroll>
     <div id="utilities-toggles" class="data-toggle-list utilities-list"></div>
     <div class="utilities-tools"><DrawControls /><GeoImport /></div>
   </RailPanel>
@@ -73,27 +73,27 @@ async function importChosen(event) {
   <StreetLevelPanel />
 
   <!-- Scene Director Panel -->
-  <RailPanel id="scene-panel" start-collapsed v-class-toggle="{ running: scene?.running, 'has-shots': scene?.hasShots }" :title="t('AUTHORING')" :hint="t('Create and edit scenes')" scroll>
-      <p class="scene-step-heading">{{ t('SCENE') }}</p>
+  <RailPanel id="scene-panel" start-collapsed v-class-toggle="{ running: scene?.running, 'has-shots': scene?.hasShots }" :title="t('Authoring')" :hint="t('Create and edit scenes')" scroll>
+      <p class="scene-step-heading">{{ t('Scene') }}</p>
       <div class="scene-controls">
         <UiSelect class="gev-field" id="scene-select" :aria-label="t('Scene')" :disabled="off('select')" @update:model-value="scenes.act('selectScene', $event)"><SceneOptions /></UiSelect>
         <UiButton id="scene-new-btn" type="button" :disabled="off('new')" @click="scenes.act('create')" class="gev-action-button scene-btn" :title="t('Start a new, empty scene')">{{ t('NEW SCENE') }}</UiButton>
         <UiButton tone="alert" id="scene-delete-btn" type="button" :disabled="off('delete')" @click="scenes.act('deleteScene')" class="gev-action-button gev-action-button--danger scene-btn scene-btn-danger" :title="t('Delete this scene and all of its shots')">{{ t('DELETE') }}</UiButton>
       </div>
-      <p class="scene-step-heading">{{ t('SHOTS') }}</p>
+      <p class="scene-step-heading">{{ t('Shots') }}</p>
       <div class="scene-controls">
         <UiButton variant="primary" id="scene-capture-btn" type="button" :disabled="off('capture')" @click="scenes.act('capture')" class="gev-action-button scene-btn scene-btn-primary" :title="t('Add the current view, style and layers as the next shot')">{{ t('+ CAPTURE SHOT') }}</UiButton>
         <UiButton id="scene-update-shot-btn" type="button" :disabled="off('update')" @click="scenes.act('update')" class="gev-action-button scene-btn" :title="t('Replace the selected shot with the current view')">{{ t('UPDATE SHOT') }}</UiButton>
       </div>
       <SceneShotList />
       <p class="scene-shot-hint">{{ t('Click a shot to select it, double-click to rename.') }}</p>
-      <p class="scene-step-heading">{{ t('PREVIEW') }}</p>
+      <p class="scene-step-heading">{{ t('Preview') }}</p>
       <div class="scene-controls">
         <UiButton variant="primary" id="scene-start-btn" type="button" class="gev-action-button scene-btn scene-btn-primary" :title="t('Play from this scene through the rest of the project')" :disabled="off('start')" @click="scenes.act('start')">{{ scene?.playLabel ?? t('PLAY', { context: 'scene' }) }}</UiButton>
         <UiButton tone="alert" id="scene-stop-btn" type="button" :disabled="off('stop')" @click="scenes.act('stop')" class="gev-action-button gev-action-button--danger scene-btn scene-btn-danger" :title="t('Stop playback (Esc)')">{{ t('STOP') }}</UiButton>
         <UiButton id="scene-next-btn" type="button" :disabled="off('next')" @click="scenes.act('next')" class="gev-action-button scene-btn" :title="t('Play the shot after the selected one, moving on to the next scene when needed')">{{ t('NEXT') }}</UiButton>
       </div>
-      <p class="scene-step-heading">{{ t('SAVE & SHARE') }}</p>
+      <p class="scene-step-heading">{{ t('Save & share') }}</p>
       <div class="scene-controls scene-tag-chips" role="group" :aria-label="t('Stories tags')">
         <UiButton v-for="tag in STORY_TAGS" :key="tag" type="button" class="scene-tag-chip" :pressed="tagOn(tag)" pressed-class="active" :disabled="tagOff(tag)" @click="scenes.act('tag', tag)">{{ t(tag) }}</UiButton>
       </div>

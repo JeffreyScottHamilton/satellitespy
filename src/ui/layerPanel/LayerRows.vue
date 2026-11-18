@@ -39,8 +39,8 @@ defineProps({
       class="data-toggle-row"
       v-class-toggle="{
         'data-toggle-row--count-line': item.count?.countLine,
+        'is-collapsed': item.collapsed,
       }"
-      :hidden="item.collapsed"
       :data-layer-id="item.id"
       :data-layer-name="item.englishName"
       :data-library-entry="item.libraryEntry || undefined"
