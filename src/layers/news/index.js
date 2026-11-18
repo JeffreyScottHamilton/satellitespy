@@ -1479,7 +1479,7 @@ export function createNewsLayer({
   const layer = {
     id: NEWS_LAYER_ID,
     name: 'News',
-    icon: '◆',
+    icon: 'newspaper',
     source: 'GEV news',
     updateInterval: 120_000,
 

@@ -758,7 +758,7 @@ export function createLocalAdsbLayer({
   return {
     id: LAYER_ID,
     name: LAYER_NAME,
-    icon: '📡',
+    icon: 'radar',
     source: LAYER_SOURCE,
     updateInterval: 0,
     statsRefreshInterval: LOCAL_ADSB_TICK_MS,

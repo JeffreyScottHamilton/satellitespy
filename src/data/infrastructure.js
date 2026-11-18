@@ -15,7 +15,7 @@ export function createInfrastructureLayers(services) {
       url: datacentersUrl,
       name: 'Datacenters',
       color: '#00ffff', // Cyan
-      icon: '▣',
+      icon: 'dns',
       source: 'Local',
       osmDerived: true,
       labels: true,
@@ -31,7 +31,7 @@ export function createInfrastructureLayers(services) {
       url: damsUrl,
       name: 'Dams',
       color: '#0088ff', // Blue
-      icon: '▰',
+      icon: 'water',
       source: 'USACE',
       osmDerived: true,
       labels: true,

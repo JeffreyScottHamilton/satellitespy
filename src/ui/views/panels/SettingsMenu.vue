@@ -1,6 +1,6 @@
 <script setup>
 import { storeToRefs } from 'pinia';
-import { computed, onBeforeUnmount, shallowRef } from 'vue';
+import { computed } from 'vue';
 import { msg, t, tn } from '../../../i18n/index.js';
 import { openFirstRunExperience } from '../../../firstRunExperience.js';
 import { useCockpitStore } from '../../stores/cockpit.js';
@@ -8,7 +8,6 @@ import { useDisplayStore } from '../../stores/display.js';
 import { useLocaleStore } from '../../stores/locale.js';
 import { useProviderSettingsStore } from '../../stores/providerSettings.js';
 import { useStoriesStore } from '../../stores/stories.js';
-import { getTheme, setTheme, subscribeTheme } from '../../theme.js';
 import LocalePicker from './LocalePicker.vue';
 
 // Settings: appearance, the visual filter, display, data sources and keys,
@@ -18,16 +17,6 @@ const emit = defineEmits(['close', 'readout']);
 const props = defineProps({
   showHud: { type: Boolean, default: false },
 });
-
-const theme = shallowRef(getTheme());
-const offTheme = subscribeTheme((next) => {
-  theme.value = next;
-});
-onBeforeUnmount(offTheme);
-const THEMES = [
-  { id: 'light', label: msg('Light') },
-  { id: 'dark', label: msg('Dark') },
-];
 
 const PRESETS = [
   { id: 'normal', label: msg('Standard') },
@@ -97,22 +86,6 @@ const { picker } = storeToRefs(useLocaleStore());
 
 <template>
   <div id="top-actions-settings" class="top-actions-popover top-actions-settings" role="dialog" :aria-label="t('Settings')">
-    <section class="top-actions-section" aria-labelledby="top-actions-appearance">
-      <h2 id="top-actions-appearance" class="top-actions-heading">{{ t('Appearance') }}</h2>
-      <div class="top-actions-row-label" id="top-actions-theme-label">{{ t('Theme') }}</div>
-      <div class="top-actions-segmented" role="group" aria-labelledby="top-actions-theme-label">
-        <button
-          v-for="choice in THEMES"
-          :key="choice.id"
-          type="button"
-          class="top-actions-segment"
-          :data-theme-choice="choice.id"
-          :aria-pressed="String(theme === choice.id)"
-          @click="setTheme(choice.id)"
-        >{{ t(choice.label) }}</button>
-      </div>
-    </section>
-
     <section class="top-actions-section" aria-labelledby="top-actions-filter">
       <h2 id="top-actions-filter" class="top-actions-heading">{{ t('Visual filter') }}</h2>
       <div class="top-actions-list" role="group" aria-labelledby="top-actions-filter">

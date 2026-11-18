@@ -46,7 +46,6 @@ const portableExport = (key) =>
     './tools/services',
     './view',
     './voice/action-schemas',
-    './voice/session',
     './data/lifecycle',
   ].includes(key);
 

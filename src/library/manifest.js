@@ -169,6 +169,19 @@ const KEY_PARAM_PATTERN = /^[A-Za-z][A-Za-z0-9_-]{0,31}$/;
 
 const isObject = (value) =>
   Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+// Manifests name a short typographic glyph; the UI draws Material Symbols, so
+// each glyph maps to the symbol name that stands for it (a name passes through).
+const LIBRARY_SYMBOLS = Object.freeze({
+  'ϟ': 'bolt', '≈': 'waves', '≋': 'waves', '⌂': 'home', '⌒': 'timeline',
+  '⌗': 'grid_on', '▣': 'dataset', '▦': 'grid_view', '▲': 'change_history',
+  '◉': 'radio_button_checked', '◌': 'radio_button_unchecked', '◒': 'contrast',
+  '☢': 'warning', '☣': 'pest_control', '☾': 'dark_mode', '⚑': 'flag',
+  '⚓': 'anchor', '⚠': 'warning', '⛰': 'landscape', '✦': 'star', '❦': 'eco',
+  '⧗': 'hourglass_empty', '◆': 'diamond',
+});
+const librarySymbol = (glyph) =>
+  /^[a-z0-9_]{2,}$/.test(glyph) ? glyph : (LIBRARY_SYMBOLS[glyph] ?? 'layers');
+
 const isText = (value, max) =>
   typeof value === 'string' && value.trim().length > 0 && value.length <= max;
 
@@ -718,7 +731,7 @@ function freezeEntry(raw) {
   entry.display ??= {};
   entry.licence.operatorOptIn ??= false;
   entry.regionsServed ??= null;
-  entry.icon ??= entry.kind === 'tiles' ? '▦' : '◆';
+  entry.icon = librarySymbol(entry.icon ?? (entry.kind === 'tiles' ? '▦' : '◆'));
   return deepFreeze(entry);
 }
 

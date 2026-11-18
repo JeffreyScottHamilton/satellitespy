@@ -231,7 +231,7 @@ export function createQueries({
 
     name: 'Military Flights',
 
-    icon: '🎖️',
+    icon: 'shield',
 
     source: flightState.feed._lastSource,
 

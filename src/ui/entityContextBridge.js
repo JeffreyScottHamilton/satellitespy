@@ -12,7 +12,6 @@ import { useCockpitStore } from './stores/cockpit.js';
 import { useEntityCardStore } from './stores/entityCard.js';
 import { useOmnibarStore } from './stores/omnibar.js';
 import { usePanelChromeStore } from './stores/panelChrome.js';
-import { useVoiceStore } from './stores/voice.js';
 
 /** Camera distance (m) that frames an item of each kind. */
 const FRAME_RANGE = Object.freeze({
@@ -59,7 +58,6 @@ export function installEntityContext({
 }) {
   const store = useEntityCardStore(pinia);
   const omnibar = useOmnibarStore(pinia);
-  const voice = useVoiceStore(pinia);
   const cockpitStore = useCockpitStore(pinia);
   const chrome = usePanelChromeStore(pinia);
   /** Whether Context is open; a closed panel reads nothing. */
@@ -176,23 +174,6 @@ export function installEntityContext({
     }
   }
 
-  function askText(prompt) {
-    voice.controls?.emit('chat-restore');
-    voice.controls?.emit('chat-prompt', prompt);
-    voice.controls?.emit('chat-submit');
-  }
-
-  function ask(card) {
-    const where =
-      Number.isFinite(card.lat) && Number.isFinite(card.lon)
-        ? ` at ${card.lat.toFixed(3)}, ${card.lon.toFixed(3)}`
-        : '';
-    const prompt = `Tell me about the ${card.kind} ${card.title} (${card.layerName})${where}, and what is around it.`;
-    voice.controls?.emit('chat-restore');
-    voice.controls?.emit('chat-prompt', prompt);
-    voice.controls?.emit('chat-submit');
-  }
-
   store.connect({
     dataManager: getDataManager,
     openPanel,
@@ -203,8 +184,6 @@ export function installEntityContext({
     regionalBrief,
     // The renderer's card previews, when it has them.
     previews: () => applicationHooksOf(rendererOf(viewer)).cardPreviews ?? null,
-    ask,
-    askText,
     cockpit,
     canCockpit: (card) =>
       Boolean(omnibar.runner) && COCKPIT_LAYERS.has(card?.layerId),

@@ -315,7 +315,7 @@ const distance = (km) =>
       <ul>
         <li v-for="layer in liveLayers" :key="layer.id" class="view-context__live-item">
           <div class="view-context__live-row">
-          <span class="view-context__live-icon" aria-hidden="true">{{ layer.icon }}</span>
+          <span class="view-context__live-icon material-symbols-outlined" aria-hidden="true">{{ layer.icon }}</span>
           <span class="view-context__live-main">
             <span class="view-context__live-name">{{ layer.name }}</span>
             <span class="view-context__live-meta">

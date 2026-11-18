@@ -9,9 +9,7 @@ import { computed, onBeforeUnmount, ref } from 'vue';
 import { useLocationStore } from '../stores/location.js';
 import { usePanelChromeStore } from '../stores/panelChrome.js';
 import { usePointerReticleStore } from '../stores/pointerReticle.js';
-import { useVoiceStore } from '../stores/voice.js';
 import PhoneTabBar from './panels/PhoneTabBar.vue';
-import VoiceControl from './panels/VoiceControl.vue';
 
 // VisualSettings publishes the active style and the map source controls
 // their chip row; until they do, the dock shows its initial markup. A style
@@ -40,20 +38,7 @@ function pin(event, panelId) {
   chrome.act('pin', panelId);
 }
 
-// The voice control, while a voice session presents one. It sits between the
-// location bar and the visual presets; the trays keep their elements when the
-// order changes.
-const { view: voice } = storeToRefs(useVoiceStore());
-// Once voice has taken its place, the location bar stays first.
-let voiceShown = false;
-const dockOrder = computed(() => {
-  if (voice.value) voiceShown = true;
-  return voice.value
-    ? ['location', 'voice', 'control']
-    : voiceShown
-      ? ['location', 'control']
-      : ['control', 'location'];
-});
+const dockOrder = computed(() => ['control', 'location']);
 
 // Where the user pointed while a voice turn is live (PointerReticle).
 const { reticles } = storeToRefs(usePointerReticleStore());
@@ -88,8 +73,8 @@ function selectMapSource(chip) {
 </script>
 
 <template>
-  <!-- Unified bottom command dock: locations, voice, visual presets -->
-  <div id="command-dock" class="ui-scroll" :aria-label="t('Navigation, voice, and visual preset controls')">
+  <!-- Unified bottom command dock: locations, visual presets -->
+  <div id="command-dock" class="ui-scroll" :aria-label="t('Navigation and visual preset controls')">
   <template v-for="slot in dockOrder" :key="slot">
   <!-- Control panel -->
   <div v-if="slot === 'control'" id="control-panel" v-panel-state="'control-panel'" class="panel-collapsible collapsed">
@@ -149,8 +134,6 @@ function selectMapSource(chip) {
       </div>
     </div>
   </div>
-
-  <VoiceControl v-else-if="slot === 'voice'" :key="voice.id" :view="voice" />
 
   <!-- Location bar -->
   <div v-else-if="slot === 'location'" id="location-bar" v-panel-state="'location-bar'" class="panel-collapsible collapsed">

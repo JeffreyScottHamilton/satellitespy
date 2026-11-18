@@ -31,7 +31,7 @@ export const OSM_OVERLAYS = Object.freeze([
   Object.freeze({
     id: 'sea-marks',
     name: 'Sea Marks',
-    icon: '⚓',
+    icon: 'anchor',
     source: 'OpenSeaMap',
     urlTemplate: 'https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',
     // Chart tiles CC BY-SA 2.0; the underlying data is OpenStreetMap (ODbL).
@@ -42,7 +42,7 @@ export const OSM_OVERLAYS = Object.freeze([
   Object.freeze({
     id: 'ski-pistes',
     name: 'Ski Pistes',
-    icon: '⛷',
+    icon: 'downhill_skiing',
     source: 'OpenSnowMap',
     urlTemplate: 'https://www.opensnowmap.org/pistes/{z}/{x}/{y}.png',
     // OpenSnowMap asks for "(c)www.opensnowmap.org" wherever its tiles appear.

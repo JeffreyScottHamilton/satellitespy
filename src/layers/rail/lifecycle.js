@@ -32,7 +32,7 @@ export function createLifecycle({ state, services, parts, timetable }) {
   const methods = {
     id: 'rail',
     name: 'Rail',
-    icon: '🚆',
+    icon: 'train',
     source: 'GTFS-RT',
 
     /** Create the train icon set. Called once at bootstrap. */

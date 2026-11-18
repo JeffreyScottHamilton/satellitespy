@@ -10,7 +10,7 @@ export function createControls({ state: layerState, services, parts, source }) {
 
     name: 'Global Context',
 
-    icon: '◎',
+    icon: 'visibility',
 
     source: 'Open-source proximity context',
 

@@ -296,7 +296,7 @@ export function createQueries({
 
     name: 'Live AIS Vessels',
 
-    icon: '◭',
+    icon: 'directions_boat',
 
     source: 'AISStream',
     // Without an AISStream key the feed cannot start; the panel names the key.

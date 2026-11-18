@@ -40,7 +40,7 @@ const nextBodyId = () => ++bodies;
       @click="select"
       ><span class="rail-card-labels"
         ><span class="rail-card-heading"
-          ><span class="data-icon" aria-hidden="true" :hidden="!card.icon">{{
+          ><span class="data-icon material-symbols-outlined" aria-hidden="true" :hidden="!card.icon">{{
             card.icon || ''
           }}</span
           ><span class="rail-card-title rail-card-nowrap" :title="card.title">{{

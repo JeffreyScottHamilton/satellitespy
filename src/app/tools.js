@@ -1,9 +1,5 @@
 import { onFollowChanged } from '../data/followed.js';
-import {
-  bootStories,
-  stopVoiceForStories,
-  storiesOpener,
-} from '../stories/boot.js';
+import { bootStories, storiesOpener } from '../stories/boot.js';
 import { t } from '../i18n/index.js';
 import { useStoriesStore } from '../ui/stores/stories.js';
 import { SceneDirector } from '../scenes/director.js';
@@ -24,8 +20,7 @@ import { flyToLibraryExtent } from '../library/camera.js';
 import { createLibraryBrowser } from '../ui/libraryBrowser.js';
 import { useDataLibraryStore } from '../ui/stores/dataLibrary.js';
 import { localGeoJsonServices } from './localGeojsonServices.js';
-import { initGevVoiceCommands } from '../voice/gevRealtime.js';
-import { isStoriesOpen } from '../voice/realtimeInputPolicy.js';
+import { createGevActionRunner } from '../voice/gevActions.js';
 import { installViews, isEmbeddedInline } from './embed.js';
 import {
   installScopeMask,
@@ -55,7 +50,6 @@ export function createApplicationTools({
   data,
   loadingScreen,
   placeSearch,
-  voice = {},
   startChrome,
   onSceneDirector,
   sceneDataPacks,
@@ -87,17 +81,12 @@ export function createApplicationTools({
   // Stories: GEV scenes on this globe, from a Stories button. Its screens,
   // styles, story data and controller load on first use.
   const storiesStore = useStoriesStore(applicationPinia());
-  let voiceCommands;
   const stories = bootStories({
     // Inline in a host page, the URL and history are the host's.
     available: !isEmbeddedInline(),
     viewer,
     director: sceneDirector,
     store: storiesStore,
-    onEnter: () => {
-      if (stopVoiceForStories(voiceCommands?.session))
-        storiesStore.flashToast(t('Voice is disabled in Stories.'), 4000);
-    },
     onLoadFailed: () =>
       styleManager._showToast?.(
         t('Stories could not load. Check the connection and try again.'),
@@ -313,19 +302,13 @@ export function createApplicationTools({
   defer(() => {
     if (window.__godsEyeView === debug) delete window.__godsEyeView;
   });
-  voiceCommands = initGevVoiceCommands({
-    ...voice,
-    canStartVoice: () => !isStoriesOpen(),
-    // An app may supply what open_stories does; the Stories page by default.
-    openStories: storiesOpener({
-      openStories: voice?.openStories,
-      store: storiesStore,
-      stories,
-    }),
+  // The action runner views and embed links drive (annotate_map, camera and
+  // layer actions).
+  const runner = createGevActionRunner({
+    openStories: storiesOpener({ store: storiesStore, stories }),
     floorServices: operations.surface.groundFloor,
     annotationResolver: operations.annotationResolver,
     searchNavigation: operations.searchAndFlyTo,
-    signal,
     placeSearch,
     viewer,
     styleManager,
@@ -333,19 +316,14 @@ export function createApplicationTools({
     sceneDirector,
     annotations,
   });
-  defer(() => {
-    voiceCommands.stop({ removeUi: true });
-    if (window.__gevVoiceCommands === voiceCommands)
-      delete window.__gevVoiceCommands;
-  });
-  debug.voiceCommands = voiceCommands;
+  defer(() => runner.dispose?.());
   defer(
     installViews({
       shell: styleManager,
       viewer,
       dataManager,
       run: (name, args, options = {}) =>
-        voiceCommands.runner(name, args, { ...options, signal }),
+        runner(name, args, { ...options, signal }),
       signal,
       keepRendering: scene.keepPanelRendering,
       terrain: operations.requests.terrain,
@@ -358,7 +336,6 @@ export function createApplicationTools({
   return {
     sceneDirector,
     annotations,
-    voiceCommands,
     pointer: {
       claim: claimPointer,
       release: releasePointer,

@@ -347,7 +347,7 @@ export function createWeatherLayer({
       : lightning
         ? 'Lightning density'
         : 'Satellite clouds',
-    icon: radar ? '◉' : lightning ? 'ϟ' : '☁',
+    icon: radar ? 'radar' : lightning ? 'bolt' : 'cloud',
     source: sourceName ?? 'NOAA nowCOAST · OBSERVED',
     updateInterval: lightning ? 600_000 : 120_000,
     init(nextViewer) {

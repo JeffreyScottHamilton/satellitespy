@@ -18,11 +18,10 @@ import {
   setHudVisible,
   subscribeHudVisible,
 } from '../hudVisibility.js';
-import { getTheme, subscribeTheme, toggleTheme } from '../theme.js';
 import MapStyleMenu from './panels/MapStyleMenu.vue';
 import SettingsMenu from './panels/SettingsMenu.vue';
 
-// The top-right cluster: the map style button, Settings and the theme toggle.
+// The top-right cluster: the map style button, and Settings.
 // One popover is open at a time; Escape and a pointer press outside close it.
 const FOCUSABLE = 'button:not([disabled]), input:not([disabled]), a[href], [tabindex="0"]';
 
@@ -40,18 +39,6 @@ const { mapSource } = storeToRefs(useDisplayStore());
 const basemap = computed(
   () => mapSource.value?.chips?.find((chip) => chip.active)?.label || t('Map'),
 );
-
-const theme = shallowRef(getTheme());
-const offTheme = subscribeTheme((next) => {
-  theme.value = next;
-});
-const themeLabel = computed(() =>
-  theme.value === 'dark' ? t('Switch to light theme') : t('Switch to dark theme'),
-);
-const themeIcon = computed(() => (theme.value === 'dark' ? 'light_mode' : 'dark_mode'));
-function onToggleTheme() {
-  toggleTheme();
-}
 
 const menu = shallowRef(null);
 const root = useTemplateRef('root');
@@ -97,7 +84,6 @@ onMounted(() => {
   document.addEventListener('pointerdown', onDocumentPointerDown, true);
 });
 onBeforeUnmount(() => {
-  offTheme();
   offHud();
   clearHudClass();
   document.removeEventListener('keydown', onDocumentKeyDown);
@@ -147,15 +133,5 @@ onBeforeUnmount(() => {
         @readout="setShowHud"
       />
     </div>
-    <button
-      type="button"
-      class="top-actions-button top-actions-icon"
-      data-top-action="theme"
-      :aria-label="themeLabel"
-      :title="themeLabel"
-      @click="onToggleTheme"
-    >
-      <UiIcon :name="themeIcon" :size="18" />
-    </button>
   </div>
 </template>

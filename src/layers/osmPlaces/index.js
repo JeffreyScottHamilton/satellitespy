@@ -88,7 +88,7 @@ export function createOsmPlacesLayer({
   return {
     id: OSM_PLACES_LAYER_ID,
     name: 'OSM Places',
-    icon: '⌖',
+    icon: 'location_on',
     source: 'OpenStreetMap',
     updateInterval: 0,
 

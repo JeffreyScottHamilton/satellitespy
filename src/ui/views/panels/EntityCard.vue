@@ -2,7 +2,6 @@
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { formatNumber, t } from '../../../i18n/index.js';
-import { PRODUCT_NAME } from '../../brand.js';
 import { factFigure, factLabel, factValue, sayWords, useEntityCardStore } from '../../stores/entityCard.js';
 import AircraftModelHero from './AircraftModelHero.vue';
 import SatelliteGroundView from './SatelliteGroundView.vue';
@@ -515,9 +514,6 @@ watch(
             <span class="material-symbols-outlined" aria-hidden="true">navigation</span>{{ store.isFollowing() ? t('Following') : t('Follow') }}
           </button>
         </div>
-        <button type="button" class="entity-card__action entity-card__action--ask" @click="store.ask()">
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" /></svg>{{ t('Ask {product} about {name}', { product: PRODUCT_NAME, name: shownTitle }) }}
-        </button>
       </div>
 
       <slot />

@@ -368,7 +368,7 @@ export function createShipwrecksLayer({
   const layer = {
     id: SHIPWRECKS_LAYER_ID,
     name: 'Shipwrecks',
-    icon: '⚓',
+    icon: 'anchor',
     source: 'EMODnet · Wikidata',
     // The proxy refreshes once a day; this only notices a new snapshot.
     updateInterval: 6 * 60 * 60 * 1000,

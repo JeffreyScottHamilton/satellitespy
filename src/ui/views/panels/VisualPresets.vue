@@ -13,42 +13,42 @@ const { style, mapSource, mapSourceControls } = storeToRefs(display);
 const STYLES = [
   {
     name: 'normal',
-    icon: '◯',
+    icon: 'radio_button_unchecked',
     label: msg('Normal'),
     key: '1',
     title: msg('Show the globe without a visual filter.'),
   },
   {
     name: 'retro',
-    icon: '▦',
+    icon: 'grid_on',
     label: msg('CRT'),
     key: '2',
     title: msg('Emulate a green phosphor CRT with scanlines and screen curvature.'),
   },
   {
     name: 'surveillance',
-    icon: '🌙',
+    icon: 'dark_mode',
     label: msg('NVG'),
     key: '3',
     title: msg('Simulate night-vision goggles with green intensification and a tube vignette.'),
   },
   {
     name: 'thermal',
-    icon: '🌡️',
+    icon: 'thermostat',
     label: msg('FLIR'),
     key: '4',
     title: msg('Simulate FLIR-style thermal contrast. Turn up Ironbow for color.'),
   },
   {
     name: 'anime',
-    icon: '✦',
+    icon: 'auto_awesome',
     label: msg('Anime'),
     key: '5',
     title: msg('Apply bright cel-shaded color and illustrated outlines.'),
   },
   {
     name: 'noir',
-    icon: '◐',
+    icon: 'contrast',
     label: msg('Noir'),
     key: '6',
     title: msg('Apply high-contrast monochrome film-noir grading.'),
@@ -75,7 +75,7 @@ function selectMapSource(chip) {
         :title="t(preset.title)"
         @click="display.act('setStyle', preset.name)"
       >
-        <span class="visual-presets__icon" aria-hidden="true">{{ preset.icon }}</span>
+        <span class="visual-presets__icon material-symbols-outlined" aria-hidden="true">{{ preset.icon }}</span>
         <span class="visual-presets__label">{{ t(preset.label) }}</span>
         <kbd class="visual-presets__key">{{ preset.key }}</kbd>
       </UiButton>

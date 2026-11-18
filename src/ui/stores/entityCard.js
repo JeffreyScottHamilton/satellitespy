@@ -297,7 +297,6 @@ export const useEntityCardStore = defineStore('gev-entity-card', () => {
   };
   const isFollowing = () =>
     Boolean(card.value && following.value === card.value.key);
-  const ask = () => card.value && shell.value?.ask?.(card.value);
   /** The regional brief (weather, local news) for a spot, from the shell. */
   const readBrief = (lat, lon) =>
     shell.value?.regionalBrief
@@ -325,7 +324,6 @@ export const useEntityCardStore = defineStore('gev-entity-card', () => {
     refresh,
     flyTo,
     follow,
-    ask,
     readBrief,
     previews,
     canFollow,

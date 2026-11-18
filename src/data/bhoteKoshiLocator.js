@@ -1163,7 +1163,7 @@ export function createBhoteKoshiLocatorLayer({
     name: 'Bhote Koshi Locator',
     // Scene-owned component; retain registration without a standalone menu row.
     showInTogglePanel: false,
-    icon: '◎',
+    icon: 'my_location',
     source: 'OpenStreetMap + GeoPera',
     updateInterval: 0,
     init,

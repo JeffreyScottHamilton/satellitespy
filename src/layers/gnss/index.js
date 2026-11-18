@@ -209,7 +209,7 @@ export function createGnssIntegrityLayer({
   const layer = {
     id: 'gnss-integrity',
     name: 'GNSS Integrity',
-    icon: '📡',
+    icon: 'sensors',
     source: 'adsb.lol',
     /** Where each part of the method comes from; see records.js. */
     provenance,

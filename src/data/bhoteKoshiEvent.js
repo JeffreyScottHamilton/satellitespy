@@ -4019,7 +4019,7 @@ export function createBhoteKoshiEventLayer({
     name: 'Bhote Koshi Flood',
     // Scene-owned component; retain registration without a standalone menu row.
     showInTogglePanel: false,
-    icon: '🌊',
+    icon: 'water_drop',
     source: 'Vantor + GeoPera',
     updateInterval: 0,
     init,

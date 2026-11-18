@@ -46,7 +46,7 @@ defineProps({
       :data-library-entry="item.libraryEntry || undefined"
       ><div class="data-toggle-top"
         ><div class="data-toggle-left"
-          ><span class="data-icon" aria-hidden="true">{{ item.icon }}</span
+          ><span class="data-icon material-symbols-outlined" aria-hidden="true">{{ item.icon }}</span
           ><RowText class="data-name" :text="item.name" /></div
         ><div class="data-toggle-right"
           ><RowText

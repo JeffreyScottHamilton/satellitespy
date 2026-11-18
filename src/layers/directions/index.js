@@ -45,9 +45,9 @@ export const DIRECTIONS_MARKER_OVERLAY_SOURCE_OPTIONS = Object.freeze({
 
 /** Travel modes, keyed by the `/api/route` profile name. */
 export const DIRECTIONS_MODES = Object.freeze({
-  car: Object.freeze({ chip: msg('DRIVE'), word: msg('Drive'), icon: '🚗' }),
-  foot: Object.freeze({ chip: msg('WALK'), word: msg('Walk'), icon: '🚶' }),
-  bike: Object.freeze({ chip: msg('BIKE'), word: msg('Bike'), icon: '🚲' }),
+  car: Object.freeze({ chip: msg('DRIVE'), word: msg('Drive'), icon: 'directions_car' }),
+  foot: Object.freeze({ chip: msg('WALK'), word: msg('Walk'), icon: 'directions_walk' }),
+  bike: Object.freeze({ chip: msg('BIKE'), word: msg('Bike'), icon: 'pedal_bike' }),
 });
 export const DEFAULT_DIRECTIONS_MODE = 'car';
 
@@ -1620,7 +1620,7 @@ export function createDirectionsLayer({ services, source }) {
   const directionsLayer = {
     id: 'directions',
     name: 'Directions',
-    icon: '🧭',
+    icon: 'navigation',
     source: 'OSM routing',
     updateInterval: 0,
 

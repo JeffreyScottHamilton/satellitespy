@@ -77,7 +77,7 @@ export function createControls({ state, services, parts }) {
   const methods = {
     id: 'wildlife-sightings',
     name: 'Wildlife Sightings',
-    icon: '🦉',
+    icon: 'pets',
     source: 'iNaturalist',
     updateInterval: WILDLIFE_UPDATE_INTERVAL_MS,
 

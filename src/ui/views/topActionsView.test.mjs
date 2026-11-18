@@ -1,29 +1,16 @@
 // src/ui/views/topActionsView.test.mjs — the top-right actions: the map style
-// button, Settings and the theme toggle, over happy-dom.
+// button and Settings, over happy-dom.
 import '../../testSupport/registerDom.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createApp, nextTick } from 'vue';
 import { createPinia } from 'pinia';
-import { getTheme, initTheme } from '../theme.js';
+import { initTheme } from '../theme.js';
 import TopActionsView from './TopActionsView.vue';
-
-function memoryStorage() {
-  const values = new Map();
-  return {
-    getItem: (key) => (values.has(key) ? values.get(key) : null),
-    setItem: (key, value) => values.set(key, String(value)),
-  };
-}
 
 function mount(t) {
   document.body.replaceChildren();
-  initTheme({
-    storage: memoryStorage(),
-    matchMedia: () => ({ matches: false }),
-    root: document.documentElement,
-    document,
-  });
+  initTheme({ root: document.documentElement, document });
   const host = document.body.appendChild(document.createElement('div'));
   const app = createApp(TopActionsView).use(createPinia());
   app.mount(host);
@@ -33,35 +20,22 @@ function mount(t) {
 
 const action = (host, name) => host.querySelector(`[data-top-action="${name}"]`);
 
-test('the map, Settings and theme buttons render with accessible names', (t) => {
+test('the map and Settings buttons render with accessible names', (t) => {
   const host = mount(t);
   const buttons = [...host.querySelectorAll('[data-top-action]')];
   assert.deepEqual(
     buttons.map((button) => button.getAttribute('data-top-action')),
-    ['map', 'settings', 'theme'],
+    ['map', 'settings'],
   );
   assert.match(action(host, 'map').getAttribute('aria-label'), /^Map style/);
   assert.equal(action(host, 'settings').getAttribute('aria-label'), 'Settings');
-  assert.equal(
-    action(host, 'theme').getAttribute('aria-label'),
-    'Switch to light theme',
-  );
+  assert.equal(action(host, 'theme'), null);
 });
 
-test('toggling the theme flips data-theme and the button name', async (t) => {
+test('the app is dark and offers no theme choice', (t) => {
   const host = mount(t);
   assert.equal(document.documentElement.dataset.theme, 'dark');
-  action(host, 'theme').click();
-  await nextTick();
-  assert.equal(document.documentElement.dataset.theme, 'light');
-  assert.equal(getTheme(), 'light');
-  assert.equal(
-    action(host, 'theme').getAttribute('aria-label'),
-    'Switch to dark theme',
-  );
-  action(host, 'theme').click();
-  await nextTick();
-  assert.equal(document.documentElement.dataset.theme, 'dark');
+  assert.equal(host.querySelector('[data-theme-choice]'), null);
 });
 
 test('Escape that closes a menu is marked handled; unmount drops the HUD class', async (t) => {

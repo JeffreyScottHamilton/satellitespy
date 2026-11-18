@@ -35,7 +35,7 @@ const actionLabel = computed(() =>
     :data-library-id="entry.id"
   >
     <div class="data-library-item-head">
-      <span class="data-library-icon" aria-hidden="true">{{ entry.icon }}</span>
+      <span class="data-library-icon material-symbols-outlined" aria-hidden="true">{{ entry.icon }}</span>
       <span class="data-library-name">{{ entry.title }}</span>
       <span class="data-library-badges">
         <span

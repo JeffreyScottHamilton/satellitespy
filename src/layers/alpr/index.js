@@ -285,7 +285,7 @@ export function createAlprCamerasLayer({ source, services } = {}) {
   const alprCamerasLayer = {
     id: LAYER_ID,
     name: 'ALPR Cameras',
-    icon: '📷',
+    icon: 'photo_camera',
     // English in layer state; the layer row translates it.
     source: source.label || msg('Mapped camera locations'),
     updateInterval: 0,

@@ -1,8 +1,6 @@
 /* Design tokens: colour, type, shape, spacing and motion, plus the layout
-   tokens the stacks use. Dark is the default theme. Light applies through
-   data-theme (set by ui/theme.js) or, with no stored choice, through the
-   light colour-scheme preference. Legacy names below alias the new tokens so
-   older rules follow the active theme. */
+   tokens the stacks use. The app is dark only. Legacy names below alias
+   the new tokens so older rules follow them. */
 
 :root {
   color-scheme: dark;
@@ -94,38 +92,6 @@
   --accent-ink: #141414;
   --accent-soft: rgba(239, 106, 64, 0.14);
   --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.35), 0 4px 16px rgba(0, 0, 0, 0.35);
-}
-
-:root[data-theme='light'] {
-  color-scheme: light;
-  --bg: #F7F7F5;
-  --surface: #FFFFFF;
-  --surface-2: #F1F1EF;
-  --text: #171717;
-  --text-2: #777777;
-  --border: #E7E7E5;
-  --accent: #D9532B;
-  --accent-ink: #FFFFFF;
-  --accent-soft: rgba(217, 83, 43, 0.10);
-  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.08);
-}
-
-/* Before the script sets data-theme, a light preference gets the light tokens.
-   The dark tokens on :root are the fallback for dark or unknown preferences. */
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme]) {
-    color-scheme: light;
-    --bg: #F7F7F5;
-    --surface: #FFFFFF;
-    --surface-2: #F1F1EF;
-    --text: #171717;
-    --text-2: #777777;
-    --border: #E7E7E5;
-    --accent: #D9532B;
-    --accent-ink: #FFFFFF;
-    --accent-soft: rgba(217, 83, 43, 0.10);
-    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.08);
-  }
 }
 
 @media (max-width: 639px) {

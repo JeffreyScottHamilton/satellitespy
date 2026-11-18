@@ -57,7 +57,7 @@ export function createAirQualityLayer({ source, overlayHost } = {}) {
   const layer = {
     id: 'air-quality',
     name: 'Air quality',
-    icon: '◍',
+    icon: 'air',
     source: 'ECCC MSC GeoMet',
     updateInterval: 1_200_000,
 

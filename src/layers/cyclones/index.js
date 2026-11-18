@@ -256,7 +256,7 @@ export function createCyclonesLayer({
   const layer = {
     id: 'weather-cyclones',
     name: 'Cyclone advisories',
-    icon: '◉',
+    icon: 'cyclone',
     source: 'NOAA NHC / CPHC',
     updateInterval: 300_000,
     init(nextViewer) {
