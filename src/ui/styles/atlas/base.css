@@ -1,0 +1,25 @@
+/* Owner: global base (body type, glow removal, selection, reduced motion). */
+
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+/* No glows: legacy chrome must not add text shadows. */
+body,
+body * {
+  text-shadow: none;
+}
+
+::selection {
+  background: var(--accent-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+}

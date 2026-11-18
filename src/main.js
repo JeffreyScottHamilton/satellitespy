@@ -1,6 +1,11 @@
 import { createStandaloneApplication } from './standalone/application.js';
 import { describeError } from './standalone/errors.js';
 import { t } from './i18n/index.js';
+import { initTheme } from './ui/theme.js';
+import '@fontsource-variable/inter';
+
+// Apply the stored or system theme before the application renders.
+initTheme();
 
 // The Vite boundary exposes only undefined, null, or a validated URL.
 const photonSetting = import.meta.env.PHOTON_URL;
