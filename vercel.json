@@ -6,6 +6,23 @@
   "rewrites": [
     { "source": "/api/:path*", "destination": "/api/gateway?__path=:path*" }
   ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/cesium/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
+      ]
+    }
+  ],
   "functions": {
     "api/gateway.mjs": {
       "maxDuration": 30,

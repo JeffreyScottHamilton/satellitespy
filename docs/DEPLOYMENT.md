@@ -17,6 +17,7 @@ keeps a process alive.
   `src/data/local_data` folders that the providers read at runtime (`natural_earth`,
   `cctv_ground_heights`), and `node_modules/ws/**` (loaded through `createRequire`, which
   Vercel's file tracing may not see). `maxDuration` is 30 seconds.
+- `vercel.json` `headers`: `/assets/*` (content-hashed) is `immutable` for a year; `/cesium/*` (unhashed runtime) is cached one day with seven days of stale-while-revalidate.
 - `api/gateway.mjs`: one Node function for every `/api/*` path. It builds the provider
   handler once per instance, from `localProviderPlugins({ nominatimStorageDir: '/tmp/satellitespy/nominatim' })`.
   It leaves out the `gev-key-setup` plugin, which writes `.env` on disk and has no use on Vercel.

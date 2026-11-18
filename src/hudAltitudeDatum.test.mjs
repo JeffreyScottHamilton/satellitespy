@@ -80,6 +80,8 @@ function installHudEnvironment() {
     querySelectorAll: () => [],
     addEventListener() {},
     removeEventListener() {},
+    // The HUD only requests the geoid grid while it is shown.
+    body: { classList: { contains: (c) => c === 'atlas-show-hud', toggle() {} } },
   };
   const viewer = {};
   const cameraListeners = {
@@ -234,6 +236,21 @@ test('a cold tick paints both readouts uncorrected, and resolving flips both in 
       summaryRevisionAfterFlip,
       'a settled geoid must not re-dirty the summary on every telemetry tick',
     );
+  } finally {
+    hud?.destroy();
+    env.restore();
+  }
+});
+
+test('a hidden HUD never requests the geoid grid and shows the uncorrected datum', () => {
+  const env = installHudEnvironment();
+  let hud;
+  try {
+    globalThis.document.body.classList.contains = () => false;
+    hud = new IntelHUD(env.viewer, { camera: env.camera.port, publish: env.publish });
+    hud._updateCameraData();
+    assert.equal(hud._geoidRequested, false);
+    assert.match(env.elements.get('hud-alt').textContent, /^ALT: -15m/);
   } finally {
     hud?.destroy();
     env.restore();

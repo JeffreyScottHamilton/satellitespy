@@ -66,6 +66,7 @@ import { isRtlLocale } from './i18n/locale.js';
 import { localizeLayerName } from './ui/layerPanel.js';
 import { isEmbeddedInline } from './app/embed.js';
 import { subscribeSelectedVessel } from './hudReadouts.js';
+import { isHudShown } from './ui/hudVisibility.js';
 
 /** Color palettes keyed by shader mode; applied as CSS custom properties. */
 const HUD_COLORS = {
@@ -482,7 +483,8 @@ export class IntelHUD {
    */
   _geoidUndulationM(latDeg, lonDeg) {
     if (!this._geoidReady) {
-      if (!this._geoidRequested) {
+      // The EGM96 grid is large; fetch it only once the HUD is on screen.
+      if (!this._geoidRequested && isHudShown()) {
         this._geoidRequested = true;
         ensureGeoidReady()
           .then(() => {
