@@ -173,6 +173,25 @@ test('slash stays native while typing in another field or with a chord', () => {
   assert.equal(focused, 0);
 });
 
+test('slash ignores contenteditable focus and already-handled events', () => {
+  const f = shortcuts();
+  let focused = 0;
+  f.searchInput.focus = () => focused++;
+  const editable = new Element();
+  editable.isContentEditable = true;
+  f.press('/', editable);
+  f.press('/', new Element(), { defaultPrevented: true });
+  assert.equal(focused, 0);
+});
+
+test('Escape does not blur the search when already handled', () => {
+  const f = shortcuts();
+  let blurred = 0;
+  f.searchInput.blur = () => blurred++;
+  f.press('Escape', f.searchInput, { defaultPrevented: true });
+  assert.equal(blurred, 0);
+});
+
 test('Escape blurs the location search as well as dismissing it', () => {
   const f = shortcuts();
   let blurred = 0;

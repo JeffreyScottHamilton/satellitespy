@@ -21,12 +21,10 @@ const css = readStylesheet(path.join(ROOT, 'style.css'));
 
 const REM_PX = 16;
 
-// Rendered sizes the stylesheet cannot supply. Measured live at
-// 600/700/800/830/900px viewports by qa-shots/quickwins/credit-probe.mjs and
-// re-measured on every run of that sweep. The CSS inputs that determine them
-// are guarded below, because a change there invalidates the constant.
+// Rendered credit height the stylesheet cannot supply (10px font, one line).
+// Used by the legacy rail clearance pin below; the new keep-out contract reads
+// its sizes from the CSS itself (credit line-height, search height).
 const CREDIT_HEIGHT_PX = 28;
-const COMPACT_DOCK_HEIGHT_PX = 62;
 
 // Clear air the notice must keep above it. The stylesheet aims for 12px.
 const MIN_CLEARANCE_PX = 8;
@@ -196,69 +194,7 @@ const RULES = flattenRules(css);
 
 // ── What the model understands ──────────────────────────────────────────────
 
-// Selectors that position a modelled element's OWN box. Anything else that
-// positions one of these elements is an unmodelled construct and fails.
-const RECOGNIZED = new Set([
-  // credit
-  '#cesium-credits',
-  'body:not(.ui-clean-view):not(.recording-mode) #cesium-credits',
-  "body:not(.ui-clean-view):not(.recording-mode):has(#intel-hud[data-variant='minimal'].active) #cesium-credits",
-  'body.ui-clean-view #cesium-credits',
-  'body.recording-mode #cesium-credits',
-  // dock
-  '#command-dock',
-  '#command-dock:has(#location-bar:not(.collapsed))',
-  '#command-dock:has(#control-panel:not(.collapsed))',
-  // rail
-  '#right-context-rail',
-  '#right-context-rail.layout-focus',
-  '#right-context-rail[data-rail-measuring]',
-  // tray
-  '#command-dock .dock-popover-content',
-  '#command-dock #location-bar .dock-popover-content',
-  '#command-dock #control-panel .dock-popover-content',
-  '#command-dock #location-bar:not(.collapsed) .dock-popover-content',
-  '#command-dock #control-panel:not(.collapsed) .dock-popover-content',
-  '#command-dock.dock-has-pinned-tray #location-bar:not(.collapsed):not(.dock-pinned) .dock-popover-content',
-  '#command-dock.dock-has-pinned-tray #control-panel:not(.collapsed):not(.dock-pinned) .dock-popover-content',
-  '#command-dock.dock-has-two-pinned-trays .dock-pinned-top.dock-pinned:not(.collapsed) .dock-popover-content',
-  '#command-dock.dock-has-two-pinned-trays #location-bar.dock-pinned-top.dock-pinned:not(.collapsed) .dock-popover-content',
-  '#command-dock.dock-has-two-pinned-trays #control-panel.dock-pinned-top.dock-pinned:not(.collapsed) .dock-popover-content',
-]);
-
 const DOCKED_RAIL = 'body.context-docked #right-context-rail';
-const ELEMENT_KEYS = [
-  '#cesium-credits',
-  '#command-dock',
-  '#right-context-rail',
-  '.dock-popover-content',
-];
-
-// Any of these on a modelled element's own box changes the geometry this pin
-// reasons about, so each occurrence must be recognized and vetted.
-const GUARDED_PROPS = new Set([
-  'bottom',
-  'top',
-  'inset',
-  'inset-block',
-  'inset-block-end',
-  'inset-inline',
-  'inset-inline-end',
-  'margin',
-  'margin-bottom',
-  'margin-block',
-  'margin-block-end',
-  'all',
-  'height',
-  'min-height',
-  'max-height',
-  'position',
-  'transform',
-  'translate',
-  'scale',
-  'zoom',
-]);
-
 // Custom properties allowed inside a modelled offset. Each is a pinned-tray
 // stack height, proven non-negative below, so evaluating them at 0 is a
 // conservative floor rather than a guess. The world timeline's lift raises
@@ -286,52 +222,42 @@ function eachLift(check) {
   }
 }
 
-/** Rules whose final compound targets a modelled element (pseudo-elements aside). */
-function ownBoxEntries() {
-  const entries = [];
-  for (const rule of RULES) {
-    for (const part of rule.parts) {
-      const compound = lastCompound(part);
-      if (!ELEMENT_KEYS.some((key) => compound.includes(key))) continue;
-      if (compound.includes('::')) continue; // a pseudo-element is its own box
-      // The phone shell is its own layout; mobileShell.test.mjs pins its
-      // attribution clearance.
-      if (part.startsWith('body.mobile-shell')) continue;
-      // So is Stories, with GEV's chrome stepped aside; storiesCredit.test.mjs
-      // pins its attribution placement.
-      if (
-        /^body\.stories-mode:not\(#gs-a\):not\(#gs-b\) #(cesium|gev)-credits$/.test(part)
-      ) continue;
-      entries.push({ rule, part });
-    }
-  }
-  return entries;
-}
-
 /** A media condition the model can resolve, or null. */
 function parseMediaCondition(condition) {
   const match = /^\(max-width:\s*(\d+)px\)$/.exec(condition.trim());
   return match ? Number(match[1]) : null;
 }
 
+/** `{min, max}` for width-only conditions the model can resolve, else null. */
+function parseMediaRange(condition) {
+  const terms = condition.trim().split(/\s+and\s+/);
+  const range = { min: 0, max: Infinity };
+  for (const term of terms) {
+    const match = /^\((min|max)-width:\s*(\d+)px\)$/.exec(term.trim());
+    if (!match) return null;
+    range[match[1]] = Number(match[2]);
+  }
+  return range;
+}
+
 /**
  * Whether a rule applies at `width`. Only ever asked of rules that already
- * match a modelled selector, so an unresolvable condition there is a genuine
+ * match a candidate selector, so an unresolvable condition there is a genuine
  * hole in the model and fails rather than being skipped.
  */
 function appliesAt(rule, width, label) {
   return rule.media.every((condition) => {
-    const maxWidth = parseMediaCondition(condition);
+    const range = parseMediaRange(condition);
     assert.ok(
-      maxWidth !== null,
+      range !== null,
       `unmodelled media condition "${condition}" gates ${label}`,
     );
-    return width <= maxWidth;
+    return width >= range.min && width <= range.max;
   });
 }
 
 /** Resolve `prop` by real cascade order: importance, then specificity, then source. */
-function resolve(candidates, prop, width, label) {
+function resolve(candidates, prop, width, label, { optional = false } = {}) {
   let winner = null;
   for (const rule of RULES) {
     if (!rule.parts.some((part) => candidates.includes(part))) continue;
@@ -365,6 +291,7 @@ function resolve(candidates, prop, width, label) {
       }
     }
   }
+  if (!winner && optional) return null;
   assert.ok(winner, `no "${prop}" resolves for ${label} at ${width}px`);
   return winner;
 }
@@ -463,21 +390,118 @@ function creditTopPx(width, height) {
   return toPx(bottom.decl.value, height, 'credit bottom') + CREDIT_HEIGHT_PX;
 }
 
-function trayBottomPx(scenario, width, height) {
-  const dock = resolve(['#command-dock'], 'bottom', width, 'command dock');
-  const offset = resolve(scenario.offset, 'bottom', width, scenario.name);
-  const margin = resolve(
-    ['#command-dock #location-bar:not(.collapsed) .dock-popover-content'],
-    'margin-bottom',
-    width,
-    'open tray margin',
+// ── Keep-out model (Atlas layout) ───────────────────────────────────────────
+//
+// Contract: the credit sits bottom-left; the desktop command dock is anchored
+// at the top so it cannot reach it; on phones the search sits above the tab bar
+// and the credit above the search; the layer panel stops short of the credit.
+
+const KEEP_OUT_ELEMENTS = ['#cesium-credits', '#gev-credits', '#command-dock'];
+
+// Any of these on a keep-out element's own box can move it, so each is vetted.
+const GUARDED_PROPS = new Set([
+  'bottom',
+  'top',
+  'inset',
+  'inset-block',
+  'inset-block-start',
+  'inset-block-end',
+  'margin',
+  'margin-top',
+  'margin-bottom',
+  'margin-block',
+  'margin-block-start',
+  'margin-block-end',
+  'all',
+  'position',
+  'transform',
+  'translate',
+  'scale',
+  'zoom',
+]);
+
+// Atlas places the credit with two ids, so it outranks every legacy rule.
+const ATLAS_CREDIT = 'body:not(.stories-mode) #cesium-credits#cesium-credits';
+const ATLAS_CREDIT_PHONE = 'body.mobile-shell #cesium-credits#cesium-credits';
+const ATLAS_SEARCH_PHONE = 'body.mobile-shell #command-dock';
+const ATLAS_SEARCH_FIELD_PHONE = 'body.mobile-shell #command-dock > #location-bar';
+const ATLAS_LAYER_PANEL =
+  'body #left-panel-stack > #data-panel:not(.collapsed)';
+const ATLAS_LAYER_STACK = 'body #left-panel-stack';
+
+const DESKTOP_WIDTHS = [640, 700, 721, 800, 900, 1023, 1024, 1440, 1920];
+const PHONE_WIDTHS = [320, 375, 480, 600, 639];
+const KEEP_OUT_HEIGHTS = [500, 640, 800, 1080];
+// Phone tab-bar space (--mobile-tab-space) varies with safe-area insets; the
+// ordering must hold for any non-negative value.
+const TAB_SPACES_PX = [0, 58, 90];
+
+/** Evaluate an offset, substituting the phone tab-bar variable. */
+function offsetPx(value, viewportHeight, tabSpacePx, where) {
+  const substituted = value.replace(
+    /var\(--mobile-tab-space(?:,\s*[^)]*)?\)/g,
+    `${tabSpacePx}px`,
   );
-  return (
-    toPx(dock.decl.value, height, 'dock bottom') +
-    COMPACT_DOCK_HEIGHT_PX +
-    toPx(offset.decl.value, height, `${scenario.name} offset`) +
-    toPx(margin.decl.value, height, 'tray margin')
-  );
+  return toPx(substituted, viewportHeight, where);
+}
+
+/** Remove balanced `:not(...)` / `:has(...)` groups (conditions, not state classes). */
+function stripConditions(text) {
+  let out = text;
+  for (;;) {
+    const match = out.match(/:(not|has|is|where)\(/);
+    if (!match) return out;
+    const open = match.index + match[0].length - 1;
+    let depth = 0;
+    let end = -1;
+    for (let i = open; i < out.length; i += 1) {
+      if (out[i] === '(') depth += 1;
+      else if (out[i] === ')') {
+        depth -= 1;
+        if (depth === 0) {
+          end = i;
+          break;
+        }
+      }
+    }
+    assert.ok(end > 0, `unbalanced pseudo-class in "${text}"`);
+    out = out.slice(0, match.index) + out.slice(end + 1);
+  }
+}
+
+/**
+ * Every selector part that positions `id`'s own box in the default state, so
+ * the cascade winner is computed over ALL of them, not a hand-picked few. A
+ * part that requires a non-default body state class (stories, clean view,
+ * recording, cockpit, docked Context) is another layout, pinned elsewhere.
+ * Parts that only add conditions (`:not`, `:has`) are kept: they may apply.
+ */
+function candidatesFor(id, { phone }) {
+  const found = new Set();
+  for (const rule of RULES) {
+    for (const part of rule.parts) {
+      const compound = lastCompound(part);
+      if (!compound.startsWith(id) || compound.includes('::')) continue;
+      if (/^[\w-]/.test(compound.slice(id.length))) continue; // #location-bar-popover
+      const ancestors = stripConditions(part.slice(0, part.length - compound.length));
+      const classes = ancestors.match(/\.[\w-]+/g) || [];
+      const stateful = classes.some((c) => !(phone && c === '.mobile-shell'));
+      if (stateful) continue;
+      found.add(part);
+    }
+  }
+  return [...found];
+}
+
+/** The cascade winner for `prop`, with its source selector. */
+function winnerOf(id, prop, width, phone) {
+  return resolve(candidatesFor(id, { phone }), prop, width, id);
+}
+
+/** A lone px length (`12px`, `0`), or a failure. */
+function lengthPx(value, where) {
+  assert.match(value.trim(), /^-?[\d.]+(px)?$/, `unmodelled length in ${where}: "${value}"`);
+  return Number.parseFloat(value);
 }
 
 // ── Fail-closed guards ──────────────────────────────────────────────────────
@@ -514,93 +538,55 @@ test('the specificity calculator itself is pinned', () => {
 });
 
 test('the model refuses every cascade construct it cannot resolve', () => {
+  // The keep-out reads top/bottom/left/position of the credit and the dock off
+  // the cascade. It is only valid if the atlas rule is what wins, and nothing
+  // it cannot evaluate (shorthands, vertical transforms, zoom) moves the box.
   const complaints = [];
-  for (const { rule, part } of ownBoxEntries()) {
-    const guarded = rule.decls.filter((decl) => GUARDED_PROPS.has(decl.prop));
-    if (!guarded.length) continue;
-    // Expanded Context covers the right edge top to bottom; the credit row
-    // stops short of it instead (the docked-Context test below).
-    if (part === DOCKED_RAIL) continue;
-    if (!RECOGNIZED.has(part)) {
-      complaints.push(
-        `unrecognized selector positions a modelled element: "${part}" (${guarded.map((d) => d.prop).join(', ')})`,
-      );
-      continue;
-    }
-    for (const condition of rule.media) {
-      if (parseMediaCondition(condition) === null) {
-        complaints.push(
-          `unmodelled media condition "${condition}" on "${part}"`,
-        );
+  const expectations = [
+    { id: '#cesium-credits', phone: false, source: ATLAS_CREDIT, widths: DESKTOP_WIDTHS },
+    { id: '#cesium-credits', phone: true, source: ATLAS_CREDIT_PHONE, widths: PHONE_WIDTHS },
+    { id: '#command-dock', phone: true, source: ATLAS_SEARCH_PHONE, widths: PHONE_WIDTHS, props: ['top', 'bottom', 'left', 'right'] },
+  ];
+  for (const { id, phone, source, widths, props = ['position', 'top', 'bottom', 'left'] } of expectations) {
+    const candidates = candidatesFor(id, { phone });
+    assert.ok(candidates.includes(source), `${source} is not a rule in the stylesheet`);
+    for (const part of candidates) {
+      for (const rule of RULES.filter((r) => r.parts.includes(part))) {
+        for (const decl of rule.decls) {
+          if (decl.prop === 'zoom')
+            complaints.push(`zoom on "${part}" moves the box outside the model`);
+          if (
+            ['inset', 'all'].includes(decl.prop) ||
+            decl.prop.startsWith('inset-block')
+          )
+            complaints.push(`shorthand ${decl.prop} on "${part}" — the model reads longhands only`);
+        }
       }
     }
-    if (rule.media.length > 1) {
-      complaints.push(
-        `nested media queries on "${part}": ${rule.media.join(' && ')}`,
-      );
-    }
-    for (const decl of guarded) {
-      // Measurement is synchronous and restored before returning or painting.
-      // Only these two exact declarations earn the exemption tested below.
-      const railMeasurement =
-        part === '#right-context-rail[data-rail-measuring]' &&
-        ((decl.prop === 'height' && decl.value === 'auto') ||
-          (decl.prop === 'max-height' && decl.value === 'none'));
-      if (decl.important && !railMeasurement)
-        complaints.push(`!important on ${decl.prop} of "${part}"`);
-      if (
-        decl.prop === 'inset' ||
-        decl.prop === 'margin' ||
-        decl.prop === 'all' ||
-        decl.prop.startsWith('inset-') ||
-        decl.prop.startsWith('margin-block')
-      ) {
-        complaints.push(
-          `shorthand ${decl.prop} on "${part}" — the model reads longhands only`,
-        );
+    for (const width of widths) {
+      for (const prop of props) {
+        const win = resolve(candidates, prop, width, id, { optional: true });
+        // Phone rules only override offsets; position stays with the base rule.
+        const allowed = [source, ATLAS_CREDIT, '#command-dock'];
+        if (win && !allowed.includes(win.part))
+          complaints.push(`${id} ${prop} at ${width}px resolves via "${win.part}", not the atlas rule`);
       }
-      if (decl.prop === 'height' || decl.prop === 'max-height') {
-        // A capped height can override `bottom` and invalidate the measured
-        // dock/credit constants. Exemptions are each earned by a test below:
-        // the rail's own max-height (resolved to `none` across the whole
-        // modelled band by the rail clearance test) and `.layout-focus`
-        // (proven inapplicable at <=720px by the mobile-mode test), plus
-        // synchronous measurement, which is removed before any paint.
-        const railOwn =
-          part === '#right-context-rail' && decl.prop === 'max-height';
-        const railFocus = part === '#right-context-rail.layout-focus';
-        if (!railOwn && !railFocus && !railMeasurement)
-          complaints.push(`${decl.prop}: ${decl.value} on "${part}"`);
+      for (const prop of ['transform', 'translate', 'scale']) {
+        const win = resolve(candidates, prop, width, id, { optional: true });
+        if (win && /translateY|translate3d|matrix|rotate|scale\(|^[\d.]+$/.test(win.decl.value))
+          complaints.push(`${id} ${prop}: ${win.decl.value} at ${width}px moves the box vertically via "${win.part}"`);
       }
-      if (
-        decl.prop === 'transform' &&
-        /translateY|translate3d|matrix|scale\(/.test(decl.value)
-      ) {
-        const identity = decl.value === 'translateY(0) scale(1)';
-        const closedTray =
-          part === '#command-dock .dock-popover-content' &&
-          decl.value === 'translateY(0.55rem) scale(0.985)';
-        if (!identity && !closedTray)
-          complaints.push(`vertical transform on "${part}": ${decl.value}`);
-      }
-      if (
-        decl.prop === 'translate' ||
-        decl.prop === 'scale' ||
-        decl.prop === 'zoom'
-      ) {
-        complaints.push(
-          `${decl.prop} on "${part}" moves the box outside the model`,
-        );
-      }
+      const margin = resolve(candidates, 'margin', width, id, { optional: true });
+      if (margin && margin.decl.value.trim() !== '0')
+        complaints.push(`${id} margin: ${margin.decl.value} at ${width}px via "${margin.part}" offsets the box`);
     }
   }
   assert.deepEqual(
     complaints,
     [],
-    `the attribution model cannot resolve:\n  ${complaints.join('\n  ')}\n`,
+    `the keep-out model cannot resolve:\n  ${complaints.join('\n  ')}\n`,
   );
 });
-
 test('custom properties inside modelled offsets are provably non-negative', () => {
   // The model evaluates them at 0, which is only a conservative floor if they
   // can never go negative. Both writers are checked: CSS and the JS.
@@ -673,56 +659,33 @@ test('custom properties inside modelled offsets are provably non-negative', () =
   );
 });
 
-test('the inputs behind the measured constants are unchanged', () => {
-  // 28px credit / 62px dock are measured, not derived. Guard the CSS that
-  // determines them so a change forces a re-measure instead of a silent drift.
-  const creditBase = RULES.find(
-    (rule) => rule.parts.length === 1 && rule.parts[0] === '#cesium-credits',
-  );
-  assert.ok(creditBase, '#cesium-credits base rule is missing');
-  const declOf = (rule, prop) =>
-    rule.decls.find((decl) => decl.prop === prop)?.value;
-  assert.equal(
-    declOf(creditBase, 'font-size'),
-    '10px',
-    'credit font-size drives its measured 28px height',
-  );
-  assert.equal(
-    declOf(creditBase, 'white-space'),
-    'nowrap',
-    'a wrapping credit is taller than the measured 28px',
-  );
-  for (const prop of [
-    'height',
-    'min-height',
-    'max-height',
-    'line-height',
-    'padding',
-  ]) {
+test('the inputs behind the phone search height are unchanged', () => {
+  // The phone keep-out adds the search height to its bottom offset. The height
+  // is read from the CSS, so pin the one rule that sets it and the 36px field.
+  for (const width of PHONE_WIDTHS) {
+    const height = winnerOf('#location-bar', 'height', width, true);
     assert.equal(
-      declOf(creditBase, prop),
-      undefined,
-      `#cesium-credits gained ${prop}; re-measure CREDIT_HEIGHT_PX`,
+      height.part,
+      ATLAS_SEARCH_FIELD_PHONE,
+      `at ${width}px the search height resolves via "${height.part}"`,
     );
-  }
-  // Only `min-height` may floor the dock — that direction only ADDS clearance.
-  for (const { rule, part } of ownBoxEntries()) {
-    if (part !== '#command-dock') continue;
-    for (const decl of rule.decls) {
-      assert.notEqual(
-        decl.prop,
-        'height',
-        'a fixed dock height invalidates COMPACT_DOCK_HEIGHT_PX',
+    assert.equal(height.decl.value, '36px');
+    assert.equal(height.decl.important, true);
+    for (const prop of ['max-height', 'min-height', 'padding', 'margin']) {
+      const other = resolve(
+        candidatesFor('#location-bar', { phone: true }),
+        prop,
+        width,
+        'search field',
+        { optional: true },
       );
-      assert.notEqual(
-        decl.prop,
-        'max-height',
-        'a capped dock height invalidates COMPACT_DOCK_HEIGHT_PX',
+      assert.ok(
+        !other || other.decl.value.trim() === '0' || other.decl.value === 'none' || other.decl.value === 'auto',
+        `at ${width}px the search field gained ${prop}: ${other?.decl.value}; its measured height no longer holds`,
       );
     }
   }
 });
-
 test('the full-width rail cannot inherit a height that overrides its floor', () => {
   // `#right-context-rail.layout-focus { height: … }` is a base rule with more
   // specificity than the <=720px floor, and height + top + bottom is
@@ -771,34 +734,39 @@ test('right rail measurement cannot persist into a painted attribution layout', 
 
 // ── Clearance ───────────────────────────────────────────────────────────────
 
-test('every open dock tray clears the required credit at every modelled viewport', () => {
-  // Below 900px the tray widens to nearly the viewport and lands on the
-  // bottom-left corner where the credit lives. The clearance is NOT one fixed
-  // number: the dock is anchored at 2vh down to 721px and re-anchors to a flat
-  // 8px at 720px, while the credit keeps its 2vh base throughout.
-  const failures = [];
-  eachLift((lift) => {
-    for (const scenario of TRAY_SCENARIOS) {
-      for (const width of WIDTHS.filter((w) => w <= 900)) {
-        for (const height of HEIGHTS) {
-          const clearance =
-            trayBottomPx(scenario, width, height) - creditTopPx(width, height);
-          if (clearance < MIN_CLEARANCE_PX) {
-            failures.push(
-              `${scenario.name} @ ${width}x${height} lift ${lift}: ${clearance.toFixed(1)}px`,
-            );
-          }
-        }
-      }
+test('the desktop command dock is top-anchored and cannot reach the bottom-left credit', () => {
+  for (const width of DESKTOP_WIDTHS) {
+    const dock = (prop) => winnerOf('#command-dock', prop, width, false);
+    assert.equal(dock('position').decl.value, 'fixed', `dock position at ${width}px`);
+    const top = dock('top');
+    assert.ok(
+      lengthPx(top.decl.value, `dock top at ${width}px`) >= 0,
+      `dock top at ${width}px`,
+    );
+    assert.equal(
+      dock('bottom').decl.value,
+      'auto',
+      `at ${width}px the dock is anchored at the bottom via "${dock('bottom').part}"`,
+    );
+    // A fixed or capped height cannot pull a top-anchored box down; it must be
+    // content-sized (`auto`) so the dock stays a single search row.
+    assert.equal(dock('height').decl.value, 'auto', `dock height at ${width}px`);
+    const credit = (prop) => winnerOf('#cesium-credits', prop, width, false);
+    assert.equal(credit('top').decl.value, 'auto');
+    assert.notEqual(credit('bottom').decl.value, 'auto');
+    // The dock's extent: top + content height. Its search field is 36px; the
+    // credit sits within the bottom 12px + one 16px line. At the shortest
+    // supported viewport the two bands stay apart.
+    const creditBandPx = offsetPx(credit('bottom').decl.value, 0, 0, 'credit bottom') + 16;
+    for (const height of KEEP_OUT_HEIGHTS) {
+      const dockBottomEdge = lengthPx(top.decl.value, 'dock top') + 36;
+      assert.ok(
+        height - creditBandPx - dockBottomEdge >= MIN_CLEARANCE_PX,
+        `at ${width}x${height} the dock's search row reaches the credit band`,
+      );
     }
-  });
-  assert.deepEqual(
-    failures,
-    [],
-    `a dock tray re-enters the credit band:\n  ${failures.join('\n  ')}\n`,
-  );
+  }
 });
-
 test('a pinned tray still stacks above its sibling at narrow widths', () => {
   // The stock two-pinned selector carries one ID against five classes, so the
   // ordinary narrow rule (two IDs) outranks it and the upper tray silently
@@ -907,23 +875,99 @@ test('expanded Context and the credit row never overlap', () => {
   }
 });
 
-test('the dock anchor changes at 720px — the 2vh cancellation is band-limited', () => {
-  const lift = 'var(--world-timeline-lift, 0px)';
-  assert.equal(
-    resolve(['#command-dock'], 'bottom', 800, 'dock').decl.value,
-    `calc(2vh + ${lift})`,
-  );
-  assert.equal(
-    resolve(['#command-dock'], 'bottom', 720, 'dock').decl.value,
-    `calc(8px + ${lift})`,
-  );
-  assert.equal(
-    resolve(CREDIT_SELECTORS, 'bottom', 720, 'credit').decl.value,
-    `calc(2vh + 5rem + ${lift})`,
-    'the credit keeps its 2vh base below 720px — that asymmetry is the whole hazard',
-  );
+test('on phones the credit sits above the search, which sits above the tab bar', () => {
+  for (const width of PHONE_WIDTHS) {
+    const search = (prop) => winnerOf('#command-dock', prop, width, true);
+    const credit = (prop) => winnerOf('#cesium-credits', prop, width, true);
+    assert.equal(search('top').decl.value, 'auto', `phone search is top-anchored at ${width}px`);
+    assert.equal(credit('top').decl.value, 'auto', `phone credit is top-anchored at ${width}px`);
+    const searchHeight = lengthPx(
+      winnerOf('#location-bar', 'height', width, true).decl.value,
+      'search height',
+    );
+    for (const tab of TAB_SPACES_PX) {
+      for (const height of KEEP_OUT_HEIGHTS) {
+        const searchBottom = offsetPx(search('bottom').decl.value, height, tab, 'search bottom');
+        const creditBottom = offsetPx(credit('bottom').decl.value, height, tab, 'credit bottom');
+        assert.ok(
+          searchBottom >= tab,
+          `at ${width}px the search (${searchBottom}px) is not above the tab bar (${tab}px)`,
+        );
+        assert.ok(
+          creditBottom > searchBottom + searchHeight,
+          `at ${width}x${height} tab ${tab} the credit bottom ${creditBottom}px does not clear the search top ${searchBottom + searchHeight}px`,
+        );
+        assert.ok(
+          creditBottom - (searchBottom + searchHeight) >= MIN_CLEARANCE_PX,
+          `at ${width}x${height} tab ${tab} the credit is closer than ${MIN_CLEARANCE_PX}px to the search`,
+        );
+      }
+    }
+  }
 });
 
+test('the credit is bottom-left anchored and never hidden or faded', () => {
+  for (const [phone, widths] of [
+    [false, DESKTOP_WIDTHS],
+    [true, PHONE_WIDTHS],
+  ]) {
+    for (const width of widths) {
+      const credit = (prop) => winnerOf('#cesium-credits', prop, width, phone);
+      assert.equal(credit('position').decl.value, 'fixed');
+      assert.equal(credit('top').decl.value, 'auto', `credit top at ${width}px`);
+      assert.equal(credit('right').decl.value, 'auto', `credit right at ${width}px`);
+      const bottom = credit('bottom').decl.value;
+      assert.notEqual(bottom, 'auto');
+      assert.ok(offsetPx(bottom, 800, 58, 'credit bottom') >= 0, `credit bottom at ${width}px`);
+      assert.ok(lengthPx(credit('left').decl.value, `credit left at ${width}px`) >= 0);
+      assert.equal(credit('transform').decl.value, 'none');
+      const maybe = (prop) =>
+        resolve(candidatesFor('#cesium-credits', { phone }), prop, width, 'credit', { optional: true });
+      assert.notEqual(maybe('display')?.decl.value, 'none', `credit hidden at ${width}px`);
+      assert.notEqual(maybe('visibility')?.decl.value, 'hidden', `credit hidden at ${width}px`);
+      const opacity = maybe('opacity');
+      assert.ok(
+        !opacity || Number.parseFloat(opacity.decl.value) >= 0.5,
+        `credit faded at ${width}px: ${opacity?.decl.value}`,
+      );
+    }
+  }
+});
+
+test('the layer panel is capped so it clears the credit at tablet and desktop widths', () => {
+  const creditBand = (width) =>
+    offsetPx(winnerOf('#cesium-credits', 'bottom', width, false).decl.value, 800, 0, 'credit bottom') +
+    16; // credit line-height (status.css)
+  for (const width of DESKTOP_WIDTHS) {
+    const panel = winnerOf('#data-panel', 'max-height', width, false);
+    assert.equal(panel.part, ATLAS_LAYER_PANEL, `panel cap at ${width}px resolves via "${panel.part}"`);
+    const cap = /^calc\(100vh - (\d+)px\)$/.exec(panel.decl.value);
+    assert.ok(cap, `unmodelled panel max-height at ${width}px: "${panel.decl.value}"`);
+    // Below 1024 the stack top is set by script (--left-stack-safe-top), so
+    // the model uses the atlas top (64px, layers.css) as the reference.
+    const top = 64;
+    if (width >= 1024) {
+      // Legacy stack rules carry height-based media the model does not
+      // evaluate, so read the atlas rule that pins the top with !important.
+      const pinned = RULES.find(
+        (rule) =>
+          rule.parts.includes(ATLAS_LAYER_STACK) &&
+          rule.media.length === 1 &&
+          parseMediaRange(rule.media[0])?.min === 1024 &&
+          rule.decls.some((d) => d.prop === 'top'),
+      );
+      assert.ok(pinned, 'atlas desktop rule for the layer stack is missing');
+      const decl = pinned.decls.find((d) => d.prop === 'top');
+      assert.equal(decl.value, `${top}px`);
+      assert.equal(decl.important, true, 'the atlas stack top must be !important');
+    }
+    const reserved = Number(cap[1]);
+    assert.ok(
+      reserved - top - creditBand(width) >= MIN_CLEARANCE_PX,
+      `at ${width}px a panel starting ${top}px down and ending ${reserved}px above the bottom edge leaves < ${MIN_CLEARANCE_PX}px above the credit band (${creditBand(width)}px)`,
+    );
+  }
+});
 test('the minimal-HUD credit variant tracks the ordinary one', () => {
   // It is MORE specific, so if the two ever diverge the model reads the wrong
   // anchor while the browser paints the other.

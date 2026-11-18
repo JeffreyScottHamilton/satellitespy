@@ -82,6 +82,7 @@
       "src/ui/views/panels/MapStyleMenu.vue",
       "src/ui/views/panels/SettingsMenu.vue",
       "src/ui/theme.js",
+      "src/ui/hudVisibility.js",
       "src/ui/brand.js",
       "src/ui/views/StoriesView.vue",
       "src/ui/views/stories/StoryContext.vue",

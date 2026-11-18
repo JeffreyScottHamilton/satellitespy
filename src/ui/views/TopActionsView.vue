@@ -12,6 +12,12 @@ import {
 import { t } from '../../i18n/index.js';
 import UiIcon from '../kit/UiIcon.vue';
 import { useDisplayStore } from '../stores/display.js';
+import {
+  clearHudClass,
+  initHudVisibility,
+  setHudVisible,
+  subscribeHudVisible,
+} from '../hudVisibility.js';
 import { getTheme, subscribeTheme, toggleTheme } from '../theme.js';
 import MapStyleMenu from './panels/MapStyleMenu.vue';
 import SettingsMenu from './panels/SettingsMenu.vue';
@@ -19,28 +25,14 @@ import SettingsMenu from './panels/SettingsMenu.vue';
 // The top-right cluster: the map style button, Settings and the theme toggle.
 // One popover is open at a time; Escape and a pointer press outside close it.
 const FOCUSABLE = 'button:not([disabled]), input:not([disabled]), a[href], [tabindex="0"]';
-const SHOW_HUD_KEY = 'satellitespy.showHud';
 
-// The coordinate readout is a body class the HUD styles read.
-function readShowHud() {
-  try {
-    return globalThis.localStorage?.getItem(SHOW_HUD_KEY) === '1';
-  } catch {
-    return false;
-  }
-}
-function writeShowHud(on) {
-  try {
-    globalThis.localStorage?.setItem(SHOW_HUD_KEY, on ? '1' : '0');
-  } catch {
-    // Storage can be off; the readout still shows for this session.
-  }
-}
+// The coordinate readout is shared with the H shortcut through hudVisibility.js.
 const showHud = shallowRef(false);
+const offHud = subscribeHudVisible((on) => {
+  showHud.value = on;
+});
 function setShowHud(on) {
-  showHud.value = Boolean(on);
-  writeShowHud(showHud.value);
-  globalThis.document?.body?.classList.toggle('atlas-show-hud', showHud.value);
+  setHudVisible(on);
 }
 
 // The basemap name on the map button is the active stack's chip label.
@@ -91,6 +83,8 @@ watch(menu, async (name) => {
 
 function onDocumentKeyDown(event) {
   if (!menu.value || event.defaultPrevented || event.key !== 'Escape') return;
+  // Handled here: EntityCard and the shortcuts must not also act on it.
+  event.preventDefault();
   close({ restoreFocus: true });
 }
 function onDocumentPointerDown(event) {
@@ -98,12 +92,14 @@ function onDocumentPointerDown(event) {
   close();
 }
 onMounted(() => {
-  setShowHud(readShowHud());
+  initHudVisibility();
   document.addEventListener('keydown', onDocumentKeyDown);
   document.addEventListener('pointerdown', onDocumentPointerDown, true);
 });
 onBeforeUnmount(() => {
   offTheme();
+  offHud();
+  clearHudClass();
   document.removeEventListener('keydown', onDocumentKeyDown);
   document.removeEventListener('pointerdown', onDocumentPointerDown, true);
 });

@@ -64,6 +64,34 @@ test('toggling the theme flips data-theme and the button name', async (t) => {
   assert.equal(document.documentElement.dataset.theme, 'dark');
 });
 
+test('Escape that closes a menu is marked handled; unmount drops the HUD class', async (t) => {
+  const host = mount(t);
+  action(host, 'settings').click();
+  await nextTick();
+  const event = new KeyboardEvent('keydown', {
+    key: 'Escape',
+    bubbles: true,
+    cancelable: true,
+  });
+  document.dispatchEvent(event);
+  assert.equal(event.defaultPrevented, true);
+  const { setHudVisible } = await import('../hudVisibility.js');
+  setHudVisible(true, { setItem() {} });
+  assert.ok(document.body.classList.contains('atlas-show-hud'));
+});
+
+test('the HUD class is removed on unmount', async () => {
+  document.body.replaceChildren();
+  const host = document.body.appendChild(document.createElement('div'));
+  const app = createApp(TopActionsView).use(createPinia());
+  app.mount(host);
+  const { setHudVisible } = await import('../hudVisibility.js');
+  setHudVisible(true, { setItem() {} });
+  assert.ok(document.body.classList.contains('atlas-show-hud'));
+  app.unmount();
+  assert.equal(document.body.classList.contains('atlas-show-hud'), false);
+});
+
 test('one popover is open at a time, and Escape closes it', async (t) => {
   const host = mount(t);
   action(host, 'settings').click();

@@ -26,9 +26,12 @@ const emit = (name, ...args) => controls.value?.emit(name, ...args);
 // as in production builds), there is no signal, so the control stays shown.
 const VOICE_KEY_IDS = ['openai', 'gemini'];
 const keySetup = storeToRefs(useProviderSettingsStore()).view;
+// ChatGPT OAuth sign-in is a keyless cloud voice mode (cloudVoiceAuth.js);
+// key setup publishes it as auth.mode.
 const voiceConfigured = computed(() => {
   const setup = keySetup.value;
   if (!setup?.ready) return true;
+  if (setup.auth?.mode === 'oauth') return true;
   return (setup.rows || []).some(
     (row) => VOICE_KEY_IDS.includes(row.id) && row.set,
   );
@@ -81,7 +84,7 @@ const frameStyle = (panel) => ({
 </script>
 
 <template>
-  <div v-if="voiceConfigured" id="gev-voice-control" v-bind="rootData(view.root)" v-class-toggle="{ 'error-dismissed': view.root.errorDismissed }" @pointerleave="emit('pointerleave', $event)" @pointerenter="emit('pointerenter', $event)">
+  <div v-show="voiceConfigured" id="gev-voice-control" v-bind="rootData(view.root)" v-class-toggle="{ 'error-dismissed': view.root.errorDismissed }" @pointerleave="emit('pointerleave', $event)" @pointerenter="emit('pointerenter', $event)">
       <span class="gev-active-border" aria-hidden="true"></span>
       <label v-if="!view.panel" id="gev-voice-provider-field" class="gev-voice-provider-field" :hidden="view.provider.hidden">
         <span>{{ t('Voice provider') }}</span>
@@ -188,8 +191,10 @@ const frameStyle = (panel) => ({
 </template>
 
 <style scoped>
-/* The dock shows one compact round group: mic and chat. The status, readout,
-   help tray and waveform stay out of the way; the panels keep their own styles. */
+/* The dock shows one compact round group: mic and chat. The status heading,
+   help tray and waveform stay out of the way; the phase and readout lines stay
+   visible so errors, permission and cost text are never hidden. The panels
+   keep their own styles. */
 #gev-voice-control {
   position: fixed;
   left: 50%;
@@ -207,11 +212,9 @@ const frameStyle = (panel) => ({
 }
 #gev-voice-control .gev-active-border,
 #gev-voice-control .gev-voice-heading,
-#gev-voice-control .gev-voice-readout,
 #gev-voice-control .gev-voice-help-tray,
 #gev-voice-control .gev-voice-visualizer,
 #gev-voice-control .gev-chat-thinking,
-#gev-voice-control #gev-assistant-phase,
 #gev-voice-control .gev-mic-label,
 #gev-voice-control .gev-chat-label {
   display: none;

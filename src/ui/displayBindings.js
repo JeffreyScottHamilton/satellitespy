@@ -1,5 +1,6 @@
 import { createFrameRateMonitor } from './frameRateMonitor.js';
 import { bindApplicationShortcuts } from './visualInput.js';
+import { setHudVisible } from './hudVisibility.js';
 import { useDisplayStore } from './stores/display.js';
 import { applicationPinia } from './vueRuntime.js';
 
@@ -59,6 +60,7 @@ export class DisplayBindings {
         toggleHud: () => {
           this.shareLinkManager?.claimRestoreLane?.('visual');
           this.hud.toggle();
+          setHudVisible(Boolean(this.hud.visible));
           this._updateHudButtonState();
           this._syncShareState();
         },
@@ -152,6 +154,7 @@ export class DisplayBindings {
       toggleHud: () => {
         this.shareLinkManager?.claimRestoreLane?.('visual');
         this.hud.toggle();
+        setHudVisible(Boolean(this.hud.visible));
         this._updateHudButtonState();
         this._syncShareState();
       },
