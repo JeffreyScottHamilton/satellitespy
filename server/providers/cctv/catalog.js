@@ -249,8 +249,45 @@ function loadSourcesFromEnv() {
   }
 }
 
+/**
+ * Per-pack load deadline. A serverless host kills the request at 30 s and a
+ * cold instance starts with an empty catalog, so one slow pack (Tarktee's
+ * DATEX feeds time out at 30 s) must not hold the first response hostage.
+ */
+const DEFAULT_PACK_DEADLINE_MS = 12_000;
+
+/** Minimum spacing between refreshes triggered by a frame request's id miss. */
+const MISS_REFRESH_COOLDOWN_MS = 30_000;
+
+/** Resolve the pack deadline from CCTV_PACK_DEADLINE_MS (positive ms). */
+function resolvePackDeadlineMs(raw = process.env.CCTV_PACK_DEADLINE_MS) {
+  const value = Number(raw);
+  return Number.isFinite(value) && value > 0 ? value : DEFAULT_PACK_DEADLINE_MS;
+}
+
+/** Reject if `promise` has not settled within `ms`; the timer is always cleared. */
+function withDeadline(promise, ms, label) {
+  let timer;
+  const deadline = new Promise((_, reject) => {
+    timer = setTimeout(
+      () => reject(new Error(`${label} missed ${ms} ms deadline`)),
+      ms,
+    );
+  });
+  return Promise.race([promise, deadline]).finally(() => clearTimeout(timer));
+}
+
 /** Create an independent catalog rooted in the consuming application. */
-export function createCctvCatalog({ sourceRoot = process.cwd() } = {}) {
+export function createCctvCatalog({
+  sourceRoot = process.cwd(),
+  packDeadlineMs = resolvePackDeadlineMs(),
+  livePacks = LIVE_PACKS,
+} = {}) {
+  let _missRefreshAt = 0;
+  /** @type {WeakMap<Array<object>, Array<{pack: string, reason: string}>>}
+   * Live packs that failed or missed the deadline, keyed by the source list
+   * they were missing from. They are retried on the next TTL refresh. */
+  const _cctvFailedPacks = new WeakMap();
   /** @type {Array<object>} Cached merged + normalized CCTV source list. */
   let _cctvSourceCache = [];
   /** @type {number} Epoch-ms when the source cache was last refreshed. */
@@ -337,9 +374,13 @@ export function createCctvCatalog({ sourceRoot = process.cwd() } = {}) {
           // Invoked inside the promise so a loader that throws synchronously
           // (a file-based pack on a malformed row) is isolated like any other
           // failed pack instead of rejecting the whole refresh.
-          LIVE_PACKS.map((pack) =>
-            Promise.resolve().then(() =>
-              pack.enabled() ? pack.load({ sourceRoot }) : [],
+          livePacks.map((pack) =>
+            withDeadline(
+              Promise.resolve().then(() =>
+                pack.enabled() ? pack.load({ sourceRoot }) : [],
+              ),
+              packDeadlineMs,
+              `CCTV pack ${pack.name}`,
             ),
           ),
         )
@@ -359,7 +400,7 @@ export function createCctvCatalog({ sourceRoot = process.cwd() } = {}) {
       reservedCount,
     });
     const packs = [
-      ...LIVE_PACKS.map((pack, index) =>
+      ...livePacks.map((pack, index) =>
         normalizePack(
           pack.name,
           liveResults[index]?.status === 'fulfilled'
@@ -371,6 +412,19 @@ export function createCctvCatalog({ sourceRoot = process.cwd() } = {}) {
       normalizePack('file', fromFile),
       normalizePack('env', fromEnv),
     ];
+    const failedPacks = livePacks
+      .map((pack, index) => ({
+        pack: pack.name,
+        reason: String(liveResults[index]?.reason?.message ?? 'failed'),
+      }))
+      .filter((_, index) => liveResults[index]?.status === 'rejected');
+    if (failedPacks.length) {
+      console.warn(
+        `[CCTV] ${failedPacks.length} pack(s) unavailable this refresh, retried next TTL: ${failedPacks
+          .map((pack) => `${pack.pack} (${pack.reason})`)
+          .join(', ')}`,
+      );
+    }
     const maxCount = resolveCatalogCap(process.env.CCTV_MAX_SOURCES);
     const allocation = allocateSourceCap(packs, maxCount);
     // Shipped ground heights (src/data/local_data/cctv_ground_heights/, produced by
@@ -402,6 +456,7 @@ export function createCctvCatalog({ sourceRoot = process.cwd() } = {}) {
     if (capped.length > 0 || _cctvSourceCache.length === 0) {
       _cctvSourceCache = capped;
       _cctvTrimmedPacks.set(capped, trimmedPacks);
+      _cctvFailedPacks.set(capped, failedPacks);
     } else {
       // Every source came back empty (all live packs timed out / upstream outage)
       // but a good catalog is already cached — serve it stale rather than blanking
@@ -420,5 +475,35 @@ export function createCctvCatalog({ sourceRoot = process.cwd() } = {}) {
    * step while a background refresh swaps the catalog. */
   getCctvSources.trimmedPacks = (sources = _cctvSourceCache) =>
     _cctvTrimmedPacks.get(sources) ?? [];
+  /**
+   * For a frame request whose id is not in `sources`: when that catalog is
+   * partial (a pack failed or missed its deadline), join or start one full
+   * refresh, waiting at most `maxMs`, and return the freshest catalog. A
+   * complete catalog is returned as is. Miss-triggered refreshes are spaced
+   * out so a persistently failing pack is not hammered by bad ids.
+   */
+  getCctvSources.refreshIfPartial = async (
+    sources = _cctvSourceCache,
+    maxMs = 10_000,
+  ) => {
+    if (!_cctvFailedPacks.get(sources)?.length) return sources;
+    if (!_cctvSourceInflight) {
+      const now = Date.now();
+      if (now - _missRefreshAt < MISS_REFRESH_COOLDOWN_MS) return sources;
+      _missRefreshAt = now;
+      _cctvSourceInflight = refreshCctvSources().finally(() => {
+        _cctvSourceInflight = null;
+      });
+      _cctvSourceInflight.catch(() => {});
+    }
+    try {
+      return await withDeadline(_cctvSourceInflight, maxMs, 'CCTV refresh');
+    } catch {
+      return _cctvSourceCache;
+    }
+  };
+  /** Live packs missing from `sources` (failed or past the deadline). */
+  getCctvSources.failedPacks = (sources = _cctvSourceCache) =>
+    _cctvFailedPacks.get(sources) ?? [];
   return getCctvSources;
 }

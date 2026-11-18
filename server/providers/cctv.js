@@ -632,7 +632,13 @@ export function cctvProxy({ sourceRoot = process.cwd() } = {}) {
         const cameraId =
           decodeURIComponent(url.pathname.replace('/frame/', '').trim()) ||
           'camera';
-        const source = sourceById.get(cameraId);
+        let source = sourceById.get(cameraId);
+        // A cold or partial catalog (a pack failed or missed its deadline) may
+        // simply not hold this id yet: wait for one full refresh and look again.
+        if (!source && getCctvSources.refreshIfPartial) {
+          const fresh = await getCctvSources.refreshIfPartial(sources);
+          source = fresh.find((candidate) => candidate.id === cameraId);
+        }
         const label = url.searchParams.get('label') || source?.name || cameraId;
         const city = url.searchParams.get('city') || source?.city || '';
         const lat = Number(url.searchParams.get('lat') || source?.lat);
@@ -763,9 +769,11 @@ export function cctvProxy({ sourceRoot = process.cwd() } = {}) {
           cameraId,
           label,
           city,
-          status: source?.url
-            ? 'UPSTREAM UNAVAILABLE'
-            : 'NO UPSTREAM CONFIGURED',
+          status: !source
+            ? 'CAMERA NOT IN CURRENT CATALOG'
+            : source.url
+              ? 'UPSTREAM UNAVAILABLE'
+              : 'NO UPSTREAM CONFIGURED',
         });
 
         setHealth(cameraId, {

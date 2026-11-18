@@ -1,3 +1,4 @@
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import {
@@ -341,8 +342,12 @@ export async function loadCaltransSourcesFromOpenData() {
       const locationName = String(loc.locationName || '').trim();
       // Leading token of locationName is the stable camera code ("TV102 -- I-580 : …").
       const codeMatch = /^([A-Za-z0-9_-]+)\s*--/.exec(locationName);
+      // Without a code, derive the id from the pinned image URL: an index into
+      // the filtered list would differ between builds (and serverless instances).
       const code = (
-        codeMatch ? codeMatch[1] : `x${cameras.length}`
+        codeMatch
+          ? codeMatch[1]
+          : `x${crypto.createHash('sha1').update(imageUrl).digest('hex').slice(0, 8)}`
       ).toLowerCase();
       const cameraId = `ca-d${district}-${code}`;
 
